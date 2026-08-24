@@ -32,7 +32,7 @@
         .video-wrapper {
             position: relative;
             width: 100%;
-            aspect-ratio: 16 / 9;
+            aspect-ratio: 16 / 9; /* Wadah penahan awal */
             background: #000000;
             display: flex;
             justify-content: center;
@@ -83,9 +83,15 @@
         }
 
         @keyframes pulse-play {
-            0% { box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.7); }
-            70% { box-shadow: 0 0 0 18px rgba(236, 72, 153, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(236, 72, 153, 0); }
+            0% {
+                box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 18px rgba(236, 72, 153, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(236, 72, 153, 0);
+            }
         }
 
         .btn-play-glass:active {
@@ -165,36 +171,6 @@
             background: #0f0e17;
         }
 
-        /* Live Viewers Badge */
-        #liveViewers {
-            font-size: 12px;
-            font-weight: 900;
-            color: #ff3333;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(255, 51, 51, 0.1);
-            padding: 4px 10px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 51, 51, 0.25);
-            margin-bottom: 10px;
-        }
-
-        .live-dot {
-            display: inline-block;
-            width: 7px;
-            height: 7px;
-            background-color: #ff0000;
-            border-radius: 50%;
-            animation: kedipKamera 1.2s infinite ease-in-out;
-            flex-shrink: 0;
-        }
-
-        @keyframes kedipKamera {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.3; transform: scale(0.85); }
-        }
-
         .video-title {
             font-size: 18px;
             font-weight: 800;
@@ -225,7 +201,7 @@
             background: #ec4899;
         }
 
-        /* 4 Column Action Grid */
+        /* 4 Column Action Buttons Grid */
         .action-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -252,7 +228,7 @@
             color: #ec4899;
         }
 
-        /* Telegram CTA */
+        /* Telegram CTA Button */
         .tele-wrapper {
             padding: 0 16px 20px 16px;
         }
@@ -289,7 +265,7 @@
 <body>
 
     <div class="container">
-        <!-- Video Wrapper (Paling Atas Layar) -->
+        <!-- Video Wrapper (Polos Tanpa Header) -->
         <div class="video-wrapper">
             <video id="videoPolos" playsinline preload="metadata">
                 <source id="videoSource" src="" type="video/mp4">
@@ -314,15 +290,8 @@
             <button id="btnNext" class="btn-nav btn-next">Selanjutnya <i class="fa-solid fa-arrow-right"></i></button>
         </div>
 
-        <!-- Meta Info Section -->
+        <!-- Meta Info -->
         <div class="info-section">
-            
-            <!-- Live Viewers Counter (Di Atas Judul) -->
-            <div id="liveViewers">
-                <span class="live-dot"></span>
-                <span><span id="angkaLive">0</span> Orang Sedang Menonton</span>
-            </div>
-
             <h1 class="video-title"> Video Viral Full HD Uncut</h1>
             
             <div class="badges-row">
@@ -331,7 +300,7 @@
                 <span><i class="fa-solid fa-clock"></i> Updated Today</span>
             </div>
 
-            <!-- Grid 4 Tombol Pancingan (Setiap Tombol Bisa Beda Link Iklan) -->
+            <!-- Tombol Pancingan dengan Iklan Beda-Beda (data-ad) -->
             <div class="action-grid">
                 <button class="btn-action" data-ad="https://adsterra-link-suka.com"><i class="fa-solid fa-heart"></i> 4.8K</button>
                 <button class="btn-action" data-ad="https://adsterra-link-simpan.com"><i class="fa-solid fa-bookmark"></i> Simpan</button>
@@ -354,8 +323,7 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            
-            // 1. OTOMATISASI KLIK IKLAN UNTUK SEMUA ELEMEN 'data-ad'
+            // --- EKSEKUSI OTOMATIS IKLAN ADSTERRA UNTUK ELEMEN DENGAN ATTRIBUT 'data-ad' ---
             document.querySelectorAll('[data-ad]').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const linkIklan = btn.getAttribute('data-ad');
@@ -365,49 +333,7 @@
                 });
             });
 
-            // 2. SCRIPT LIVE VIEWERS DINAMIS
-            const elLive = document.getElementById("angkaLive");
-            if(elLive) {        
-                const jamSekarang = new Date().getHours();        
-                let minViewers = 0;
-                let maxViewers = 0;        
-                let tingkatKeramaian = Math.floor(Math.random() * 100) + 1;
-
-                if (jamSekarang >= 21 || jamSekarang <= 4) {
-                    if (tingkatKeramaian > 80) { 
-                        minViewers = 1500; maxViewers = 4500;
-                    } else if (tingkatKeramaian > 30) { 
-                        minViewers = 300; maxViewers = 900;
-                    } else { 
-                        minViewers = 15; maxViewers = 80;
-                    }
-                } else {           
-                    if (tingkatKeramaian > 90) { 
-                        minViewers = 400; maxViewers = 800;
-                    } else if (tingkatKeramaian > 40) { 
-                        minViewers = 50; maxViewers = 150;
-                    } else { 
-                        minViewers = 2; maxViewers = 25;
-                    }
-                }  
-             
-                let angkaAwal = Math.floor(Math.random() * (maxViewers - minViewers + 1)) + minViewers;
-                elLive.textContent = angkaAwal.toLocaleString('id-ID');
-                
-                if(window.liveInterval) clearInterval(window.liveInterval);        
-                window.liveInterval = setInterval(() => {
-                    let batasNaikTurun = Math.floor(angkaAwal * 0.05) + 3; 
-                    let perubahan = Math.floor(Math.random() * (batasNaikTurun * 2)) - batasNaikTurun; 
-                    
-                    angkaAwal += perubahan;
-                                
-                    if(angkaAwal < 2) angkaAwal = Math.floor(Math.random() * 5) + 2; 
-                    
-                    elLive.textContent = angkaAwal.toLocaleString('id-ID');
-                }, 10000); 
-            }
-
-            // 3. LOGIKA PEMUTAR VIDEO & JEBAKAN ADSTERRA
+            // --- LOGIKA PEMUTAR VIDEO & ADSTERRA OVERLAY ---
             const params = new URLSearchParams(window.location.search);
             const slug = params.get("v");
             const video = document.getElementById("videoPolos");
@@ -429,7 +355,7 @@
                 return;
             }
 
-            // Penyesuaian Aspect-Ratio Otomatis Saat Video Load (Anti-CLS)
+            // Deteksi otomatis rasio asli video (Anti-CLS & Durasi Pas)
             video.addEventListener('loadedmetadata', function() {
                 if (video.videoWidth && video.videoHeight) {
                     const wrapper = document.querySelector('.video-wrapper');
@@ -502,7 +428,6 @@
             }
 
             btnLanjutkan.addEventListener('click', () => {
-                // Link Adsterra Utama untuk Pemutar Video
                 window.open('https://layinghypothesis.com/t7pgs2uek7?key=b4d0a9ccbdeab1ce09b94e2b66968e28', '_blank');
                 
                 if (currentStage === 1) {
