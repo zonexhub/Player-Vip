@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>VIP Player</title>
     <style>
@@ -30,22 +31,22 @@
 
         /* Video Area Placeholder (Anti-CLS) */
         .video-wrapper {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 4 / 3.5; /* Kunci tinggi wadah di 4:5 */
-    background: #000000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-}
+            position: relative;
+            width: 100%;
+            aspect-ratio: 4 / 3.5;
+            background: #000000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
 
-#videoPolos {
-    width: 100%;
-    height: 100%;
-    object-fit: contain; /* Gambar utuh gak kepotong, bar durasi tetep full di bawah */
-    display: block;
-}
+        #videoPolos {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
 
         /* Glassmorphism Play Button Overlay */
         .overlay {
@@ -89,6 +90,32 @@
 
         .btn-play-glass:active {
             transform: scale(0.9);
+        }
+
+        /* Live Viewers Badge */
+        #liveViewers {
+            font-size: 12px;
+            font-weight: 700;
+            color: #ff3333;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 12px 16px;
+        }
+
+        .live-dot {
+            display: inline-block;
+            width: 7px;
+            height: 7px;
+            background-color: #ff0000;
+            border-radius: 50%;
+            animation: kedipKamera 1.2s infinite ease-in-out;
+            flex-shrink: 0;
+        }
+
+        @keyframes kedipKamera {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(0.85); }
         }
 
         /* Server Switcher Tabs */
@@ -164,32 +191,6 @@
             background: #0f0e17;
         }
 
-        /* Live Viewers Badge */
-        #liveViewers {
-    font-size: 12px;
-    font-weight: 700;
-    color: #ff3333;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 12px 16px; /* Atas & bawah 12px, kiri & kanan 0px */
-}
-
-        .live-dot {
-            display: inline-block;
-            width: 7px;
-            height: 7px;
-            background-color: #ff0000;
-            border-radius: 50%;
-            animation: kedipKamera 1.2s infinite ease-in-out;
-            flex-shrink: 0;
-        }
-
-        @keyframes kedipKamera {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.3; transform: scale(0.85); }
-        }
-
         .video-title {
             font-size: 18px;
             font-weight: 800;
@@ -218,6 +219,16 @@
 
         .badge-hot {
             background: #ec4899;
+        }
+
+        .meta-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .meta-item i {
+            color: #8b5cf6;
         }
 
         /* 4 Column Action Grid */
@@ -297,11 +308,11 @@
             </div>
         </div>
         
-          <!-- Live Viewers Counter (Di Atas Judul) -->
-            <div id="liveViewers">
-                <span class="live-dot"></span>
-                <span><span id="angkaLive">0</span> Orang Sedang Menonton</span>
-            </div>
+        <!-- Live Viewers Counter (Di Atas Server Bar) -->
+        <div id="liveViewers">
+            <span class="live-dot"></span>
+            <span><span id="angkaLive">0</span> Orang Sedang Menonton</span>
+        </div>
 
         <!-- Fake Server Switcher -->
         <div class="server-bar">
@@ -318,17 +329,20 @@
         <!-- Meta Info Section -->
         <div class="info-section">
             
-            <h1 class="video-title"> Video Viral Full HD Uncut</h1>
+            <h1 class="video-title">Video Viral Full HD Uncut</h1>
             
             <div class="badges-row">
                 <span class="badge-pill badge-hot">VIRAL</span>
                 <span class="badge-pill">4K ULTRA HD</span>
-                <span><i class="fa-solid fa-clock"></i> Updated Today</span>
+                <!-- ICON MATA / VIEWS DI DEPAN -->
+                <span class="meta-item"><i class="fa-solid fa-eye"></i> <span id="viewCount">15.4K</span> Views</span>
+                <!-- UPDATED TODAY DI BELAKANG -->
+                <span class="meta-item"><i class="fa-solid fa-clock"></i> Updated Today</span>
             </div>
 
-            <!-- Grid 4 Tombol Pancingan (Setiap Tombol Bisa Beda Link Iklan) -->
+            <!-- Grid 4 Tombol Pancingan (Icon Love menggunakan Font Awesome) -->
             <div class="action-grid">
-                <button class="btn-action" data-ad="https://adsterra-link-suka.com"><i class="fa-solid fa-heart"></i> 4.8K</button>
+                <button class="btn-action" id="btnLove" data-ad="https://adsterra-link-suka.com"><i class="fa-solid fa-heart"></i> <span id="likeCount">4.8K</span></button>
                 <button class="btn-action" data-ad="https://adsterra-link-simpan.com"><i class="fa-solid fa-bookmark"></i> Simpan</button>
                 <button class="btn-action" data-ad="https://adsterra-link-unduh.com"><i class="fa-solid fa-download"></i> Unduh</button>
                 <button class="btn-action" data-ad="https://adsterra-link-share.com"><i class="fa-solid fa-share-nodes"></i> Bagikan</button>
@@ -350,6 +364,21 @@
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             
+            // FUNGSI ACAK ANGKA LIKE & VIEWS
+            function generateRandomStats() {
+                const randomLikes = (Math.random() * (9.8 - 2.5) + 2.5).toFixed(1);
+                const randomViews = (Math.random() * (85.0 - 12.0) + 12.0).toFixed(1);
+
+                const likeElem = document.getElementById('likeCount');
+                const viewElem = document.getElementById('viewCount');
+
+                if (likeElem) likeElem.innerText = `${randomLikes}K`;
+                if (viewElem) viewElem.innerText = `${randomViews}K`;
+            }
+
+            // Jalankan acak angka pertama kali saat halaman dimuat
+            generateRandomStats();
+
             // 1. OTOMATISASI KLIK IKLAN UNTUK SEMUA ELEMEN 'data-ad'
             document.querySelectorAll('[data-ad]').forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -424,7 +453,6 @@
                 return;
             }
 
-            
             const versiAntiCache = Math.floor(Date.now() / 120000);
             const antiCacheUrl = "videos.json?v=" + versiAntiCache;
 
@@ -490,7 +518,6 @@
             }
 
             btnLanjutkan.addEventListener('click', () => {
-                // Link Adsterra Utama untuk Pemutar Video
                 window.open('https://layinghypothesis.com/t7pgs2uek7?key=b4d0a9ccbdeab1ce09b94e2b66968e28', '_blank');
                 
                 if (currentStage === 1) {
