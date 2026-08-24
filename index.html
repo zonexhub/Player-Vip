@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>VIP Player</title>
     <style>
@@ -29,7 +28,6 @@
             box-shadow: 0 0 30px rgba(0,0,0,0.8);
         }
 
-        /* Video Area Placeholder (Anti-CLS) */
         .video-wrapper {
             position: relative;
             width: 100%;
@@ -48,7 +46,6 @@
             display: block;
         }
 
-        /* Glassmorphism Play Button Overlay */
         .overlay {
             display: flex;
             position: absolute;
@@ -92,7 +89,6 @@
             transform: scale(0.9);
         }
 
-        /* Live Viewers Badge */
         #liveViewers {
             font-size: 12px;
             font-weight: 700;
@@ -118,7 +114,6 @@
             50% { opacity: 0.3; transform: scale(0.85); }
         }
 
-        /* Server Switcher Tabs */
         .server-bar {
             display: flex;
             background: #15141f;
@@ -146,7 +141,6 @@
             border: none;
         }
 
-        /* Nav Buttons */
         .controls-nav {
             display: flex;
             gap: 10px;
@@ -185,7 +179,6 @@
             transform: scale(0.96);
         }
 
-        /* Meta Info Section */
         .info-section {
             padding: 16px;
             background: #0f0e17;
@@ -196,6 +189,13 @@
             font-weight: 800;
             margin: 0 0 10px 0;
             color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .video-title i {
+            color: #ec4899;
         }
 
         .badges-row {
@@ -203,9 +203,15 @@
             align-items: center;
             gap: 8px;
             margin-bottom: 14px;
-            font-size: 12px;
+            font-size: 11px;
             color: #9ab0c7;
-            flex-wrap: wrap;
+            white-space: nowrap;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .badges-row::-webkit-scrollbar {
+            display: none;
         }
 
         .badge-pill {
@@ -215,6 +221,7 @@
             border-radius: 4px;
             font-weight: 700;
             font-size: 11px;
+            flex-shrink: 0;
         }
 
         .badge-hot {
@@ -225,13 +232,13 @@
             display: inline-flex;
             align-items: center;
             gap: 4px;
+            flex-shrink: 0;
         }
 
         .meta-item i {
             color: #8b5cf6;
         }
 
-        /* 4 Column Action Grid */
         .action-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -258,7 +265,6 @@
             color: #ec4899;
         }
 
-        /* Telegram CTA */
         .tele-wrapper {
             padding: 0 16px 20px 16px;
         }
@@ -295,7 +301,6 @@
 <body>
 
     <div class="container">
-        <!-- Video Wrapper (Paling Atas Layar) -->
         <div class="video-wrapper">
             <video id="videoPolos" playsinline preload="metadata">
                 <source id="videoSource" src="" type="video/mp4">
@@ -308,39 +313,31 @@
             </div>
         </div>
         
-        <!-- Live Viewers Counter (Di Atas Server Bar) -->
         <div id="liveViewers">
             <span class="live-dot"></span>
             <span><span id="angkaLive">0</span> Orang Sedang Menonton</span>
         </div>
 
-        <!-- Fake Server Switcher -->
         <div class="server-bar">
             <div class="server-btn active"><i class="fa-solid fa-bolt"></i> Server 1 (Fast)</div>
             <div class="server-btn" data-ad="https://adsterra-link-server2.com"><i class="fa-solid fa-server"></i> Server 2 (HD)</div>
         </div>
 
-        <!-- Navigation Buttons -->
         <div class="controls-nav">
             <button id="btnPrev" class="btn-nav btn-prev"><i class="fa-solid fa-arrow-left"></i> Sebelumnya</button>
             <button id="btnNext" class="btn-nav btn-next">Selanjutnya <i class="fa-solid fa-arrow-right"></i></button>
         </div>
 
-        <!-- Meta Info Section -->
         <div class="info-section">
-            
-            <h1 class="video-title">Video Viral Full HD Uncut</h1>
+            <h1 class="video-title"><i class="fa-solid fa-clapperboard"></i> Player VIP Full HD </h1>
             
             <div class="badges-row">
-                <span class="badge-pill badge-hot">VIRAL</span>
+                <span class="badge-pill badge-hot">HD</span>
                 <span class="badge-pill">4K ULTRA HD</span>
-                <!-- ICON MATA / VIEWS DI DEPAN -->
                 <span class="meta-item"><i class="fa-solid fa-eye"></i> <span id="viewCount">15.4K</span> Views</span>
-                <!-- UPDATED TODAY DI BELAKANG -->
                 <span class="meta-item"><i class="fa-solid fa-clock"></i> Updated Today</span>
             </div>
 
-            <!-- Grid 4 Tombol Pancingan (Icon Love menggunakan Font Awesome) -->
             <div class="action-grid">
                 <button class="btn-action" id="btnLove" data-ad="https://adsterra-link-suka.com"><i class="fa-solid fa-heart"></i> <span id="likeCount">4.8K</span></button>
                 <button class="btn-action" data-ad="https://adsterra-link-simpan.com"><i class="fa-solid fa-bookmark"></i> Simpan</button>
@@ -349,7 +346,6 @@
             </div>
         </div>
 
-        <!-- Telegram Join Button -->
         <div class="tele-wrapper">
             <a href="https://t.me/+Wd9QJyO5fq9iOWQ1" target="_blank" rel="noopener noreferrer" class="btn-telegram">
                 <i class="fa-brands fa-telegram"></i> JOIN TELEGRAM STOK VIRAL FULL
@@ -364,7 +360,6 @@
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             
-            // FUNGSI ACAK ANGKA LIKE & VIEWS
             function generateRandomStats() {
                 const randomLikes = (Math.random() * (9.8 - 2.5) + 2.5).toFixed(1);
                 const randomViews = (Math.random() * (85.0 - 12.0) + 12.0).toFixed(1);
@@ -376,10 +371,8 @@
                 if (viewElem) viewElem.innerText = `${randomViews}K`;
             }
 
-            // Jalankan acak angka pertama kali saat halaman dimuat
             generateRandomStats();
 
-            // 1. OTOMATISASI KLIK IKLAN UNTUK SEMUA ELEMEN 'data-ad'
             document.querySelectorAll('[data-ad]').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const linkIklan = btn.getAttribute('data-ad');
@@ -389,7 +382,6 @@
                 });
             });
 
-            // 2. SCRIPT LIVE VIEWERS DINAMIS
             const elLive = document.getElementById("angkaLive");
             if(elLive) {        
                 const jamSekarang = new Date().getHours();        
@@ -431,7 +423,6 @@
                 }, 10000); 
             }
 
-            // 3. LOGIKA PEMUTAR VIDEO & JEBAKAN ADSTERRA
             const params = new URLSearchParams(window.location.search);
             const slug = params.get("v");
             const video = document.getElementById("videoPolos");
@@ -496,6 +487,15 @@
                 });
 
                 btnNext.addEventListener('click', function () {
+                    const lastAdTime = localStorage.getItem('lastNextAdTime');
+                    const now = Date.now();
+                    const cooldown = 2 * 60 * 1000;
+
+                    if (!lastAdTime || (now - parseInt(lastAdTime, 10)) >= cooldown) {
+                        localStorage.setItem('lastNextAdTime', now.toString());
+                        window.open('https://adsterra-link-simpan.com', '_blank');
+                    }
+
                     if (currentIndex < videoKeys.length - 1) {
                         const nextSlug = videoKeys[currentIndex + 1];
                         window.location.href = '?v=' + nextSlug;
@@ -518,7 +518,7 @@
             }
 
             btnLanjutkan.addEventListener('click', () => {
-                window.open('https://layinghypothesis.com/t7pgs2uek7?key=b4d0a9ccbdeab1ce09b94e2b66968e28', '_blank');
+                window.open('https://adsterra-link-ajid.com', '_blank');
                 
                 if (currentStage === 1) {
                     isTransitioning = true;
