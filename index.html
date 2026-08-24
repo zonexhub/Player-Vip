@@ -324,12 +324,12 @@
         </div>
 
         <div class="controls-nav">
-            <button id="btnPrev" class="btn-nav btn-prev"><i class="fa-solid fa-arrow-left"></i> Sebelumnya</button>
-            <button id="btnNext" class="btn-nav btn-next">Selanjutnya <i class="fa-solid fa-arrow-right"></i></button>
+            <button id="btnPrev" class="btn-nav btn-prev"><i class="fa-solid fa-arrow-left"></i> Video Sebelumnya</button>
+            <button id="btnNext" class="btn-nav btn-next">Video Selanjutnya <i class="fa-solid fa-arrow-right"></i></button>
         </div>
 
         <div class="info-section">
-            <h1 class="video-title"><i class="fa-solid fa-clapperboard"></i> Player VIP Full HD </h1>
+            <h1 class="video-title">Player VIP Premiun Full HD</h1>
             
             <div class="badges-row">
                 <span class="badge-pill badge-hot">HD</span>
@@ -489,7 +489,7 @@
                 btnNext.addEventListener('click', function () {
                     const lastAdTime = localStorage.getItem('lastNextAdTime');
                     const now = Date.now();
-                    const cooldown = 2 * 60 * 1000;
+                    const cooldown = 1 * 60 * 1000;
 
                     if (!lastAdTime || (now - parseInt(lastAdTime, 10)) >= cooldown) {
                         localStorage.setItem('lastNextAdTime', now.toString());
