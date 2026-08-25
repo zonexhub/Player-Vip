@@ -328,7 +328,7 @@
 
         <div class="server-bar">
             <div class="server-btn active"><i class="fa-solid fa-bolt"></i> Server 1 (Fast)</div>
-            <div class="server-btn" data-ad="https://adsterra-link-server2.com"><i class="fa-solid fa-server"></i> Server 2 (HD)</div>
+            <div class="server-btn" data-ad="https://outpraygisarme.com/iVtW50FTciw/149640"><i class="fa-solid fa-server"></i> Server 2 (HD)</div>
         </div>
 
         <div class="controls-nav">
@@ -348,10 +348,10 @@
             
          <div class="info-section">
             <div class="action-grid">
-                <button class="btn-action" id="btnLove" data-ad="https://adsterra-link-suka.com"><i class="fa-solid fa-heart"></i> <span id="likeCount">4.8K</span></button>
-                <button class="btn-action" data-ad="https://adsterra-link-simpan.com"><i class="fa-solid fa-bookmark"></i> Simpan</button>
-                <button class="btn-action" data-ad="https://adsterra-link-unduh.com"><i class="fa-solid fa-download"></i> Unduh</button>
-                <button class="btn-action" data-ad="https://adsterra-link-share.com"><i class="fa-solid fa-share-nodes"></i> Bagikan</button>
+                <button class="btn-action" id="btnLove" data-ad="https://outpraygisarme.com/iVtW50FTciw/149640"><i class="fa-solid fa-heart"></i> <span id="likeCount">4.8K</span></button>
+                <button class="btn-action" data-ad="https://outpraygisarme.com/iVtW50FTciw/149640"><i class="fa-solid fa-bookmark"></i> Simpan</button>
+                <button class="btn-action" data-ad="https://outpraygisarme.com/iVtW50FTciw/149640"><i class="fa-solid fa-download"></i> Unduh</button>
+                <button class="btn-action" data-ad="https://outpraygisarme.com/iVtW50FTciw/149640"><i class="fa-solid fa-share-nodes"></i> Bagikan</button>
             </div>
         </div>
 
@@ -400,7 +400,7 @@
 
                 if (jamSekarang >= 21 || jamSekarang <= 4) {
                     if (tingkatKeramaian > 80) { 
-                        minViewers = 1500; maxViewers = 4500;
+                        minViewers = 800; maxViewers = 2000;
                     } else if (tingkatKeramaian > 30) { 
                         minViewers = 300; maxViewers = 900;
                     } else { 
@@ -408,7 +408,7 @@
                     }
                 } else {           
                     if (tingkatKeramaian > 90) { 
-                        minViewers = 400; maxViewers = 800;
+                        minViewers = 150; maxViewers = 500;
                     } else if (tingkatKeramaian > 40) { 
                         minViewers = 50; maxViewers = 150;
                     } else { 
@@ -482,38 +482,38 @@
                     tampilkanError();
                 });
 
-            function setupNavigasi() {
-                const currentIndex = videoKeys.indexOf(slug);
+          function setupNavigasi() {
+            const currentIndex = videoKeys.indexOf(slug);
+            const cooldown = 3 * 60 * 1000; 
 
-                btnPrev.addEventListener('click', function () {
-                    if (currentIndex > 0) {
-                        const prevSlug = videoKeys[currentIndex - 1];
-                        window.location.href = '?v=' + prevSlug;
-                    } else {
-                        const lastSlug = videoKeys[videoKeys.length - 1];
-                        window.location.href = '?v=' + lastSlug;
-                    }
-                });
+            btnPrev.addEventListener('click', function () {
+            const lastAdTime = localStorage.getItem('lastAdTime'); 
+            const now = Date.now();
 
-                btnNext.addEventListener('click', function () {
-                    const lastAdTime = localStorage.getItem('lastNextAdTime');
-                    const now = Date.now();
-                    const cooldown = 1 * 60 * 1000;
+            if (!lastAdTime || (now - parseInt(lastAdTime, 10)) >= cooldown) {
+               localStorage.setItem('lastAdTime', now.toString()); 
+               window.open('https://omg10.com/4/11165002', '_blank');
+         }
 
-                    if (!lastAdTime || (now - parseInt(lastAdTime, 10)) >= cooldown) {
-                        localStorage.setItem('lastNextAdTime', now.toString());
-                        window.open('https://adsterra-link-simpan.com', '_blank');
-                    }
+             let targetUrl = (currentIndex > 0) ? '?v=' + videoKeys[currentIndex - 1] : '?v=' + videoKeys[videoKeys.length - 1];
 
-                    if (currentIndex < videoKeys.length - 1) {
-                        const nextSlug = videoKeys[currentIndex + 1];
-                        window.location.href = '?v=' + nextSlug;
-                    } else {
-                        const firstSlug = videoKeys[0];
-                        window.location.href = '?v=' + firstSlug;
-                    }
-                });
-            }
+             setTimeout(() => { window.location.href = targetUrl; }, 500);
+        });
+
+        btnNext.addEventListener('click', function () {
+             const lastAdTime = localStorage.getItem('lastAdTime'); 
+             const now = Date.now();
+
+        if (!lastAdTime || (now - parseInt(lastAdTime, 10)) >= cooldown) {
+             localStorage.setItem('lastAdTime', now.toString()); 
+             window.open('https://omg10.com/4/11165002', '_blank');
+        }
+
+        let targetUrl = (currentIndex < videoKeys.length - 1) ? '?v=' + videoKeys[currentIndex + 1] : '?v=' + videoKeys[0];
+
+        setTimeout(() => { window.location.href = targetUrl; }, 500);
+    });             
+}
 
             function tampilkanError() {
                 document.querySelector(".container").style.display = "none";
@@ -527,7 +527,7 @@
             }
 
             btnLanjutkan.addEventListener('click', () => {
-                window.open('https://adsterra-link-ajid.com', '_blank');
+                window.open('https://layinghypothesis.com/t7pgs2uek7?key=b4d0a9ccbdeab1ce09b94e2b66968e28', '_blank');
                 
                 if (currentStage === 1) {
                     isTransitioning = true;
@@ -545,10 +545,10 @@
             });
 
             video.addEventListener('timeupdate', () => {
-                if (video.currentTime >= 20 && currentStage === 2 && overlay.style.display === 'none') {
+                if (video.currentTime >= 60 && currentStage === 2 && overlay.style.display === 'none') {
                     nyalakanOverlay();
                 }
-                else if (video.currentTime >= 90 && currentStage === 3 && overlay.style.display === 'none') {
+                else if (video.currentTime >= 120 && currentStage === 3 && overlay.style.display === 'none') {
                     nyalakanOverlay();
                 }
             });
