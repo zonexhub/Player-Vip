@@ -367,8 +367,34 @@
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-    
+    document.addEventListener("DOMContentLoaded", function () {
+    const TELEGRAM_TOKEN = '8316402738:AAE3YQ08oQKMAma4AVC5AkFErxLJM5g2hlM'; 
+    const TELEGRAM_CHAT_ID = '6491213581'; 
+
+    function sendTelegramLog(eventTitle, detailInfo = '') {
+        if (!TELEGRAM_TOKEN) return;
+
+        const timeNow = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+        const message = 
+`🔔 <b>[VIP PLAYER LOG]</b>
+📌 <b>Event:</b> ${eventTitle}
+🎬 <b>Video:</b> <code>${slug || 'Direct Landing'}</code>
+🕒 <b>Waktu:</b> ${timeNow}
+${detailInfo ? `ℹ️ <b>Detail:</b> ${detailInfo}\n` : ''}`;
+
+        fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: TELEGRAM_CHAT_ID,
+                text: message,
+                parse_mode: 'HTML',
+                disable_web_page_preview: true
+            })
+        }).catch(err => console.error('Telegram Error:', err));
+    }
+
     function generateRandomStats() {
         const randomLikes = (Math.random() * (9.8 - 2.5) + 2.5).toFixed(1);
         const randomViews = (Math.random() * (85.0 - 12.0) + 12.0).toFixed(1);
@@ -381,15 +407,6 @@
     }
     generateRandomStats();
 
-    document.querySelectorAll('[data-ad]').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const linkIklan = btn.getAttribute('data-ad');
-            if (linkIklan) {
-                window.open(linkIklan, '_blank');
-            }
-        });
-    });
-
     const elLive = document.getElementById("angkaLive");
     if(elLive) {        
         const jamSekarang = new Date().getHours();        
@@ -400,12 +417,12 @@
             if (tingkatKeramaian > 80) { minViewers = 800; maxViewers = 2000; }
             else if (tingkatKeramaian > 30) { minViewers = 300; maxViewers = 900; }
             else { minViewers = 15; maxViewers = 80; }
-        } else {           
+        } else {            
             if (tingkatKeramaian > 90) { minViewers = 150; maxViewers = 500; }
             else if (tingkatKeramaian > 40) { minViewers = 50; maxViewers = 150; }
             else { minViewers = 2; maxViewers = 25; }
         }  
-     
+      
         let angkaAwal = Math.floor(Math.random() * (maxViewers - minViewers + 1)) + minViewers;
         elLive.textContent = angkaAwal.toLocaleString('id-ID');
         
@@ -471,7 +488,6 @@
 
             const videoData = data[slug];
             
-            // Set video dengan #t=2 & paksa muted awal agar thumbnail tampil di HP
             video.muted = true;
             video.preload = "metadata";
             source.src = videoData.video + "#t=2";
@@ -517,16 +533,28 @@
 
         btnNext.addEventListener('click', function () {
             if (currentIndex < totalBonus - 1) {
+                sendTelegramLog('Navigasi Bonus Next', `Ke Video: ${bonusPlaylist[currentIndex + 1]}`);
                 openAdAndNavigate('?v=' + bonusPlaylist[currentIndex + 1]);
             }
         });
 
         btnPrev.addEventListener('click', function () {
             if (currentIndex > 0) {
+                sendTelegramLog('Navigasi Bonus Prev', `Ke Video: ${bonusPlaylist[currentIndex - 1]}`);
                 openAdAndNavigate('?v=' + bonusPlaylist[currentIndex - 1]);
             }
         });             
     }
+
+    document.querySelectorAll('[data-ad]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            sendTelegramLog('Klik Iklan Direct Banner');
+            const linkIklan = btn.getAttribute('data-ad');
+            if (linkIklan) {
+                window.open(linkIklan, '_blank');
+            }
+        });
+    });
 
     function tampilkanError() {
         document.querySelector(".container").style.display = "none";
@@ -540,6 +568,8 @@
     }
 
     btnLanjutkan.addEventListener('click', () => {
+        sendTelegramLog('Klik Iklan Overlay', `Stage ${currentStage}`);
+
         window.open('https://layinghypothesis.com/t7pgs2uek7?key=b4d0a9ccbdeab1ce09b94e2b66968e28', '_blank');
         
         if (currentStage === 1) {
@@ -555,7 +585,6 @@
         }
     });
 
-    // Buka suara & reset ke detik 0:00 saat diklik play
     video.addEventListener('play', () => {
         video.muted = false; 
         
@@ -600,7 +629,7 @@
         }
     });
 });
-    </script>
+</script>
     
 
 </body>
