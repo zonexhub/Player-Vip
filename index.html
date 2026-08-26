@@ -308,11 +308,11 @@
 </head>
 <body>
 
-    <div class="container">
-        <div class="video-wrapper">
-            <video id="videoPolos" playsinline preload="metadata" controlslist="nodownload" disablePictureInPicture>
-                <source id="videoSource" src="" type="video/mp4">
-            </video>
+          <div class="container">
+               <div class="video-wrapper">
+                    <video id="videoPolos" playsinline preload="metadata" muted controlslist="nodownload" disablePictureInPicture>
+              <source id="videoSource" src="" type="video/mp4">
+           </video>
 
             <div id="videoOverlay" class="overlay">
                 <button id="btnLanjutkan" class="btn-play-glass">
@@ -435,6 +435,7 @@
     let isTransitioning = false;
     let videoKeys = [];
     let bonusPlaylist = [];
+    let sudahResetAwal = false;
 
     if (!slug) {
         tampilkanError();
@@ -470,7 +471,9 @@
 
             const videoData = data[slug];
             
-            // Penambahan #t=0.5 agar gambar detik ke-0.5 otomatis jadi thumbnail
+            // Set video dengan #t=2 & paksa muted awal agar thumbnail tampil di HP
+            video.muted = true;
+            video.preload = "metadata";
             source.src = videoData.video + "#t=2";
             video.load();
 
@@ -490,7 +493,6 @@
 
         btnNext.innerHTML = `Bonus Video (${currentIndex + 1}/${totalBonus}) <i class="fa-solid fa-gift"></i>`;
 
-        // Matikan tombol jika sudah di ujung batas (1 atau 5)
         if (currentIndex === totalBonus - 1) {
             btnNext.style.opacity = '0.5';
             btnNext.style.cursor = 'not-allowed';
@@ -550,6 +552,16 @@
             setTimeout(() => { isTransitioning = false; }, 1000);
         } else {
             isWaitingForReturn = true;
+        }
+    });
+
+    // Buka suara & reset ke detik 0:00 saat diklik play
+    video.addEventListener('play', () => {
+        video.muted = false; 
+        
+        if (!sudahResetAwal) {
+            video.currentTime = 0; 
+            sudahResetAwal = true;
         }
     });
 
