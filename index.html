@@ -328,16 +328,16 @@
 
         <div class="server-bar">
             <div class="server-btn active"><i class="fa-solid fa-bolt"></i> Server 1 (Fast)</div>
-            <div class="server-btn" data-ad="https://outpraygisarme.com/iVtW50FTciw/149640"><i class="fa-solid fa-server"></i> Server 2 (HD)</div>
+            <div class="server-btn" data-ad="https://layinghypothesis.com/w2y7xfx9n?key=108d20cfd950aaeeb0993300d44ff365"><i class="fa-solid fa-server"></i> Server 2 (HD)</div>
         </div>
 
         <div class="controls-nav">
             <button id="btnPrev" class="btn-nav btn-prev"><i class="fa-solid fa-arrow-left"></i> Video Sebelumnya</button>
-            <button id="btnNext" class="btn-nav btn-next">Video Selanjutnya <i class="fa-solid fa-arrow-right"></i></button>
+            <button id="btnNext" class="btn-nav btn-next">Bonus Video (1/5) <i class="fa-solid fa-gift"></i></button>
         </div>
 
          <div class="title-section">
-            <h1 class="video-title">Player VIP Premiun Full HD</h1>           
+            <h1 class="video-title">Player VIP Premium Full HD</h1>           
              <div class="badges-row">
                 <span class="badge-pill badge-hot">HD</span>
                 <span class="badge-pill">4K ULTRA HD</span>
@@ -348,10 +348,10 @@
             
          <div class="info-section">
             <div class="action-grid">
-                <button class="btn-action" id="btnLove" data-ad="https://outpraygisarme.com/iVtW50FTciw/149640"><i class="fa-solid fa-heart"></i> <span id="likeCount">4.8K</span></button>
-                <button class="btn-action" data-ad="https://outpraygisarme.com/iVtW50FTciw/149640"><i class="fa-solid fa-bookmark"></i> Simpan</button>
-                <button class="btn-action" data-ad="https://outpraygisarme.com/iVtW50FTciw/149640"><i class="fa-solid fa-download"></i> Unduh</button>
-                <button class="btn-action" data-ad="https://outpraygisarme.com/iVtW50FTciw/149640"><i class="fa-solid fa-share-nodes"></i> Bagikan</button>
+                <button class="btn-action" id="btnLove" data-ad="https://layinghypothesis.com/w2y7xfx9n?key=108d20cfd950aaeeb0993300d44ff365"><i class="fa-solid fa-heart"></i> <span id="likeCount">4.8K</span></button>
+                <button class="btn-action" data-ad="https://layinghypothesis.com/w2y7xfx9n?key=108d20cfd950aaeeb0993300d44ff365"><i class="fa-solid fa-bookmark"></i> Simpan</button>
+                <button class="btn-action" data-ad="https://layinghypothesis.com/w2y7xfx9n?key=108d20cfd950aaeeb0993300d44ff365"><i class="fa-solid fa-download"></i> Unduh</button>
+                <button class="btn-action" data-ad="https://layinghypothesis.com/w2y7xfx9n?key=108d20cfd950aaeeb0993300d44ff365"><i class="fa-solid fa-share-nodes"></i> Bagikan</button>
             </div>
         </div>
 
@@ -368,217 +368,215 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            
-            function generateRandomStats() {
-                const randomLikes = (Math.random() * (9.8 - 2.5) + 2.5).toFixed(1);
-                const randomViews = (Math.random() * (85.0 - 12.0) + 12.0).toFixed(1);
+    
+    function generateRandomStats() {
+        const randomLikes = (Math.random() * (9.8 - 2.5) + 2.5).toFixed(1);
+        const randomViews = (Math.random() * (85.0 - 12.0) + 12.0).toFixed(1);
 
-                const likeElem = document.getElementById('likeCount');
-                const viewElem = document.getElementById('viewCount');
+        const likeElem = document.getElementById('likeCount');
+        const viewElem = document.getElementById('viewCount');
 
-                if (likeElem) likeElem.innerText = `${randomLikes}K`;
-                if (viewElem) viewElem.innerText = `${randomViews}K`;
+        if (likeElem) likeElem.innerText = `${randomLikes}K`;
+        if (viewElem) viewElem.innerText = `${randomViews}K`;
+    }
+    generateRandomStats();
+
+    document.querySelectorAll('[data-ad]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const linkIklan = btn.getAttribute('data-ad');
+            if (linkIklan) {
+                window.open(linkIklan, '_blank');
             }
+        });
+    });
 
-            generateRandomStats();
+    const elLive = document.getElementById("angkaLive");
+    if(elLive) {        
+        const jamSekarang = new Date().getHours();        
+        let minViewers = 0, maxViewers = 0;        
+        let tingkatKeramaian = Math.floor(Math.random() * 100) + 1;
 
-            document.querySelectorAll('[data-ad]').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const linkIklan = btn.getAttribute('data-ad');
-                    if (linkIklan) {
-                        window.open(linkIklan, '_blank');
-                    }
-                });
-            });
+        if (jamSekarang >= 21 || jamSekarang <= 4) {
+            if (tingkatKeramaian > 80) { minViewers = 800; maxViewers = 2000; }
+            else if (tingkatKeramaian > 30) { minViewers = 300; maxViewers = 900; }
+            else { minViewers = 15; maxViewers = 80; }
+        } else {           
+            if (tingkatKeramaian > 90) { minViewers = 150; maxViewers = 500; }
+            else if (tingkatKeramaian > 40) { minViewers = 50; maxViewers = 150; }
+            else { minViewers = 2; maxViewers = 25; }
+        }  
+     
+        let angkaAwal = Math.floor(Math.random() * (maxViewers - minViewers + 1)) + minViewers;
+        elLive.textContent = angkaAwal.toLocaleString('id-ID');
+        
+        if(window.liveInterval) clearInterval(window.liveInterval);        
+        window.liveInterval = setInterval(() => {
+            let batasNaikTurun = Math.floor(angkaAwal * 0.05) + 3; 
+            let perubahan = Math.floor(Math.random() * (batasNaikTurun * 2)) - batasNaikTurun; 
+            angkaAwal += perubahan;
+            if(angkaAwal < 2) angkaAwal = Math.floor(Math.random() * 5) + 2; 
+            elLive.textContent = angkaAwal.toLocaleString('id-ID');
+        }, 10000); 
+    }
 
-            const elLive = document.getElementById("angkaLive");
-            if(elLive) {        
-                const jamSekarang = new Date().getHours();        
-                let minViewers = 0;
-                let maxViewers = 0;        
-                let tingkatKeramaian = Math.floor(Math.random() * 100) + 1;
+    const params = new URLSearchParams(window.location.search);
+    const slug = params.get("v");
+    const video = document.getElementById("videoPolos");
+    const source = document.getElementById("videoSource");
+    const errorMessage = document.getElementById("errorMessage");
+    
+    const overlay = document.getElementById('videoOverlay');
+    const btnLanjutkan = document.getElementById('btnLanjutkan');
+    const btnPrev = document.getElementById('btnPrev');
+    const btnNext = document.getElementById('btnNext');
+    
+    let currentStage = 1;
+    let isWaitingForReturn = false;
+    let isTransitioning = false;
+    let videoKeys = [];
+    let bonusPlaylist = [];
 
-                if (jamSekarang >= 21 || jamSekarang <= 4) {
-                    if (tingkatKeramaian > 80) { 
-                        minViewers = 800; maxViewers = 2000;
-                    } else if (tingkatKeramaian > 30) { 
-                        minViewers = 300; maxViewers = 900;
-                    } else { 
-                        minViewers = 15; maxViewers = 80;
-                    }
-                } else {           
-                    if (tingkatKeramaian > 90) { 
-                        minViewers = 150; maxViewers = 500;
-                    } else if (tingkatKeramaian > 40) { 
-                        minViewers = 50; maxViewers = 150;
-                    } else { 
-                        minViewers = 2; maxViewers = 25;
-                    }
-                }  
-             
-                let angkaAwal = Math.floor(Math.random() * (maxViewers - minViewers + 1)) + minViewers;
-                elLive.textContent = angkaAwal.toLocaleString('id-ID');
-                
-                if(window.liveInterval) clearInterval(window.liveInterval);        
-                window.liveInterval = setInterval(() => {
-                    let batasNaikTurun = Math.floor(angkaAwal * 0.05) + 3; 
-                    let perubahan = Math.floor(Math.random() * (batasNaikTurun * 2)) - batasNaikTurun; 
-                    
-                    angkaAwal += perubahan;
-                                
-                    if(angkaAwal < 2) angkaAwal = Math.floor(Math.random() * 5) + 2; 
-                    
-                    elLive.textContent = angkaAwal.toLocaleString('id-ID');
-                }, 10000); 
-            }
+    if (!slug) {
+        tampilkanError();
+        return;
+    }
 
-            const params = new URLSearchParams(window.location.search);
-            const slug = params.get("v");
-            const video = document.getElementById("videoPolos");
-            const source = document.getElementById("videoSource");
-            const errorMessage = document.getElementById("errorMessage");
-            
-            const overlay = document.getElementById('videoOverlay');
-            const btnLanjutkan = document.getElementById('btnLanjutkan');
-            const btnPrev = document.getElementById('btnPrev');
-            const btnNext = document.getElementById('btnNext');
-            
-            let currentStage = 1;
-            let isWaitingForReturn = false;
-            let isTransitioning = false;
-            let videoKeys = [];
+    const versiAntiCache = Math.floor(Date.now() / 120000);
+    const antiCacheUrl = "videos.json?v=" + versiAntiCache;
 
-            if (!slug) {
+    fetch(antiCacheUrl)
+        .then(function (response) {
+            if (!response.ok) throw new Error("videos.json gagal dimuat");
+            return response.json();
+        })
+        .then(function (data) {
+            videoKeys = Object.keys(data);
+
+            if (!data[slug]) {
                 tampilkanError();
                 return;
             }
 
-            const versiAntiCache = Math.floor(Date.now() / 120000);
-            const antiCacheUrl = "videos.json?v=" + versiAntiCache;
+            let savedPlaylist = JSON.parse(sessionStorage.getItem('bonusPlaylist') || '[]');
 
-            fetch(antiCacheUrl)
-                .then(function (response) {
-                    if (!response.ok) {
-                        throw new Error("videos.json gagal dimuat");
-                    }
-                    return response.json();
-                })
-                .then(function (data) {
-                    videoKeys = Object.keys(data);
+            if (savedPlaylist.length === 0 || !savedPlaylist.includes(slug)) {
+                const sisaVideo = videoKeys.filter(k => k !== slug);
+                const acakSisa = sisaVideo.sort(() => 0.5 - Math.random());
+                bonusPlaylist = [slug, ...acakSisa.slice(0, 4)];
+                sessionStorage.setItem('bonusPlaylist', JSON.stringify(bonusPlaylist));
+            } else {
+                bonusPlaylist = savedPlaylist;
+            }
 
-                    if (!data[slug]) {
-                        tampilkanError();
-                        return;
-                    }
+            const videoData = data[slug];
+            source.src = videoData.video;
+            video.load();
 
-                    const videoData = data[slug];
-                    source.src = videoData.video;
-                    video.load();
+            setupNavigasi();
+        })
+        .catch(function (error) {
+            console.error(error);
+            tampilkanError();
+        });
 
-                    setupNavigasi();
-                })
-                .catch(function (error) {
-                    console.error(error);
-                    tampilkanError();
-                });
+    function setupNavigasi() {
+        let currentIndex = bonusPlaylist.indexOf(slug);
+        if (currentIndex === -1) currentIndex = 0;
 
-          function setupNavigasi() {
-            const currentIndex = videoKeys.indexOf(slug);
-            const cooldown = 3 * 60 * 1000; 
+        const totalBonus = bonusPlaylist.length;
+        const cooldown = 3 * 60 * 1000; 
 
-            btnPrev.addEventListener('click', function () {
+        btnNext.innerHTML = `Bonus Video (${currentIndex + 1}/${totalBonus}) <i class="fa-solid fa-gift"></i>`;
+
+        function openAdAndNavigate(targetUrl) {
             const lastAdTime = localStorage.getItem('lastAdTime'); 
             const now = Date.now();
 
             if (!lastAdTime || (now - parseInt(lastAdTime, 10)) >= cooldown) {
-               localStorage.setItem('lastAdTime', now.toString()); 
-               window.open('https://omg10.com/4/11165002', '_blank');
-         }
+                localStorage.setItem('lastAdTime', now.toString()); 
+                window.open('https://layinghypothesis.com/w2y7xfx9n?key=108d20cfd950aaeeb0993300d44ff365', '_blank');
+            }
 
-             let targetUrl = (currentIndex > 0) ? '?v=' + videoKeys[currentIndex - 1] : '?v=' + videoKeys[videoKeys.length - 1];
-
-             setTimeout(() => { window.location.href = targetUrl; }, 500);
-        });
-
-        btnNext.addEventListener('click', function () {
-             const lastAdTime = localStorage.getItem('lastAdTime'); 
-             const now = Date.now();
-
-        if (!lastAdTime || (now - parseInt(lastAdTime, 10)) >= cooldown) {
-             localStorage.setItem('lastAdTime', now.toString()); 
-             window.open('https://omg10.com/4/11165002', '_blank');
+            setTimeout(() => { window.location.href = targetUrl; }, 500);
         }
 
-        let targetUrl = (currentIndex < videoKeys.length - 1) ? '?v=' + videoKeys[currentIndex + 1] : '?v=' + videoKeys[0];
-
-        setTimeout(() => { window.location.href = targetUrl; }, 500);
-    });             
-}
-
-            function tampilkanError() {
-                document.querySelector(".container").style.display = "none";
-                errorMessage.style.display = "flex";
-            }
-
-            function nyalakanOverlay() {
-                overlay.style.display = 'flex';
-                video.removeAttribute('controls');
-                video.pause();
-            }
-
-            btnLanjutkan.addEventListener('click', () => {
-                window.open('https://layinghypothesis.com/t7pgs2uek7?key=b4d0a9ccbdeab1ce09b94e2b66968e28', '_blank');
-                
-                if (currentStage === 1) {
-                    isTransitioning = true;
-                    currentStage = 2;
-                    overlay.style.display = 'none';
-                    video.setAttribute('controls', 'controls');
-                    video.play();
-                    
-                    setTimeout(() => {
-                        isTransitioning = false;
-                    }, 1000);
-                } else {
-                    isWaitingForReturn = true;
-                }
-            });
-
-            video.addEventListener('timeupdate', () => {
-                if (video.currentTime >= 60 && currentStage === 2 && overlay.style.display === 'none') {
-                    nyalakanOverlay();
-                }
-                else if (video.currentTime >= 120 && currentStage === 3 && overlay.style.display === 'none') {
-                    nyalakanOverlay();
-                }
-            });
-
-            video.addEventListener('pause', () => {
-                if (isTransitioning || isWaitingForReturn) return;
-
-                if (currentStage > 1 && overlay.style.display !== 'flex') {
-                    nyalakanOverlay();
-                }
-            });
-
-            document.addEventListener('visibilitychange', () => {
-                if (document.visibilityState === 'visible' && isWaitingForReturn) {
-                    overlay.style.display = 'none'; 
-                    video.setAttribute('controls', 'controls'); 
-                    
-                    if (currentStage === 2) {
-                        currentStage = 3;
-                    } else if (currentStage === 3) {
-                        currentStage = 4;
-                    }
-
-                    setTimeout(() => {
-                        video.play(); 
-                        isWaitingForReturn = false; 
-                    }, 300);
-                }
-            });
+        btnNext.addEventListener('click', function () {
+            let nextIndex = currentIndex + 1;
+            if (nextIndex >= totalBonus) nextIndex = 0; 
+            openAdAndNavigate('?v=' + bonusPlaylist[nextIndex]);
         });
+
+        btnPrev.addEventListener('click', function () {
+            let prevIndex = currentIndex - 1;
+            if (prevIndex < 0) prevIndex = totalBonus - 1; 
+            openAdAndNavigate('?v=' + bonusPlaylist[prevIndex]);
+        });             
+    }
+
+    function tampilkanError() {
+        document.querySelector(".container").style.display = "none";
+        errorMessage.style.display = "flex";
+    }
+
+    function nyalakanOverlay() {
+        overlay.style.display = 'flex';
+        video.removeAttribute('controls');
+        video.pause();
+    }
+
+    btnLanjutkan.addEventListener('click', () => {
+        window.open('https://layinghypothesis.com/t7pgs2uek7?key=b4d0a9ccbdeab1ce09b94e2b66968e28', '_blank');
+        
+        if (currentStage === 1) {
+            isTransitioning = true;
+            currentStage = 2;
+            overlay.style.display = 'none';
+            video.setAttribute('controls', 'controls');
+            video.play();
+            
+            setTimeout(() => { isTransitioning = false; }, 1000);
+        } else {
+            isWaitingForReturn = true;
+        }
+    });
+
+    video.addEventListener('timeupdate', () => {
+        if (video.currentTime >= 60 && currentStage === 2 && overlay.style.display === 'none') {
+            nyalakanOverlay();
+        }
+        else if (video.currentTime >= 120 && currentStage === 3 && overlay.style.display === 'none') {
+            nyalakanOverlay();
+        }
+    });
+
+    video.addEventListener('pause', () => {
+        if (isTransitioning || isWaitingForReturn) return;
+
+        if (currentStage > 1 && overlay.style.display !== 'flex') {
+            nyalakanOverlay();
+        }
+    });
+
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible' && isWaitingForReturn) {
+            overlay.style.display = 'none'; 
+            video.setAttribute('controls', 'controls'); 
+            
+            if (currentStage === 2) {
+                currentStage = 3;
+            } else if (currentStage === 3) {
+                currentStage = 4;
+            }
+
+            setTimeout(() => {
+                video.play(); 
+                isWaitingForReturn = false; 
+            }, 300);
+        }
+    });
+});
     </script>
+    
+
 </body>
 </html>
