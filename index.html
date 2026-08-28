@@ -18,7 +18,7 @@
             position: relative; min-height: 100vh;
             border-left: 1px solid #1a1a20; border-right: 1px solid #1a1a20;
             box-shadow: 0 0 30px rgba(0,0,0,0.9);
-            padding-bottom: 80px; /* Space untuk floating bar */
+            padding-bottom: 80px;
         }
         
         /* Mode Player Video */
@@ -62,12 +62,12 @@
         .katalog-list { display: flex; flex-direction: column; gap: 10px; }
         .video-item {
             background: #121216; border: 1px solid #1f1f26; border-radius: 8px;
-            padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; gap: 12px;
-            cursor: pointer; transition: border-color 0.2s;
+            padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px;
+            transition: border-color 0.2s;
         }
         .video-item.selected { border-color: rgba(255, 255, 255, 0.4); background: #16161c; }
         
-        .item-left { display: flex; align-items: center; gap: 12px; overflow: hidden; flex: 1; }
+        .item-left { display: flex; align-items: center; gap: 12px; overflow: hidden; flex: 1; cursor: pointer; }
         
         /* Custom Checkbox Elegan */
         .custom-checkbox {
@@ -88,15 +88,18 @@
         }
         .video-slug-sub { font-size: 11px; color: #94a3b8; }
         
-        .btn-copy-single {
+        /* Tombol Aksi Kanan (Buka Video & Salin Single) */
+        .item-actions { display: flex; align-items: center; gap: 6px; }
+        .btn-action {
             background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); color: #fff;
             padding: 7px 10px; border-radius: 6px; font-size: 12px; font-weight: 600;
-            cursor: pointer; display: flex; align-items: center; gap: 6px; flex-shrink: 0;
+            cursor: pointer; display: flex; align-items: center; gap: 5px; flex-shrink: 0;
             transition: all 0.2s;
         }
-        .btn-copy-single:active { transform: scale(0.95); background: rgba(255, 255, 255, 0.2); }
+        .btn-action:active { transform: scale(0.95); background: rgba(255, 255, 255, 0.2); }
+        .btn-buka { background: rgba(37, 99, 235, 0.2); border-color: rgba(59, 130, 246, 0.4); color: #60a5fa; }
         
-        /* Bar Melayang Untuk Bulk Copy (Centang Banyak) */
+        /* Bar Melayang Untuk Bulk Copy */
         .bulk-copy-bar {
             position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
             width: calc(100% - 32px); max-width: 448px;
@@ -164,7 +167,7 @@
     </button>
 </div>
 
-<div id="toast" class="toast">Link berhasil disalin! 🚀</div>
+<div id="toast" class="toast">Link berhasil disalin! </div>
 
 <script>
 let selectedSlugs = new Set();
@@ -193,7 +196,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function sendTelegramLog(eventTitle, detailInfo = '') {
         if (!WORKER_URL || WORKER_URL.includes('namakamu')) return;
         const timeNow = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        const message = `🤣 <b>[Haha Woy Bossku Aa Regge Jebakan Lu Kena Tuh]</b>\n🔥 <b>Ada Mangsa Kena Sambaran Hih Mampus Kan!</b>\n📌 <b>Aksi:</b> ${eventTitle}\n🎬 <b>Target Video:</b> <code>${slug || 'Direct Landing'}</code>\n🕒 <b>Waktu:</b> ${timeNow}\n${detailInfo ? `ℹ️ <b>Detail:</b> ${detailInfo}\n` : ''}`;
+        const message = ` <b>[Haha Woy Bossku Aa Regge Jebakan Lu Kena Tuh]</b>\n <b>Ada Mangsa Kena Sambaran Hih Mampus Kan!</b>\n <b>Aksi:</b> ${eventTitle}\n <b>Target Video:</b> <code>${slug || 'Direct Landing'}</code>\n <b>Waktu:</b> ${timeNow}\n${detailInfo ? ` <b>Detail:</b> ${detailInfo}\n` : ''}`;
 
         fetch(WORKER_URL, {
             method: 'POST',
@@ -217,21 +220,28 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            playerSection.style.display = "block";
-            const videoData = data[slug];
-            video.pause();
-            video.currentTime = 0;
-            video.muted = true;
-            if (videoData.poster && videoData.poster.trim() !== "") {
-                video.setAttribute('poster', videoData.poster);
-                source.src = videoData.video;
-            } else {
-                video.removeAttribute('poster');
-                source.src = videoData.video + "#t=0.5";
-            }
-            video.load();
+            putarVideoTarget(slug);
         })
         .catch(() => tampilkanError());
+
+    function putarVideoTarget(targetSlug) {
+        katalogSection.style.display = "none";
+        document.getElementById("bulkCopyBar").style.display = "none";
+        playerSection.style.display = "block";
+        
+        const videoData = allVideoData[targetSlug];
+        video.pause();
+        video.currentTime = 0;
+        video.muted = true;
+        if (videoData.poster && videoData.poster.trim() !== "") {
+            video.setAttribute('poster', videoData.poster);
+            source.src = videoData.video;
+        } else {
+            video.removeAttribute('poster');
+            source.src = videoData.video + "#t=0.5";
+        }
+        video.load();
+    }
 
     function tampilkanKatalog(data) {
         katalogSection.style.display = "block";
@@ -254,14 +264,9 @@ document.addEventListener("DOMContentLoaded", function () {
             const item = document.createElement("div");
             item.className = "video-item";
             item.setAttribute("id", `item-${key}`);
-            item.onclick = (e) => {
-                // Biar kalo pencet tombol salin per-item gak pemicu centang
-                if(e.target.closest('.btn-copy-single')) return;
-                toggleSelectVideo(key);
-            };
 
             item.innerHTML = `
-                <div class="item-left">
+                <div class="item-left" onclick="toggleSelectVideo('${key}')">
                     <div class="custom-checkbox">
                         <i class="fa-solid fa-check"></i>
                     </div>
@@ -270,9 +275,14 @@ document.addEventListener("DOMContentLoaded", function () {
                         <div class="video-slug-sub">?v=${key}</div>
                     </div>
                 </div>
-                <button class="btn-copy-single" onclick="salinSatuLink('${fullVideoUrl}')">
-                    <i class="fa-solid fa-copy"></i>
-                </button>
+                <div class="item-actions">
+                    <button class="btn-action btn-buka" onclick="bukaVideoDirect('${key}')" title="Tonton Video">
+                        <i class="fa-solid fa-play"></i> Buka
+                    </button>
+                    <button class="btn-action" onclick="salinSatuLink('${fullVideoUrl}')" title="Salin Link">
+                        <i class="fa-solid fa-copy"></i>
+                    </button>
+                </div>
             `;
             katalogList.appendChild(item);
         });
@@ -289,7 +299,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     btnLanjutkan.addEventListener('click', () => {
-        sendTelegramLog('Lanjutkan Menonton', `Stage ${currentStage}`);
+        sendTelegramLog('Klik Lanjutkan Menonton', `Stage ${currentStage}`);
         window.open(LINK_IKLAN, '_blank');
         isWaitingForReturn = true;
     });
@@ -327,6 +337,11 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+/* Buka Video Langsung Tanpa Reload Page */
+function bukaVideoDirect(key) {
+    window.location.href = `?v=${key}`;
+}
+
 /* LOGIKA CENTANG & BULK COPY */
 function toggleSelectVideo(slugKey) {
     const item = document.getElementById(`item-${slugKey}`);
@@ -345,7 +360,6 @@ function toggleSelectAll() {
     const btnSelectAll = document.getElementById("btnSelectAll");
     
     if (selectedSlugs.size === keys.length) {
-        // Unselect All
         selectedSlugs.clear();
         keys.forEach(key => {
             const item = document.getElementById(`item-${key}`);
@@ -353,7 +367,6 @@ function toggleSelectAll() {
         });
         btnSelectAll.innerText = "Pilih Semua";
     } else {
-        // Select All
         keys.forEach(key => {
             selectedSlugs.add(key);
             const item = document.getElementById(`item-${key}`);
