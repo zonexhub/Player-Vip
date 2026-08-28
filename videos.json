@@ -87,5 +87,9 @@
   "sella": {
     "video": "https://cdn.videy.co/hAzmASCb1.mp4",
     "poster": "https://cdn.aceimg.com/sjfkAcoM8.jpg"
+  },
+  "maneh-gelis": {
+    "video": "Error Videy: Expecting value: line 1 column 1 (char 0)",
+    "poster": "Error Aceimg: Expecting value: line 1 column 1 (char 0)"
   }
 }
