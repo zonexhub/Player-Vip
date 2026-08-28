@@ -27,7 +27,7 @@
         }
         #videoPolos { width: 100%; height: 100%; object-fit: contain; display: block; }
         
-        /* Overlay Abu-abu Hitam Menyatu Sama HTML5 Dark Mode */
+        /* Overlay Dark Elegan */
         .overlay {
             display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
@@ -69,7 +69,7 @@
         
         .item-left { display: flex; align-items: center; gap: 12px; overflow: hidden; flex: 1; cursor: pointer; }
         
-        /* Custom Checkbox Elegan (Warna Biru Pas Dicentang) */
+        /* Custom Checkbox */
         .custom-checkbox {
             width: 20px; height: 20px; border-radius: 4px; border: 1px solid rgba(255, 255, 255, 0.3);
             background: rgba(255, 255, 255, 0.05); display: flex; justify-content: center; align-items: center;
@@ -88,7 +88,7 @@
         }
         .video-slug-sub { font-size: 11px; color: #94a3b8; }
         
-        /* Tombol Aksi Kanan (SERAGAM WARNA ABU-ABU DARK MODE) */
+        /* Tombol Aksi */
         .item-actions { display: flex; align-items: center; gap: 6px; }
         .btn-action {
             background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); color: #fff;
@@ -98,7 +98,7 @@
         }
         .btn-action:active { transform: scale(0.95); background: rgba(255, 255, 255, 0.2); }
         
-        /* Bar Melayang Untuk Bulk Copy (TOMBOL WARNA BIRU UTAMA) */
+        /* Bar Melayang Bulk Copy */
         .bulk-copy-bar {
             position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
             width: calc(100% - 32px); max-width: 448px;
@@ -131,7 +131,6 @@
 <body>
 
 <div class="container">
-    <!-- MODE PLAYER -->
     <div id="playerSection" style="display: none;">
         <div class="video-wrapper">
             <video id="videoPolos" controls playsinline preload="metadata" muted controlslist="nodownload" disablePictureInPicture>
@@ -139,13 +138,12 @@
             </video>
             <div id="videoOverlay" class="overlay">
                 <button id="btnLanjutkan" class="btn-play-elegan">
-                    <i class="fa-solid fa-play"></i> <span>LANJUTKAN MENONTON</span>
+                    <i class="fa-solid fa-play"></i> <span>Lanjutkan Menonton</span>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- MODE KATALOG HOMEPAGE -->
     <div id="katalogSection">
         <div class="katalog-header">
             <div class="katalog-header-title">
@@ -159,7 +157,6 @@
     <div id="errorMessage">Video tidak ditemukan di sistem.</div>
 </div>
 
-<!-- BAR MELAYANG BULK COPY -->
 <div id="bulkCopyBar" class="bulk-copy-bar">
     <div class="selected-count" id="selectedCountText">0 Video Terpilih</div>
     <button class="btn-bulk-copy" onclick="salinSemuaTerpilih()">
@@ -189,9 +186,14 @@ document.addEventListener("DOMContentLoaded", function () {
     const overlay = document.getElementById('videoOverlay');
     const btnLanjutkan = document.getElementById('btnLanjutkan');
 
-    let currentStage = 2; 
+    // Status Iklan & Penahan Bug
+    let currentStage = 'Manual Pause'; 
+    let stage2Done = false; // 60s
+    let stage3Done = false; // 120s
+    let stage4Done = false; // 180s
     let isWaitingForReturn = false;
     let sudahResetAwal = false;
+    let isTransitioning = false; // Penahan Bug Jeda 1 Detik
 
     function sendTelegramLog(eventTitle, detailInfo = '') {
         if (!WORKER_URL || WORKER_URL.includes('namakamu')) return;
@@ -229,17 +231,23 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("bulkCopyBar").style.display = "none";
         playerSection.style.display = "block";
         
+        stage2Done = false;
+        stage3Done = false;
+        stage4Done = false;
+        isTransitioning = false;
+        
         const videoData = allVideoData[targetSlug];
         video.pause();
         video.currentTime = 0;
         video.muted = true;
+        
         if (videoData.poster && videoData.poster.trim() !== "") {
             video.setAttribute('poster', videoData.poster);
-            source.src = videoData.video;
         } else {
             video.removeAttribute('poster');
-            source.src = videoData.video + "#t=0.5";
         }
+        
+        source.src = videoData.video;
         video.load();
     }
 
@@ -248,7 +256,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const katalogList = document.getElementById("katalogList");
         katalogList.innerHTML = "";
 
-        // DIBALIK URUTANNYA (.reverse()): Video paling bawah di JSON otomatis jadi yang paling atas!
+        // Dibalik (.reverse()): Video paling bawah di JSON jadi yang paling atas
         const keys = Object.keys(data).reverse();
 
         if (keys.length === 0) {
@@ -295,13 +303,19 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function nyalakanOverlay() {
-        overlay.style.display = 'flex';
-        video.removeAttribute('controls');
+        isTransitioning = true; // Kunci transisi!
         video.pause();
+        video.removeAttribute('controls');
+        overlay.style.display = 'flex';
+
+        // Lepas kuncian transisi setelah 1 detik
+        setTimeout(() => {
+            isTransitioning = false;
+        }, 1000);
     }
 
     btnLanjutkan.addEventListener('click', () => {
-        sendTelegramLog('Klik Lanjutkan Menonton', `Stage ${currentStage}`);
+        sendTelegramLog('Klik Lanjutkan Menonton', `Stage: ${currentStage}`);
         window.open(LINK_IKLAN, '_blank');
         isWaitingForReturn = true;
     });
@@ -314,11 +328,29 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    // JEBAKAN PAUSE MANUAL (DIPROTEKSI ANTI-BUG)
+    video.addEventListener('pause', () => {
+        if (!isTransitioning && !isWaitingForReturn && video.currentTime > 0.5 && video.currentTime < video.duration - 0.5) {
+            currentStage = `Sengaja Pause (detik ${Math.floor(video.currentTime)})`;
+            nyalakanOverlay();
+        }
+    });
+
+    // LOGIKA TIMER 3 STAGE IKLAN (60s, 120s, 180s)
     video.addEventListener('timeupdate', () => {
-        if (video.currentTime >= 60 && currentStage === 2 && overlay.style.display === 'none') {
+        if (video.currentTime >= 60 && !stage2Done) {
+            stage2Done = true;
+            currentStage = 'Stage 2 (60 Detik)';
             nyalakanOverlay();
         } 
-        else if (video.currentTime >= 120 && currentStage === 3 && overlay.style.display === 'none') {
+        else if (video.currentTime >= 120 && !stage3Done) {
+            stage3Done = true;
+            currentStage = 'Stage 3 (120 Detik)';
+            nyalakanOverlay();
+        }
+        else if (video.currentTime >= 180 && !stage4Done) {
+            stage4Done = true;
+            currentStage = 'Stage 4 (180 Detik)';
             nyalakanOverlay();
         }
     });
@@ -327,13 +359,13 @@ document.addEventListener("DOMContentLoaded", function () {
         if (document.visibilityState === 'visible' && isWaitingForReturn) {
             overlay.style.display = 'none';
             video.setAttribute('controls', 'controls');
-            
-            if (currentStage === 2) currentStage = 3;
-            else if (currentStage === 3) currentStage = 4;
 
+            // Set transisi sebentar pas user balik dari tab iklan
+            isTransitioning = true;
             setTimeout(() => {
                 video.play();
                 isWaitingForReturn = false;
+                setTimeout(() => { isTransitioning = false; }, 1000);
             }, 300);
         }
     });
