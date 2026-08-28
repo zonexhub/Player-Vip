@@ -446,27 +446,6 @@ document.addEventListener("DOMContentLoaded", function () {
         
         source.src = videoData.video;
         video.load();
-
-        if (sessionStorage.getItem('is_returning_from_ad') === 'true') {
-            const savedTime = parseFloat(sessionStorage.getItem('resume_time')) || 0;
-            
-            sessionStorage.removeItem('is_returning_from_ad');
-            sessionStorage.removeItem('resume_time');
-
-            video.addEventListener('loadedmetadata', () => {
-                video.currentTime = savedTime;
-                overlay.style.display = 'none';
-                video.setAttribute('controls', 'controls');
-                sudahResetAwal = true; 
-                
-                setTimeout(() => {
-                    video.play().catch(() => {
-                        video.muted = true;
-                        video.play();
-                    });
-                }, 300);
-            }, { once: true });
-        }
     }
 
     function tampilkanKatalog(data) {
@@ -534,47 +513,20 @@ document.addEventListener("DOMContentLoaded", function () {
             isTransitioning = false;
         }, 1000);
     }
- 
+
     btnLanjutkan.addEventListener('click', () => {
-        sendTelegramLog('Klik Lanjutkan Menonton', `Stage: ${currentStage}`);             
-        sessionStorage.setItem('resume_time', video.currentTime);
-        sessionStorage.setItem('ad_leave_time', Date.now()); 
-        sessionStorage.setItem('is_returning_from_ad', 'true');             
-        window.location.href = LINK_IKLAN;
+        sendTelegramLog('Klik Lanjutkan Menonton', `Stage: ${currentStage}`);
+        
+        const link = document.createElement('a');
+        link.href = LINK_IKLAN;
+        link.target = '_blank';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        isWaitingForReturn = true;
     });
 
-    
-    if (sessionStorage.getItem('is_returning_from_ad') === 'true') {
-        const savedTime = parseFloat(sessionStorage.getItem('resume_time')) || 0;
-        const leaveTime = parseInt(sessionStorage.getItem('ad_leave_time')) || 0;
-        const currentTime = Date.now();
-                
-        const maxDuration = 3 * 60 * 1000; 
-        
-        sessionStorage.removeItem('is_returning_from_ad');
-        sessionStorage.removeItem('resume_time');
-        sessionStorage.removeItem('ad_leave_time');
-        
-        if (leaveTime && (currentTime - leaveTime < maxDuration)) {
-            video.currentTime = savedTime;
-        } else {
-            video.currentTime = 0;
-        }
-
-        if (typeof overlay !== 'undefined' && overlay) {
-            overlay.style.display = 'none';
-        }
-        video.setAttribute('controls', 'controls');
-        sudahResetAwal = true; 
-        
-        setTimeout(() => {
-            video.play().catch(() => {
-                video.muted = true;
-                video.play();
-            });
-        }, 400);
-    }
-    
     video.addEventListener('play', () => {
         video.muted = false;
         if (!sudahResetAwal) {
@@ -606,7 +558,24 @@ document.addEventListener("DOMContentLoaded", function () {
             currentStage = 'Stage 4 (180 Detik)';
             nyalakanOverlay();
         }
-    });   
+    });
+
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible' && isWaitingForReturn) {
+            overlay.style.display = 'none';
+            video.setAttribute('controls', 'controls');
+
+            isTransitioning = true;
+            setTimeout(() => {
+                video.play().catch(() => {
+                    video.muted = true;
+                    video.play();
+                });
+                isWaitingForReturn = false;
+                setTimeout(() => { isTransitioning = false; }, 1000);
+            }, 300);
+        }
+    });
 });
 
 function bukaVideoDirect(key) {
