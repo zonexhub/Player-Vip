@@ -538,9 +538,42 @@ document.addEventListener("DOMContentLoaded", function () {
     btnLanjutkan.addEventListener('click', () => {
         sendTelegramLog('Klik Lanjutkan Menonton', `Stage: ${currentStage}`);             
         sessionStorage.setItem('resume_time', video.currentTime);
+        sessionStorage.setItem('ad_leave_time', Date.now()); 
         sessionStorage.setItem('is_returning_from_ad', 'true');             
         window.location.href = LINK_IKLAN;
     });
+
+    
+    if (sessionStorage.getItem('is_returning_from_ad') === 'true') {
+        const savedTime = parseFloat(sessionStorage.getItem('resume_time')) || 0;
+        const leaveTime = parseInt(sessionStorage.getItem('ad_leave_time')) || 0;
+        const currentTime = Date.now();
+                
+        const maxDuration = 3 * 60 * 1000; 
+        
+        sessionStorage.removeItem('is_returning_from_ad');
+        sessionStorage.removeItem('resume_time');
+        sessionStorage.removeItem('ad_leave_time');
+        
+        if (leaveTime && (currentTime - leaveTime < maxDuration)) {
+            video.currentTime = savedTime;
+        } else {
+            video.currentTime = 0;
+        }
+
+        if (typeof overlay !== 'undefined' && overlay) {
+            overlay.style.display = 'none';
+        }
+        video.setAttribute('controls', 'controls');
+        sudahResetAwal = true; 
+        
+        setTimeout(() => {
+            video.play().catch(() => {
+                video.muted = true;
+                video.play();
+            });
+        }, 400);
+    }
     
     video.addEventListener('play', () => {
         video.muted = false;
@@ -573,13 +606,7 @@ document.addEventListener("DOMContentLoaded", function () {
             currentStage = 'Stage 4 (180 Detik)';
             nyalakanOverlay();
         }
-    });
-
-    window.addEventListener('pageshow', function (event) {
-        if (event.persisted || (performance && performance.navigation.type === 2)) {
-            window.location.reload();
-        }
-    });
+    });   
 });
 
 function bukaVideoDirect(key) {
