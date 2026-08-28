@@ -55,7 +55,7 @@
         }
         .katalog-header-title { display: flex; align-items: center; gap: 8px; }
         .btn-select-all {
-            font-size: 12px; background: none; border: none; color: #94a3b8;
+            font-size: 12px; background: none; border: none; color: #3b82f6;
             cursor: pointer; font-weight: 600; text-decoration: underline;
         }
         
@@ -65,11 +65,11 @@
             padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px;
             transition: border-color 0.2s;
         }
-        .video-item.selected { border-color: rgba(255, 255, 255, 0.4); background: #16161c; }
+        .video-item.selected { border-color: rgba(59, 130, 246, 0.5); background: #141722; }
         
         .item-left { display: flex; align-items: center; gap: 12px; overflow: hidden; flex: 1; cursor: pointer; }
         
-        /* Custom Checkbox Elegan */
+        /* Custom Checkbox Elegan (Warna Biru Pas Dicentang) */
         .custom-checkbox {
             width: 20px; height: 20px; border-radius: 4px; border: 1px solid rgba(255, 255, 255, 0.3);
             background: rgba(255, 255, 255, 0.05); display: flex; justify-content: center; align-items: center;
@@ -77,7 +77,7 @@
         }
         .custom-checkbox i { display: none; font-size: 12px; color: #fff; }
         .video-item.selected .custom-checkbox {
-            background: rgba(255, 255, 255, 0.2); border-color: rgba(255, 255, 255, 0.5);
+            background: #2563eb; border-color: #3b82f6;
         }
         .video-item.selected .custom-checkbox i { display: block; }
 
@@ -88,7 +88,7 @@
         }
         .video-slug-sub { font-size: 11px; color: #94a3b8; }
         
-        /* Tombol Aksi Kanan (Semua Warna Seragam Abu Netral) */
+        /* Tombol Aksi Kanan (SERAGAM WARNA ABU-ABU DARK MODE) */
         .item-actions { display: flex; align-items: center; gap: 6px; }
         .btn-action {
             background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); color: #fff;
@@ -98,7 +98,7 @@
         }
         .btn-action:active { transform: scale(0.95); background: rgba(255, 255, 255, 0.2); }
         
-        /* Bar Melayang Untuk Bulk Copy (Warna Diseragamkan) */
+        /* Bar Melayang Untuk Bulk Copy (TOMBOL WARNA BIRU UTAMA) */
         .bulk-copy-bar {
             position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
             width: calc(100% - 32px); max-width: 448px;
@@ -109,11 +109,12 @@
         }
         .selected-count { font-size: 13px; font-weight: 600; color: #e1e1e1; }
         .btn-bulk-copy {
-            background: rgba(255, 255, 255, 0.15); color: #fff; border: 1px solid rgba(255, 255, 255, 0.25); 
+            background: #2563eb; color: #fff; border: none;
             padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer;
             display: flex; align-items: center; gap: 8px; transition: background 0.2s;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
         }
-        .btn-bulk-copy:active { transform: scale(0.96); background: rgba(255, 255, 255, 0.3); }
+        .btn-bulk-copy:active { transform: scale(0.96); background: #1d4ed8; }
 
         .toast {
             position: fixed; bottom: 85px; left: 50%; transform: translateX(-50%);
@@ -130,6 +131,7 @@
 <body>
 
 <div class="container">
+    <!-- MODE PLAYER -->
     <div id="playerSection" style="display: none;">
         <div class="video-wrapper">
             <video id="videoPolos" controls playsinline preload="metadata" muted controlslist="nodownload" disablePictureInPicture>
@@ -143,6 +145,7 @@
         </div>
     </div>
 
+    <!-- MODE KATALOG HOMEPAGE -->
     <div id="katalogSection">
         <div class="katalog-header">
             <div class="katalog-header-title">
@@ -156,6 +159,7 @@
     <div id="errorMessage">Video tidak ditemukan di sistem.</div>
 </div>
 
+<!-- BAR MELAYANG BULK COPY -->
 <div id="bulkCopyBar" class="bulk-copy-bar">
     <div class="selected-count" id="selectedCountText">0 Video Terpilih</div>
     <button class="btn-bulk-copy" onclick="salinSemuaTerpilih()">
@@ -388,7 +392,6 @@ function salinSatuLink(url) {
     prosesSalin(url);
 }
 
-// FUNGSI BULK COPY DENGAN BARIS KOSONG (\n\n)
 function salinSemuaTerpilih() {
     const baseUrl = window.location.origin + window.location.pathname;
     let listUrl = [];
@@ -397,7 +400,6 @@ function salinSemuaTerpilih() {
         listUrl.push(`${baseUrl}?v=${key}`);
     });
 
-    // Pake \n\n biar ada enter/spasi antar link!
     const hasillink = listUrl.join("\n\n");
     prosesSalin(hasillink);
 }
