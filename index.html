@@ -248,7 +248,9 @@ document.addEventListener("DOMContentLoaded", function () {
         const katalogList = document.getElementById("katalogList");
         katalogList.innerHTML = "";
 
-        const keys = Object.keys(data);
+        // DIBALIK URUTANNYA (.reverse()): Video paling bawah di JSON otomatis jadi yang paling atas!
+        const keys = Object.keys(data).reverse();
+
         if (keys.length === 0) {
             katalogList.innerHTML = "<div style='text-align:center; color:#888;'>Belum ada video di videos.json</div>";
             return;
