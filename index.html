@@ -369,7 +369,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const LINK_IKLAN = 'https://google.com';
     
     const params = new URLSearchParams(window.location.search);
-    const slug = params.get("v");
+    const slug = params.get("video");
 
     const mainContainer = document.getElementById("mainContainer");
     const playerSection = document.getElementById("playerSection");
@@ -402,7 +402,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     const versiAntiCache = Math.floor(Date.now() / 120000);
-    fetch("videos.json?v=" + versiAntiCache)
+    fetch("videos.json?video=" + versiAntiCache)
         .then(res => { if (!res.ok) throw new Error("Gagal load video"); return res.json(); })
         .then(data => {
             allVideoData = data;
@@ -468,7 +468,7 @@ document.addEventListener("DOMContentLoaded", function () {
             formattedTitle = formattedTitle.charAt(0).toUpperCase() + formattedTitle.slice(1);
 
             const baseUrl = window.location.origin + window.location.pathname;
-            const fullVideoUrl = `${baseUrl}?v=${key}`;
+            const fullVideoUrl = `${baseUrl}?video=${key}`;
 
             const item = document.createElement("div");
             item.className = "video-item";
@@ -481,7 +481,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     </div>
                     <div class="video-info">
                         <div class="video-title-katalog">${formattedTitle}</div>
-                        <div class="video-slug-sub">?v=${key}</div>
+                        <div class="video-slug-sub">?video=${key}</div>
                     </div>
                 </div>
                 <div class="item-actions">
@@ -579,7 +579,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function bukaVideoDirect(key) {
-    window.location.href = `?v=${key}`;
+    window.location.href = `?video=${key}`;
 }
 
 function toggleSelectVideo(slugKey) {
@@ -640,7 +640,7 @@ function salinSemuaTerpilih() {
     
     keys.forEach(key => {
         if (selectedSlugs.has(key)) {
-            listUrl.push(`${baseUrl}?v=${key}`);
+            listUrl.push(`${baseUrl}?video=${key}`);
         }
     });
 
