@@ -21,36 +21,34 @@
             display: flex;
             justify-content: center;
             align-items: center;
-      }
+        }
 
         .container {
             width: 100%;
             max-width: 480px;
             background: #0a0a0c;
             position: relative;
-            min-height: 100vh;
+            height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            border-left: 1px solid #1a1a20;
-            border-right: 1px solid #1a1a20;
-            box-shadow: 0 0 30px rgba(0,0,0,0.9);
+            align-items: center;
         }
 
         .video-wrapper {
             position: relative;
             width: 100%;
-            aspect-ratio: 4 / 5;
+            height: 100%;
             background: #000;
             overflow: hidden;
-        }
+       }
 
         #videoPolos {
             width: 100%;
             height: 100%;
-            object-fit: contain;
+            object-fit: cover;
             display: block;
-        }
+       }
 
         .overlay {
             display: none;
