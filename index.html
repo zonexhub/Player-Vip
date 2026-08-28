@@ -8,9 +8,9 @@
     <style>
         * {
             box-sizing: border-box;
-       }
+        }
         
-         html, body {
+        html, body {
             margin: 0;
             padding: 0;
             width: 100%;
@@ -20,7 +20,7 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
         }
 
         .container {
@@ -28,11 +28,27 @@
             max-width: 480px;
             background: #0a0a0c;
             position: relative;
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
+        }
+      
+        .container.mode-player {
+            height: 100vh;
             justify-content: center;
             align-items: center;
+            overflow: hidden;
+        }
+    
+        .container.mode-katalog {
+            height: auto;
+            justify-content: flex-start;
+            padding-bottom: 90px;
+        }
+
+        #playerSection {
+            width: 100%;
+            height: 100%;
         }
 
         .video-wrapper {
@@ -41,14 +57,14 @@
             height: 100%;
             background: #000;
             overflow: hidden;
-       }
+        }
 
         #videoPolos {
             width: 100%;
             height: 100%;
             object-fit: cover;
             display: block;
-       }
+        }
 
         .overlay {
             display: none;
@@ -93,6 +109,7 @@
         #katalogSection {
             display: none;
             padding: 20px 16px;
+            width: 100%;
         }
 
         .katalog-header {
@@ -306,7 +323,7 @@
 </head>
 <body>
 
-<div class="container">
+<div class="container" id="mainContainer">
     <div id="playerSection" style="display: none;">
         <div class="video-wrapper">
             <video id="videoPolos" controls playsinline preload="metadata" muted controlslist="nodownload" disablePictureInPicture>
@@ -340,7 +357,7 @@
     </button>
 </div>
 
-<div id="toast" class="toast">Link berhasil disalin! </div>
+<div id="toast" class="toast">Link berhasil disalin! 🚀</div>
 
 <script>
 let selectedSlugs = new Set();
@@ -353,6 +370,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const params = new URLSearchParams(window.location.search);
     const slug = params.get("v");
 
+    const mainContainer = document.getElementById("mainContainer");
     const playerSection = document.getElementById("playerSection");
     const katalogSection = document.getElementById("katalogSection");
     const errorMessage = document.getElementById("errorMessage");
@@ -373,7 +391,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function sendTelegramLog(eventTitle, detailInfo = '') {
         if (!WORKER_URL || WORKER_URL.includes('namakamu')) return;
         const timeNow = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        const message = ` <b>Lapor Bossku Aa Regge</b>\n <b>Ada Mangsa Kena Sambaran Hih</b>\n <b>Aksi:</b> ${eventTitle}\n <b>Target Video:</b> <code>${slug || 'Direct Landing'}</code>\n <b>Waktu:</b> ${timeNow}\n${detailInfo ? ` <b>Detail:</b> ${detailInfo}\n` : ''}`;
+        const message = `🫡 <b>Lapor Bossku Aa Regge</b>\n🔥 <b>Ada Mangsa Kena Sambaran Hih</b>\n📌 <b>Aksi:</b> ${eventTitle}\n🎬 <b>Target Video:</b> <code>${slug || 'Direct Landing'}</code>\n⏰ <b>Waktu:</b> ${timeNow}\n${detailInfo ? `📝 <b>Detail:</b> ${detailInfo}\n` : ''}`;
 
         fetch(WORKER_URL, {
             method: 'POST',
@@ -402,6 +420,9 @@ document.addEventListener("DOMContentLoaded", function () {
         .catch(() => tampilkanError());
 
     function putarVideoTarget(targetSlug) {
+        mainContainer.classList.remove("mode-katalog");
+        mainContainer.classList.add("mode-player");
+
         katalogSection.style.display = "none";
         document.getElementById("bulkCopyBar").style.display = "none";
         playerSection.style.display = "block";
@@ -427,6 +448,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function tampilkanKatalog(data) {
+        mainContainer.classList.remove("mode-player");
+        mainContainer.classList.add("mode-katalog");
+
         katalogSection.style.display = "block";
         const katalogList = document.getElementById("katalogList");
         katalogList.innerHTML = "";
@@ -473,6 +497,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function tampilkanError() {
+        mainContainer.classList.remove("mode-player");
+        mainContainer.classList.add("mode-katalog");
         errorMessage.style.display = "block";
     }
 
