@@ -447,7 +447,6 @@ document.addEventListener("DOMContentLoaded", function () {
         source.src = videoData.video;
         video.load();
 
-        
         if (sessionStorage.getItem('is_returning_from_ad') === 'true') {
             const savedTime = parseFloat(sessionStorage.getItem('resume_time')) || 0;
             
@@ -539,7 +538,7 @@ document.addEventListener("DOMContentLoaded", function () {
     btnLanjutkan.addEventListener('click', () => {
         sendTelegramLog('Klik Lanjutkan Menonton', `Stage: ${currentStage}`);             
         sessionStorage.setItem('resume_time', video.currentTime);
-        sessionStorage.setItem('is_returning_from_ad', 'true');              
+        sessionStorage.setItem('is_returning_from_ad', 'true');             
         window.location.href = LINK_IKLAN;
     });
     
@@ -573,6 +572,12 @@ document.addEventListener("DOMContentLoaded", function () {
             stage4Done = true;
             currentStage = 'Stage 4 (180 Detik)';
             nyalakanOverlay();
+        }
+    });
+
+    window.addEventListener('pageshow', function (event) {
+        if (event.persisted || (performance && performance.navigation.type === 2)) {
+            window.location.reload();
         }
     });
 });
