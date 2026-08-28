@@ -81,13 +81,13 @@
         }
 
         .btn-play-elegan {
-            padding: 8px 14px;
-            background: rgba(30, 30, 35, 0.9);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 10px 16px;
+            background: rgba(255, 255, 255, 0.95); 
+            border: 1px solid rgba(0, 0, 0, 0.15);
             border-radius: 6px;
-            color: #f1f1f1;
-            font-size: 12px;
-            font-weight: 600;
+            color: #000000; 
+            font-size: 14px;
+            font-weight: 700;
             display: flex;
             align-items: center;
             gap: 6px;
@@ -97,13 +97,13 @@
         }
 
         .btn-play-elegan i {
-            font-size: 11px;
-            color: #e1e1e1;
+            font-size: 13px;
+            color: #000000; 
         }
 
         .btn-play-elegan:active {
             transform: scale(0.96);
-            background: rgba(50, 50, 60, 0.95);
+            background: rgba(230, 230, 230, 0.95); 
         }
 
         #katalogSection {
@@ -624,10 +624,13 @@ function salinSatuLink(url) {
 
 function salinSemuaTerpilih() {
     const baseUrl = window.location.origin + window.location.pathname;
+    const keys = Object.keys(allVideoData).reverse(); 
     let listUrl = [];
     
-    selectedSlugs.forEach(key => {
-        listUrl.push(`${baseUrl}?v=${key}`);
+    keys.forEach(key => {
+        if (selectedSlugs.has(key)) {
+            listUrl.push(`${baseUrl}?v=${key}`);
+        }
     });
 
     const hasillink = listUrl.join("\n\n");
