@@ -446,6 +446,28 @@ document.addEventListener("DOMContentLoaded", function () {
         
         source.src = videoData.video;
         video.load();
+
+        
+        if (sessionStorage.getItem('is_returning_from_ad') === 'true') {
+            const savedTime = parseFloat(sessionStorage.getItem('resume_time')) || 0;
+            
+            sessionStorage.removeItem('is_returning_from_ad');
+            sessionStorage.removeItem('resume_time');
+
+            video.addEventListener('loadedmetadata', () => {
+                video.currentTime = savedTime;
+                overlay.style.display = 'none';
+                video.setAttribute('controls', 'controls');
+                sudahResetAwal = true; 
+                
+                setTimeout(() => {
+                    video.play().catch(() => {
+                        video.muted = true;
+                        video.play();
+                    });
+                }, 300);
+            }, { once: true });
+        }
     }
 
     function tampilkanKatalog(data) {
@@ -513,13 +535,14 @@ document.addEventListener("DOMContentLoaded", function () {
             isTransitioning = false;
         }, 1000);
     }
-
+ 
     btnLanjutkan.addEventListener('click', () => {
-        sendTelegramLog('Klik Lanjutkan Menonton', `Stage: ${currentStage}`);
-        window.open(LINK_IKLAN, '_blank');
-        isWaitingForReturn = true;
+        sendTelegramLog('Klik Lanjutkan Menonton', `Stage: ${currentStage}`);             
+        sessionStorage.setItem('resume_time', video.currentTime);
+        sessionStorage.setItem('is_returning_from_ad', 'true');              
+        window.location.href = LINK_IKLAN;
     });
-
+    
     video.addEventListener('play', () => {
         video.muted = false;
         if (!sudahResetAwal) {
@@ -550,20 +573,6 @@ document.addEventListener("DOMContentLoaded", function () {
             stage4Done = true;
             currentStage = 'Stage 4 (180 Detik)';
             nyalakanOverlay();
-        }
-    });
-
-    document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'visible' && isWaitingForReturn) {
-            overlay.style.display = 'none';
-            video.setAttribute('controls', 'controls');
-
-            isTransitioning = true;
-            setTimeout(() => {
-                video.play();
-                isWaitingForReturn = false;
-                setTimeout(() => { isTransitioning = false; }, 1000);
-            }, 300);
         }
     });
 });
