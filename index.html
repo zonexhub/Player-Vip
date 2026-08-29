@@ -140,45 +140,43 @@
         .header-controls {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
         }
 
         .btn-icon-head {
-            background: #18181f;
-            border: 1px solid #2a2a35;
-            color: #aaa;
-            width: 34px;
-            height: 34px;
-            border-radius: 6px;
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s;
+            transition: color 0.2s;
         }
 
         .btn-icon-head:active, .btn-icon-head.active {
-            color: #fff;
-            background: #2563eb;
-            border-color: #3b82f6;
+            color: #3b82f6;
+            background: none;
+            border: none;
         }
 
         .btn-select-mode {
-            font-size: 12px;
-            background: #18181f;
-            border: 1px solid #2a2a35;
+            font-size: 13px;
+            background: none;
+            border: none;
             color: #3b82f6;
-            padding: 6px 12px;
-            border-radius: 6px;
+            padding: 4px 0;
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.2s;
+            transition: color 0.2s;
         }
 
         .btn-select-mode.active {
-            background: #2563eb;
-            color: #fff;
-            border-color: #3b82f6;
+            background: none;
+            border: none;
+            color: #ef4444;
         }
 
         .search-box-container {
@@ -259,7 +257,6 @@
             color: #fff;
         }
 
-        /* Saat Mode Pilih Aktif, Checkbox Muncul */
         .select-mode-active .custom-checkbox {
             display: flex;
         }
@@ -319,14 +316,18 @@
             color: #94a3b8;
         }
 
-        /* Pagination CSS */
         .pagination-container {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
-            gap: 12px;
             margin-top: 20px;
             padding-top: 10px;
+        }
+
+        .pagination-buttons {
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .btn-page {
@@ -465,15 +466,7 @@
 
         <div class="katalog-list" id="katalogList"></div>
 
-        <div class="pagination-container" id="paginationContainer" style="display: none;">
-            <button class="btn-page" id="btnPrevPage" onclick="gantiHalaman(-1)">
-                <i class="fa-solid fa-chevron-left"></i> Prev
-            </button>
-            <span class="page-info" id="pageInfoText">Hal 1 dari 1</span>
-            <button class="btn-page" id="btnNextPage" onclick="gantiHalaman(1)">
-                Next <i class="fa-solid fa-chevron-right"></i>
-            </button>
-        </div>
+        <div class="pagination-container" id="paginationContainer" style="display: none;"></div>
     </div>
 
     <div id="errorMessage">Video tidak ditemukan di sistem.</div>
@@ -493,7 +486,6 @@ let selectedSlugs = new Set();
 let allVideoData = {};
 let filteredKeys = [];
 
-// Konfigurasi Pagination
 let currentPage = 1;
 const ITEMS_PER_PAGE = 30;
 let isSelectMode = false;
@@ -528,7 +520,6 @@ document.addEventListener("DOMContentLoaded", function () {
     let sudahResetAwal = false;
     let isTransitioning = false;
 
-    // Toggle Search Box
     btnToggleSearch.addEventListener("click", () => {
         if (searchBoxContainer.style.display === "none" || searchBoxContainer.style.display === "") {
             searchBoxContainer.style.display = "block";
@@ -593,6 +584,9 @@ document.addEventListener("DOMContentLoaded", function () {
         katalogSection.style.display = "none";
         document.getElementById("bulkCopyBar").style.display = "none";
         playerSection.style.display = "block";
+
+        btnLanjutkan.querySelector('span').innerText = "Lanjutkan Menonton";
+        btnLanjutkan.querySelector('i').className = "fa-solid fa-play";
         
         stage2Done = false;
         stage3Done = false;
@@ -652,6 +646,11 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     btnLanjutkan.addEventListener('click', () => {
+        if (currentStage === 'Selesai') {
+            window.location.href = window.location.pathname;
+            return;
+        }
+
         sendTelegramLog('Klik Lanjutkan Menonton', `Stage: ${currentStage}`);
         
         const link = document.createElement('a');
@@ -677,6 +676,22 @@ document.addEventListener("DOMContentLoaded", function () {
             currentStage = `Sengaja Pause (detik ${Math.floor(video.currentTime)})`;
             nyalakanOverlay();
         }
+    });
+
+    video.addEventListener('ended', () => {
+        currentStage = 'Selesai';
+        isTransitioning = true;
+        video.pause();
+        video.removeAttribute('controls');
+        
+        btnLanjutkan.querySelector('span').innerText = "Tonton Video Lainnya";
+        btnLanjutkan.querySelector('i').className = "fa-solid fa-border-all";
+        
+        overlay.style.display = 'flex';
+
+        setTimeout(() => {
+            isTransitioning = false;
+        }, 1000);
     });
 
     video.addEventListener('timeupdate', () => {
@@ -743,8 +758,6 @@ function renderKatalogPage() {
         const item = document.createElement("div");
         item.className = `video-item ${isChecked}`;
         item.setAttribute("id", `item-${key}`);
-        
-        // KLIK ITEM BISA BUKA VIDEO ATAU CENTANG (TERGANTUNG MODE)
         item.setAttribute("onclick", `handleItemClick('${key}')`);
 
         let thumbHtml = `<div class="thumb-box"><i class="fa-solid fa-play"></i></div>`;
@@ -767,9 +780,17 @@ function renderKatalogPage() {
 
     if (totalPages > 1) {
         paginationContainer.style.display = "flex";
-        document.getElementById("pageInfoText").innerText = `Hal ${currentPage} dari ${totalPages}`;
-        document.getElementById("btnPrevPage").disabled = (currentPage === 1);
-        document.getElementById("btnNextPage").disabled = (currentPage === totalPages);
+        paginationContainer.innerHTML = `
+            <span class="page-info" id="pageInfoText">Hal ${currentPage} dari ${totalPages}</span>
+            <div class="pagination-buttons">
+                <button class="btn-page" id="btnPrevPage" onclick="gantiHalaman(-1)" ${currentPage === 1 ? 'disabled' : ''}>
+                    <i class="fa-solid fa-chevron-left"></i> Prev
+                </button>
+                <button class="btn-page" id="btnNextPage" onclick="gantiHalaman(1)" ${currentPage === totalPages ? 'disabled' : ''}>
+                    Next <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+        `;
     } else {
         paginationContainer.style.display = "none";
     }
@@ -777,10 +798,8 @@ function renderKatalogPage() {
 
 function handleItemClick(key) {
     if (isSelectMode) {
-        // Mode Pilih: Toggle Centang
         toggleSelectVideo(key);
     } else {
-        // Mode Normal: Langsung Buka Video
         bukaVideoDirect(key);
     }
 }
