@@ -91,5 +91,9 @@
   "maneh-gelis": {
     "video": "Error Videy: Expecting value: line 1 column 1 (char 0)",
     "poster": "Error Aceimg: Expecting value: line 1 column 1 (char 0)"
+  },
+  "semangka-gede-sma": {
+    "video": "https://cdn.videy.co/cT001ISS1.mp4",
+    "poster": "https://cdn.aceimg.com/k0NOsiYmc.jpg"
   }
 }
