@@ -109,23 +109,21 @@
 
         #katalogSection {
             display: none;
-            padding: 16px;
+            padding: 0 16px 16px 16px;
             width: 100%;
         }
 
         .katalog-header {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 16px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid #1f1f26;
-        }
-
-        .header-top {
+            position: sticky;
+            top: 0;
+            background: #0a0a0c;
+            z-index: 50;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            padding: 16px 0 12px 0;
+            margin-bottom: 16px;
+            border-bottom: 1px solid #1f1f26;
         }
 
         .katalog-header-title {
@@ -181,6 +179,18 @@
 
         .search-box-container {
             display: none;
+            position: absolute;
+            top: 100%;
+            left: -16px;
+            width: calc(100% + 32px);
+            padding: 10px 16px 12px 16px;
+            background: #0a0a0c;
+            border-bottom: 1px solid #1f1f26;
+            z-index: 60;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.7);
+        }
+
+        .search-box-inner {
             position: relative;
             width: 100%;
         }
@@ -320,8 +330,9 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 20px;
-            padding-top: 10px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #1f1f26;
         }
 
         .pagination-buttons {
@@ -446,21 +457,21 @@
 
     <div id="katalogSection">
         <div class="katalog-header">
-            <div class="header-top">
-                <div class="katalog-header-title">
-                    <i class="fa-solid fa-film" style="color: #aaa;"></i> Katalog Video
-                </div>
-                <div class="header-controls">
-                    <button class="btn-icon-head" id="btnToggleSearch" title="Cari Video">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </button>
-                    <button class="btn-select-mode" id="btnSelectMode" onclick="toggleSelectMode()">Pilih</button>
-                </div>
+            <div class="katalog-header-title">
+                <i class="fa-solid fa-film" style="color: #aaa;"></i> Katalog Video
+            </div>
+            <div class="header-controls">
+                <button class="btn-icon-head" id="btnToggleSearch" title="Cari Video">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+                <button class="btn-select-mode" id="btnSelectMode" onclick="toggleSelectMode()">Pilih</button>
             </div>
             
             <div class="search-box-container" id="searchBoxContainer">
-                <input type="text" class="search-input" id="searchInput" placeholder="Ketik nama video...">
-                <i class="fa-solid fa-xmark search-clear-btn" id="searchClearBtn"></i>
+                <div class="search-box-inner">
+                    <input type="text" class="search-input" id="searchInput" placeholder="Ketik nama video...">
+                    <i class="fa-solid fa-xmark search-clear-btn" id="searchClearBtn"></i>
+                </div>
             </div>
         </div>
 
@@ -587,6 +598,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         btnLanjutkan.querySelector('span').innerText = "Lanjutkan Menonton";
         btnLanjutkan.querySelector('i').className = "fa-solid fa-play";
+        btnLanjutkan.querySelector('i').style.display = "inline-block";
         
         stage2Done = false;
         stage3Done = false;
@@ -685,7 +697,7 @@ document.addEventListener("DOMContentLoaded", function () {
         video.removeAttribute('controls');
         
         btnLanjutkan.querySelector('span').innerText = "Tonton Video Lainnya";
-        btnLanjutkan.querySelector('i').className = "fa-solid fa-border-all";
+        btnLanjutkan.querySelector('i').style.display = "none";
         
         overlay.style.display = 'flex';
 
