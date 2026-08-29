@@ -366,7 +366,7 @@ let allVideoData = {};
 
 document.addEventListener("DOMContentLoaded", function () {
     const WORKER_URL = 'https://vip-trackers.zonexhub.workers.dev';
-    const LINK_IKLAN = 'https://google.com';
+    const LINK_IKLAN = 'https://layinghypothesis.com/t7pgs2uek7?key=b4d0a9ccbdeab1ce09b94e2b66968e28';
     
     const params = new URLSearchParams(window.location.search);
     const slug = params.get("video");
@@ -543,9 +543,9 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     video.addEventListener('timeupdate', () => {
-        if (video.currentTime >= 60 && !stage2Done) {
+        if (video.currentTime >= 40 && !stage2Done) {
             stage2Done = true;
-            currentStage = 'Stage 2 (60 Detik)';
+            currentStage = 'Stage 2 (40 Detik)';
             nyalakanOverlay();
         } 
         else if (video.currentTime >= 120 && !stage3Done) {
