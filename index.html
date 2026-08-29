@@ -32,7 +32,7 @@
             display: flex;
             flex-direction: column;
         }
-      
+        
         .container.mode-player {
             height: 100vh;
             justify-content: center;
@@ -109,36 +109,108 @@
 
         #katalogSection {
             display: none;
-            padding: 20px 16px;
+            padding: 16px;
             width: 100%;
         }
 
         .katalog-header {
-            font-size: 16px;
-            font-weight: 700;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
             margin-bottom: 16px;
-            padding-bottom: 10px;
+            padding-bottom: 12px;
             border-bottom: 1px solid #1f1f26;
+        }
+
+        .header-top {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            color: #e1e1e1;
         }
 
         .katalog-header-title {
+            font-size: 16px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #e1e1e1;
+        }
+
+        .header-controls {
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .btn-select-all {
+        .btn-icon-head {
+            background: #18181f;
+            border: 1px solid #2a2a35;
+            color: #aaa;
+            width: 34px;
+            height: 34px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-icon-head:active, .btn-icon-head.active {
+            color: #fff;
+            background: #2563eb;
+            border-color: #3b82f6;
+        }
+
+        .btn-select-mode {
             font-size: 12px;
-            background: none;
-            border: none;
+            background: #18181f;
+            border: 1px solid #2a2a35;
             color: #3b82f6;
+            padding: 6px 12px;
+            border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
-            text-decoration: underline;
+            transition: all 0.2s;
+        }
+
+        .btn-select-mode.active {
+            background: #2563eb;
+            color: #fff;
+            border-color: #3b82f6;
+        }
+
+        .search-box-container {
+            display: none;
+            position: relative;
+            width: 100%;
+        }
+
+        .search-input {
+            width: 100%;
+            background: #121216;
+            border: 1px solid #2a2a35;
+            border-radius: 6px;
+            padding: 8px 36px 8px 12px;
+            color: #fff;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: #3b82f6;
+        }
+
+        .search-clear-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            cursor: pointer;
+            display: none;
+            font-size: 12px;
         }
 
         .katalog-list {
@@ -151,12 +223,16 @@
             background: #121216;
             border: 1px solid #1f1f26;
             border-radius: 8px;
-            padding: 12px 14px;
+            padding: 10px 12px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            gap: 10px;
-            transition: border-color 0.2s;
+            gap: 12px;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .video-item:active {
+            background: #181820;
         }
 
         .video-item.selected {
@@ -164,22 +240,13 @@
             background: #141722;
         }
 
-        .item-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            overflow: hidden;
-            flex: 1;
-            cursor: pointer;
-        }
-
         .custom-checkbox {
+            display: none;
             width: 20px;
             height: 20px;
             border-radius: 4px;
             border: 1px solid rgba(255, 255, 255, 0.3);
             background: rgba(255, 255, 255, 0.05);
-            display: flex;
             justify-content: center;
             align-items: center;
             flex-shrink: 0;
@@ -188,8 +255,13 @@
 
         .custom-checkbox i {
             display: none;
-            font-size: 12px;
+            font-size: 11px;
             color: #fff;
+        }
+
+        /* Saat Mode Pilih Aktif, Checkbox Muncul */
+        .select-mode-active .custom-checkbox {
+            display: flex;
         }
 
         .video-item.selected .custom-checkbox {
@@ -201,11 +273,36 @@
             display: block;
         }
 
+        .thumb-box {
+            width: 60px;
+            height: 40px;
+            background: #18181f;
+            border-radius: 4px;
+            overflow: hidden;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .thumb-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .thumb-box i {
+            color: #444;
+            font-size: 16px;
+        }
+
         .video-info {
             display: flex;
             flex-direction: column;
             gap: 4px;
             overflow: hidden;
+            flex: 1;
         }
 
         .video-title-katalog {
@@ -222,31 +319,39 @@
             color: #94a3b8;
         }
 
-        .item-actions {
+        /* Pagination CSS */
+        .pagination-container {
             display: flex;
+            justify-content: center;
             align-items: center;
-            gap: 6px;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 10px;
         }
 
-        .btn-action {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+        .btn-page {
+            background: #18181f;
+            border: 1px solid #2a2a35;
             color: #fff;
-            padding: 7px 10px;
+            padding: 6px 12px;
             border-radius: 6px;
             font-size: 12px;
             font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 5px;
-            flex-shrink: 0;
-            transition: all 0.2s;
+            gap: 6px;
         }
 
-        .btn-action:active {
-            transform: scale(0.95);
-            background: rgba(255, 255, 255, 0.2);
+        .btn-page:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .page-info {
+            font-size: 12px;
+            color: #aaa;
+            font-weight: 600;
         }
 
         .bulk-copy-bar {
@@ -340,12 +445,35 @@
 
     <div id="katalogSection">
         <div class="katalog-header">
-            <div class="katalog-header-title">
-                <i class="fa-solid fa-film" style="color: #aaa;"></i> Katalog Video Ready
+            <div class="header-top">
+                <div class="katalog-header-title">
+                    <i class="fa-solid fa-film" style="color: #aaa;"></i> Katalog Video
+                </div>
+                <div class="header-controls">
+                    <button class="btn-icon-head" id="btnToggleSearch" title="Cari Video">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                    <button class="btn-select-mode" id="btnSelectMode" onclick="toggleSelectMode()">Pilih</button>
+                </div>
             </div>
-            <button class="btn-select-all" id="btnSelectAll" onclick="toggleSelectAll()">Pilih Semua</button>
+            
+            <div class="search-box-container" id="searchBoxContainer">
+                <input type="text" class="search-input" id="searchInput" placeholder="Ketik nama video...">
+                <i class="fa-solid fa-xmark search-clear-btn" id="searchClearBtn"></i>
+            </div>
         </div>
+
         <div class="katalog-list" id="katalogList"></div>
+
+        <div class="pagination-container" id="paginationContainer" style="display: none;">
+            <button class="btn-page" id="btnPrevPage" onclick="gantiHalaman(-1)">
+                <i class="fa-solid fa-chevron-left"></i> Prev
+            </button>
+            <span class="page-info" id="pageInfoText">Hal 1 dari 1</span>
+            <button class="btn-page" id="btnNextPage" onclick="gantiHalaman(1)">
+                Next <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        </div>
     </div>
 
     <div id="errorMessage">Video tidak ditemukan di sistem.</div>
@@ -363,6 +491,12 @@
 <script>
 let selectedSlugs = new Set();
 let allVideoData = {};
+let filteredKeys = [];
+
+// Konfigurasi Pagination
+let currentPage = 1;
+const ITEMS_PER_PAGE = 30;
+let isSelectMode = false;
 
 document.addEventListener("DOMContentLoaded", function () {
     const WORKER_URL = 'https://vip-trackers.zonexhub.workers.dev';
@@ -381,6 +515,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const overlay = document.getElementById('videoOverlay');
     const btnLanjutkan = document.getElementById('btnLanjutkan');
 
+    const searchInput = document.getElementById("searchInput");
+    const searchClearBtn = document.getElementById("searchClearBtn");
+    const btnToggleSearch = document.getElementById("btnToggleSearch");
+    const searchBoxContainer = document.getElementById("searchBoxContainer");
+
     let currentStage = 'Manual Pause'; 
     let stage2Done = false;
     let stage3Done = false;
@@ -388,6 +527,33 @@ document.addEventListener("DOMContentLoaded", function () {
     let isWaitingForReturn = false;
     let sudahResetAwal = false;
     let isTransitioning = false;
+
+    // Toggle Search Box
+    btnToggleSearch.addEventListener("click", () => {
+        if (searchBoxContainer.style.display === "none" || searchBoxContainer.style.display === "") {
+            searchBoxContainer.style.display = "block";
+            btnToggleSearch.classList.add("active");
+            searchInput.focus();
+        } else {
+            searchBoxContainer.style.display = "none";
+            btnToggleSearch.classList.remove("active");
+            searchInput.value = "";
+            filterKatalog("");
+        }
+    });
+
+    searchInput.addEventListener("input", function () {
+        const val = this.value.trim();
+        searchClearBtn.style.display = val.length > 0 ? "block" : "none";
+        filterKatalog(val);
+    });
+
+    searchClearBtn.addEventListener("click", function () {
+        searchInput.value = "";
+        searchClearBtn.style.display = "none";
+        searchInput.focus();
+        filterKatalog("");
+    });
 
     function sendTelegramLog(eventTitle, detailInfo = '') {
         if (!WORKER_URL || WORKER_URL.includes('namakamu')) return;
@@ -407,7 +573,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(data => {
             allVideoData = data;
             if (!slug) {
-                tampilkanKatalog(data);
+                initKatalogData(data);
                 return;
             }
 
@@ -448,59 +614,30 @@ document.addEventListener("DOMContentLoaded", function () {
         video.load();
     }
 
-    function tampilkanKatalog(data) {
+    function initKatalogData(data) {
         mainContainer.classList.remove("mode-player");
         mainContainer.classList.add("mode-katalog");
+        errorMessage.style.display = "none";
 
         katalogSection.style.display = "block";
-        const katalogList = document.getElementById("katalogList");
-        katalogList.innerHTML = "";
-
-        const keys = Object.keys(data).reverse();
-
-        if (keys.length === 0) {
-            katalogList.innerHTML = "<div style='text-align:center; color:#888;'>Belum ada video di videos.json</div>";
-            return;
-        }
-
-        keys.forEach(key => {
-            let formattedTitle = key.replace(/[-_]/g, ' ');
-            formattedTitle = formattedTitle.charAt(0).toUpperCase() + formattedTitle.slice(1);
-
-            const baseUrl = window.location.origin + window.location.pathname;
-            const fullVideoUrl = `${baseUrl}?video=${key}`;
-
-            const item = document.createElement("div");
-            item.className = "video-item";
-            item.setAttribute("id", `item-${key}`);
-
-            item.innerHTML = `
-                <div class="item-left" onclick="toggleSelectVideo('${key}')">
-                    <div class="custom-checkbox">
-                        <i class="fa-solid fa-check"></i>
-                    </div>
-                    <div class="video-info">
-                        <div class="video-title-katalog">${formattedTitle}</div>
-                        <div class="video-slug-sub">?video=${key}</div>
-                    </div>
-                </div>
-                <div class="item-actions">
-                    <button class="btn-action" onclick="bukaVideoDirect('${key}')" title="Tonton Video">
-                        <i class="fa-solid fa-play"></i> Buka
-                    </button>
-                    <button class="btn-action" onclick="salinSatuLink('${fullVideoUrl}')" title="Salin Link">
-                        <i class="fa-solid fa-copy"></i>
-                    </button>
-                </div>
-            `;
-            katalogList.appendChild(item);
-        });
+        filteredKeys = Object.keys(data).reverse();
+        currentPage = 1;
+        renderKatalogPage();
     }
 
-    function tampilkanError() {
-        mainContainer.classList.remove("mode-player");
-        mainContainer.classList.add("mode-katalog");
-        errorMessage.style.display = "block";
+    function filterKatalog(query) {
+        const allKeys = Object.keys(allVideoData).reverse();
+        if (!query) {
+            filteredKeys = allKeys;
+        } else {
+            const q = query.toLowerCase();
+            filteredKeys = allKeys.filter(key => {
+                const title = key.replace(/[-_]/g, ' ').toLowerCase();
+                return title.includes(q) || key.toLowerCase().includes(q);
+            });
+        }
+        currentPage = 1;
+        renderKatalogPage();
     }
 
     function nyalakanOverlay() {
@@ -578,40 +715,109 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-function bukaVideoDirect(key) {
-    window.location.href = `?video=${key}`;
+function renderKatalogPage() {
+    const katalogList = document.getElementById("katalogList");
+    const paginationContainer = document.getElementById("paginationContainer");
+    katalogList.innerHTML = "";
+
+    if (filteredKeys.length === 0) {
+        katalogList.innerHTML = "<div style='text-align:center; color:#888; padding:30px 0;'>Video tidak ditemukan.</div>";
+        paginationContainer.style.display = "none";
+        return;
+    }
+
+    const totalPages = Math.ceil(filteredKeys.length / ITEMS_PER_PAGE);
+    if (currentPage > totalPages) currentPage = totalPages;
+
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, filteredKeys.length);
+    const pageKeys = filteredKeys.slice(startIndex, endIndex);
+
+    pageKeys.forEach(key => {
+        const dataItem = allVideoData[key];
+        let formattedTitle = key.replace(/[-_]/g, ' ');
+        formattedTitle = formattedTitle.charAt(0).toUpperCase() + formattedTitle.slice(1);
+
+        const isChecked = selectedSlugs.has(key) ? 'selected' : '';
+
+        const item = document.createElement("div");
+        item.className = `video-item ${isChecked}`;
+        item.setAttribute("id", `item-${key}`);
+        
+        // KLIK ITEM BISA BUKA VIDEO ATAU CENTANG (TERGANTUNG MODE)
+        item.setAttribute("onclick", `handleItemClick('${key}')`);
+
+        let thumbHtml = `<div class="thumb-box"><i class="fa-solid fa-play"></i></div>`;
+        if (dataItem.poster && dataItem.poster.trim() !== "") {
+            thumbHtml = `<div class="thumb-box"><img src="${dataItem.poster}" alt="thumb" loading="lazy"></div>`;
+        }
+
+        item.innerHTML = `
+            <div class="custom-checkbox">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            ${thumbHtml}
+            <div class="video-info">
+                <div class="video-title-katalog">${formattedTitle}</div>
+                <div class="video-slug-sub">?video=${key}</div>
+            </div>
+        `;
+        katalogList.appendChild(item);
+    });
+
+    if (totalPages > 1) {
+        paginationContainer.style.display = "flex";
+        document.getElementById("pageInfoText").innerText = `Hal ${currentPage} dari ${totalPages}`;
+        document.getElementById("btnPrevPage").disabled = (currentPage === 1);
+        document.getElementById("btnNextPage").disabled = (currentPage === totalPages);
+    } else {
+        paginationContainer.style.display = "none";
+    }
+}
+
+function handleItemClick(key) {
+    if (isSelectMode) {
+        // Mode Pilih: Toggle Centang
+        toggleSelectVideo(key);
+    } else {
+        // Mode Normal: Langsung Buka Video
+        bukaVideoDirect(key);
+    }
+}
+
+function gantiHalaman(direction) {
+    currentPage += direction;
+    renderKatalogPage();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function toggleSelectMode() {
+    isSelectMode = !isSelectMode;
+    const katalogSection = document.getElementById("katalogSection");
+    const btnSelectMode = document.getElementById("btnSelectMode");
+
+    if (isSelectMode) {
+        katalogSection.classList.add("select-mode-active");
+        btnSelectMode.classList.add("active");
+        btnSelectMode.innerText = "Batal";
+    } else {
+        katalogSection.classList.remove("select-mode-active");
+        btnSelectMode.classList.remove("active");
+        btnSelectMode.innerText = "Pilih";
+        selectedSlugs.clear();
+        updateBulkBar();
+        renderKatalogPage();
+    }
 }
 
 function toggleSelectVideo(slugKey) {
     const item = document.getElementById(`item-${slugKey}`);
     if (selectedSlugs.has(slugKey)) {
         selectedSlugs.delete(slugKey);
-        item.classList.remove('selected');
+        if (item) item.classList.remove('selected');
     } else {
         selectedSlugs.add(slugKey);
-        item.classList.add('selected');
-    }
-    updateBulkBar();
-}
-
-function toggleSelectAll() {
-    const keys = Object.keys(allVideoData);
-    const btnSelectAll = document.getElementById("btnSelectAll");
-    
-    if (selectedSlugs.size === keys.length) {
-        selectedSlugs.clear();
-        keys.forEach(key => {
-            const item = document.getElementById(`item-${key}`);
-            if(item) item.classList.remove('selected');
-        });
-        btnSelectAll.innerText = "Pilih Semua";
-    } else {
-        keys.forEach(key => {
-            selectedSlugs.add(key);
-            const item = document.getElementById(`item-${key}`);
-            if(item) item.classList.add('selected');
-        });
-        btnSelectAll.innerText = "Batal Pilih";
+        if (item) item.classList.add('selected');
     }
     updateBulkBar();
 }
@@ -621,7 +827,7 @@ function updateBulkBar() {
     const textCount = document.getElementById("selectedCountText");
     const count = selectedSlugs.size;
 
-    if (count > 0) {
+    if (count > 0 && isSelectMode) {
         textCount.innerText = `${count} Video Terpilih`;
         bulkBar.style.display = "flex";
     } else {
@@ -629,8 +835,8 @@ function updateBulkBar() {
     }
 }
 
-function salinSatuLink(url) {
-    prosesSalin(url);
+function bukaVideoDirect(key) {
+    window.location.href = `?video=${key}`;
 }
 
 function salinSemuaTerpilih() {
@@ -656,6 +862,14 @@ function prosesSalin(text) {
     }).catch(err => {
         alert("Gagal menyalin link: " + err);
     });
+}
+
+function tampilkanError() {
+    const mainContainer = document.getElementById("mainContainer");
+    const errorMessage = document.getElementById("errorMessage");
+    mainContainer.classList.remove("mode-player");
+    mainContainer.classList.add("mode-katalog");
+    errorMessage.style.display = "block";
 }
 </script>
 </body>
