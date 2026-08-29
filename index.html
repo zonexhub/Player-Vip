@@ -317,8 +317,8 @@
         }
 
         .video-title-katalog {
-            font-size: 14px;
-            font-weight: 600;
+            font-size: 17px;
+            font-weight: 700;
             color: #f1f5f9;
             white-space: nowrap;
             overflow: hidden;
@@ -691,8 +691,7 @@ document.addEventListener("DOMContentLoaded", function () {
         video.pause();
         video.removeAttribute('controls');
         
-        btnLanjutkan.querySelector('span').innerText = "Tonton Video Lainnya";
-        btnLanjutkan.querySelector('i').style.display = "none";
+        btnLanjutkan.innerHTML = `<i class="fa-solid fa-film"></i> <span>Tonton Video Lainnya</span>`;
         
         overlay.style.display = 'flex';
 
