@@ -844,7 +844,7 @@ function renderKatalogPage(restoreScroll = false) {
     let formattedTitle = key.replace(/[-_]/g, ' ');
 
     formattedTitle = formattedTitle.replace(/(ID\s+\S+\s+)(.*)/i, (match, prefix, rest) => {
-    return prefix + rest.replace(/\b\w/g, char => char.toUpperCase());
+    return prefix + "= " + rest.replace(/\b\w/g, char => char.toUpperCase());
     });
 
     const isChecked = selectedSlugs.has(key) ? 'selected' : '';
