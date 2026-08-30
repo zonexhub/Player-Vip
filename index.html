@@ -367,11 +367,10 @@
         }
 
         .page-select {
-            background: #18181f;
-            border: 1px solid #2a2a35;
-            color: #aaa;
-            padding: 5px 3px 5px 8px;
-            border-radius: 6px;
+            background: transparent;
+            border: none;
+            color: #888;
+            padding: 0 4px;
             font-size: 12px;
             font-weight: 600;
             outline: none;
@@ -805,7 +804,7 @@ function renderKatalogPage(restoreScroll = false) {
 
         let optionsHtml = '';
         for (let i = 1; i <= totalPages; i++) {
-            optionsHtml += `<option value="${i}" ${i === currentPage ? 'selected' : ''}>Hal ${i} dari ${totalPages}</option>`;
+            optionsHtml += `<option value="${i}" ${i === currentPage ? 'selected' : ''}>Page ${i} dari ${totalPages}</option>`;
         }
 
         paginationContainer.innerHTML = `
