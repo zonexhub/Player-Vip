@@ -866,6 +866,8 @@ document.addEventListener("DOMContentLoaded", function () {
         isTransitioning = true;
         video.pause();
         
+        video.controls = false;
+        
         if (isDirectShare && !isFromFolder) {
             btnLanjutkan.innerHTML = `<i class="fa-solid fa-film"></i> <span>Tonton Video Lainnya</span>`;
             overlay.style.display = 'flex';
