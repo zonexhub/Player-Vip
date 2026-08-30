@@ -847,8 +847,8 @@ function renderKatalogPage(restoreScroll = false) {
                 videoId = `ID ${match[1]} `;
             }
         }
-
-        let rawTitle = key.replace(/[-_]/g, ' ');
+        let cleanKey = key.replace(/^[a-zA-Z0-9]+-/, '');
+        let rawTitle = cleanKey.replace(/[-_]/g, ' ');
         rawTitle = rawTitle.charAt(0).toUpperCase() + rawTitle.slice(1);
 
         const formattedTitle = `${videoId}${rawTitle}`;
