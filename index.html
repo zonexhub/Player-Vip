@@ -571,9 +571,18 @@ const ITEMS_PER_PAGE = 30;
 let isSelectMode = false;
 
 function getRandomViews(key) {
-    let hash = 0;
-    for (let i = 0; i < key.length; i++) hash += key.charCodeAt(i);
-    const views = ((hash % 85) + 12) / 10;
+    const keys = Object.keys(allVideoData).reverse();
+    const index = keys.indexOf(key);
+    const total = keys.length;
+    
+    if (index === -1) return "32.4k";
+    
+    const minViews = 32.4;
+    const maxViews = 240.0;
+    
+    const progress = total > 1 ? index / (total - 1) : 0;
+    const views = minViews + (progress * (maxViews - minViews));
+    
     return `${views.toFixed(1)}k`;
 }
 
