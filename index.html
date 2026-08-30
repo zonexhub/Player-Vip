@@ -366,10 +366,21 @@
             cursor: not-allowed;
         }
 
-        .page-info {
-            font-size: 12px;
+        .page-select {
+            background: #18181f;
+            border: 1px solid #2a2a35;
             color: #aaa;
+            padding: 5px 8px;
+            border-radius: 6px;
+            font-size: 12px;
             font-weight: 600;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .page-select option {
+            background: #121216;
+            color: #fff;
         }
 
         .bulk-copy-bar {
@@ -513,6 +524,7 @@ document.addEventListener("DOMContentLoaded", function () {
     
     const params = new URLSearchParams(window.location.search);
     const slug = params.get("video");
+    const pageFromUrl = parseInt(params.get("page")) || 1;
 
     const mainContainer = document.getElementById("mainContainer");
     const playerSection = document.getElementById("playerSection");
@@ -570,7 +582,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(data => {
             allVideoData = data;
             if (!slug) {
-                initKatalogData(data);
+                initKatalogData(data, pageFromUrl);
                 return;
             }
 
@@ -615,15 +627,15 @@ document.addEventListener("DOMContentLoaded", function () {
         video.load();
     }
 
-    function initKatalogData(data) {
+    function initKatalogData(data, startPage = 1) {
         mainContainer.classList.remove("mode-player");
         mainContainer.classList.add("mode-katalog");
         errorMessage.style.display = "none";
 
         katalogSection.style.display = "block";
         filteredKeys = Object.keys(data).reverse();
-        currentPage = 1;
-        renderKatalogPage();
+        currentPage = startPage;
+        renderKatalogPage(true);
     }
 
     function filterKatalog(query) {
@@ -654,7 +666,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     btnLanjutkan.addEventListener('click', () => {
         if (currentStage === 'Selesai') {
-            window.location.href = window.location.pathname;
+            if (pageFromUrl > 1) {
+                window.location.href = window.location.pathname + '?page=' + pageFromUrl;
+            } else {
+                window.location.href = window.location.pathname;
+            }
             return;
         }
 
@@ -736,7 +752,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-function renderKatalogPage() {
+function renderKatalogPage(restoreScroll = false) {
     const katalogList = document.getElementById("katalogList");
     const paginationContainer = document.getElementById("paginationContainer");
     katalogList.innerHTML = "";
@@ -786,8 +802,16 @@ function renderKatalogPage() {
 
     if (totalPages > 1) {
         paginationContainer.style.display = "flex";
+
+        let optionsHtml = '';
+        for (let i = 1; i <= totalPages; i++) {
+            optionsHtml += `<option value="${i}" ${i === currentPage ? 'selected' : ''}>Hal ${i} dari ${totalPages}</option>`;
+        }
+
         paginationContainer.innerHTML = `
-            <span class="page-info" id="pageInfoText">Hal ${currentPage} dari ${totalPages}</span>
+            <select class="page-select" onchange="pilihHalaman(this.value)">
+                ${optionsHtml}
+            </select>
             <div class="pagination-buttons">
                 <button class="btn-page" id="btnPrevPage" onclick="gantiHalaman(-1)" ${currentPage === 1 ? 'disabled' : ''}>
                     <i class="fa-solid fa-chevron-left"></i> Prev
@@ -800,6 +824,22 @@ function renderKatalogPage() {
     } else {
         paginationContainer.style.display = "none";
     }
+
+    if (restoreScroll) {
+        const savedScrollPos = sessionStorage.getItem("savedKatalogScroll");
+        if (savedScrollPos) {
+            setTimeout(() => {
+                window.scrollTo(0, parseInt(savedScrollPos));
+                sessionStorage.removeItem("savedKatalogScroll");
+            }, 50);
+        }
+    }
+}
+
+function pilihHalaman(page) {
+    currentPage = parseInt(page);
+    renderKatalogPage();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function handleItemClick(key) {
@@ -861,7 +901,13 @@ function updateBulkBar() {
 }
 
 function bukaVideoDirect(key) {
-    window.location.href = `?video=${key}`;
+    sessionStorage.setItem("savedKatalogScroll", window.scrollY.toString());
+
+    if (currentPage > 1) {
+        window.location.href = `?video=${key}&page=${currentPage}`;
+    } else {
+        window.location.href = `?video=${key}`;
+    }
 }
 
 function salinSemuaTerpilih() {
