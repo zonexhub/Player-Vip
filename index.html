@@ -839,21 +839,12 @@ function renderKatalogPage(restoreScroll = false) {
     const pageKeys = filteredKeys.slice(startIndex, endIndex);
 
     pageKeys.forEach((key, index) => {
-        const dataItem = allVideoData[key];
-        let videoId = '';
-        if (dataItem && dataItem.video) {
-            const match = dataItem.video.match(/\/([a-zA-Z0-9]+)\.mp4/);
-            if (match && match[1]) {
-                videoId = `ID ${match[1]} `;
-            }
-        }
-        let cleanKey = key.replace(/^[a-zA-Z0-9]+-/, '');
-        let rawTitle = cleanKey.replace(/[-_]/g, ' ');
-        rawTitle = rawTitle.charAt(0).toUpperCase() + rawTitle.slice(1);
+    const dataItem = allVideoData[key];
 
-        const formattedTitle = `${videoId}${rawTitle}`;
+    let formattedTitle = key.replace(/[-_]/g, ' ');
+    formattedTitle = formattedTitle.charAt(0).toUpperCase() + formattedTitle.slice(1);
 
-        const isChecked = selectedSlugs.has(key) ? 'selected' : '';
+    const isChecked = selectedSlugs.has(key) ? 'selected' : '';
 
         const item = document.createElement("div");
         item.className = `video-item ${isChecked}`;
