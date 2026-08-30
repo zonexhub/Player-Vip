@@ -235,7 +235,7 @@
             border-radius: 8px;
             padding: 10px 12px;
             display: flex;
-            align-items: center; /* Rata tengah vertikal biar presisi */
+            align-items: flex-start;
             gap: 14px;
             cursor: pointer;
             transition: border-color 0.2s, background 0.2s;
@@ -310,10 +310,10 @@
         .video-info {
             display: flex;
             flex-direction: column;
-            gap: 2px;
+            justify-content: space-between; 
+            height: 60px; 
             overflow: hidden;
             flex: 1;
-            padding-top: 0;
         }
 
         .video-title-katalog {
@@ -327,17 +327,16 @@
         }
 
         .video-slug-sub {
-            font-size: 12px;
+            font-size: 11px;
             color: #818cf8;
             opacity: 0.8;
         }
 
-        /* --- TAGS & VIEWS STYLING (FULL FONT AWESOME) --- */
         .video-tag-container {
             display: flex;
             align-items: center;
-            gap: 8px;
-            margin-top: 3px;
+            gap: 6px;
+            margin-top: 0;
         }
 
         .badge-tag {
@@ -356,16 +355,22 @@
             font-size: 9px;
         }
 
-        .badge-tag.hd {
-            color: #60a5fa;
-            background: rgba(96, 165, 250, 0.12);
-            border: 1px solid rgba(96, 165, 250, 0.25);
+        .badge-tag.new {
+            color: #4ade80;
+            background: rgba(74, 222, 128, 0.12);
+            border: 1px solid rgba(74, 222, 128, 0.25);
         }
 
         .badge-tag.hot {
             color: #f87171;
             background: rgba(248, 113, 113, 0.15);
             border: 1px solid rgba(248, 113, 113, 0.3);
+        }
+
+        .badge-tag.hd {
+            color: #60a5fa;
+            background: rgba(96, 165, 250, 0.12);
+            border: 1px solid rgba(96, 165, 250, 0.25);
         }
 
         .views-text {
@@ -565,7 +570,6 @@ let currentPage = 1;
 const ITEMS_PER_PAGE = 30;
 let isSelectMode = false;
 
-// Helper generate angka views acak yang konsisten per video
 function getRandomViews(key) {
     let hash = 0;
     for (let i = 0; i < key.length; i++) hash += key.charCodeAt(i);
@@ -842,18 +846,16 @@ function renderKatalogPage(restoreScroll = false) {
             thumbHtml = `<div class="thumb-box"><img src="${dataItem.poster}" alt="thumb" loading="lazy"></div>`;
         }
 
-        // --- ATUR LOGIKA TAGS DAN VIEWS ---
         let tagHtml = '';
         if (currentPage === 1 && index < 5) {
-            // Page 1 urutan 1-5 pakai NEW HOT & 1080p
             tagHtml = `
                 <div class="video-tag-container">
-                    <span class="badge-tag hot"><i class="fa-solid fa-fire"></i> NEW HOT</span>
+                    <span class="badge-tag new"><i class="fa-solid fa-bolt"></i> NEW</span>
+                    <span class="badge-tag hot"><i class="fa-solid fa-fire"></i> HOT</span>
                     <span class="badge-tag hd"><i class="fa-solid fa-compact-disc"></i> 1080p</span>
                 </div>
             `;
         } else {
-            // Urutan 6 ke bawah & page lainnya
             tagHtml = `
                 <div class="video-tag-container">
                     <span class="badge-tag hd"><i class="fa-solid fa-compact-disc"></i> 1080p</span>
