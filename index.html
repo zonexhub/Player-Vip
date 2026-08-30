@@ -235,8 +235,8 @@
             border-radius: 8px;
             padding: 10px 12px;
             display: flex;
-            align-items: flex-start;
-            gap: 12px;
+            align-items: center; /* Rata tengah vertikal biar presisi */
+            gap: 14px;
             cursor: pointer;
             transition: border-color 0.2s, background 0.2s;
         }
@@ -310,26 +310,74 @@
         .video-info {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 2px;
             overflow: hidden;
             flex: 1;
-            padding-top: 2px;
+            padding-top: 0;
         }
 
         .video-title-katalog {
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 600;
             color: #f1f5f9;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            line-height: 1.3;
+            line-height: 1.2;
         }
 
         .video-slug-sub {
             font-size: 12px;
             color: #818cf8;
             opacity: 0.8;
+        }
+
+        /* --- TAGS & VIEWS STYLING (FULL FONT AWESOME) --- */
+        .video-tag-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 3px;
+        }
+
+        .badge-tag {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+            letter-spacing: 0.3px;
+            line-height: 1;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .badge-tag i {
+            font-size: 9px;
+        }
+
+        .badge-tag.hd {
+            color: #60a5fa;
+            background: rgba(96, 165, 250, 0.12);
+            border: 1px solid rgba(96, 165, 250, 0.25);
+        }
+
+        .badge-tag.hot {
+            color: #f87171;
+            background: rgba(248, 113, 113, 0.15);
+            border: 1px solid rgba(248, 113, 113, 0.3);
+        }
+
+        .views-text {
+            font-size: 11px;
+            color: #64748b;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .views-text i {
+            font-size: 10px;
         }
 
         .pagination-container {
@@ -516,6 +564,14 @@ let filteredKeys = [];
 let currentPage = 1;
 const ITEMS_PER_PAGE = 30;
 let isSelectMode = false;
+
+// Helper generate angka views acak yang konsisten per video
+function getRandomViews(key) {
+    let hash = 0;
+    for (let i = 0; i < key.length; i++) hash += key.charCodeAt(i);
+    const views = ((hash % 85) + 12) / 10;
+    return `${views.toFixed(1)}k`;
+}
 
 document.addEventListener("DOMContentLoaded", function () {
     const WORKER_URL = 'https://vip-trackers.zonexhub.workers.dev';
@@ -769,7 +825,7 @@ function renderKatalogPage(restoreScroll = false) {
     const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, filteredKeys.length);
     const pageKeys = filteredKeys.slice(startIndex, endIndex);
 
-    pageKeys.forEach(key => {
+    pageKeys.forEach((key, index) => {
         const dataItem = allVideoData[key];
         let formattedTitle = key.replace(/[-_]/g, ' ');
         formattedTitle = formattedTitle.charAt(0).toUpperCase() + formattedTitle.slice(1);
@@ -786,6 +842,26 @@ function renderKatalogPage(restoreScroll = false) {
             thumbHtml = `<div class="thumb-box"><img src="${dataItem.poster}" alt="thumb" loading="lazy"></div>`;
         }
 
+        // --- ATUR LOGIKA TAGS DAN VIEWS ---
+        let tagHtml = '';
+        if (currentPage === 1 && index < 5) {
+            // Page 1 urutan 1-5 pakai NEW HOT & 1080p
+            tagHtml = `
+                <div class="video-tag-container">
+                    <span class="badge-tag hot"><i class="fa-solid fa-fire"></i> NEW HOT</span>
+                    <span class="badge-tag hd"><i class="fa-solid fa-compact-disc"></i> 1080p</span>
+                </div>
+            `;
+        } else {
+            // Urutan 6 ke bawah & page lainnya
+            tagHtml = `
+                <div class="video-tag-container">
+                    <span class="badge-tag hd"><i class="fa-solid fa-compact-disc"></i> 1080p</span>
+                    <span class="views-text"><i class="fa-regular fa-eye"></i> ${getRandomViews(key)}</span>
+                </div>
+            `;
+        }
+
         item.innerHTML = `
             <div class="custom-checkbox">
                 <i class="fa-solid fa-check"></i>
@@ -794,6 +870,7 @@ function renderKatalogPage(restoreScroll = false) {
             <div class="video-info">
                 <div class="video-title-katalog">${formattedTitle}</div>
                 <div class="video-slug-sub">?video=${key}</div>
+                ${tagHtml}
             </div>
         `;
         katalogList.appendChild(item);
