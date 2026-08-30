@@ -842,7 +842,10 @@ function renderKatalogPage(restoreScroll = false) {
     const dataItem = allVideoData[key];
 
     let formattedTitle = key.replace(/[-_]/g, ' ');
-    formattedTitle = formattedTitle.charAt(0).toUpperCase() + formattedTitle.slice(1);
+
+    formattedTitle = formattedTitle.replace(/(ID\s+\S+\s+)(.*)/i, (match, prefix, rest) => {
+    return prefix + rest.replace(/\b\w/g, char => char.toUpperCase());
+    });
 
     const isChecked = selectedSlugs.has(key) ? 'selected' : '';
 
