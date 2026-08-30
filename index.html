@@ -43,7 +43,7 @@
         .container.mode-katalog {
             height: auto;
             justify-content: flex-start;
-            padding-bottom: 90px;
+            padding-bottom: 110px;
         }
 
         #playerSection {
@@ -135,6 +135,25 @@
             align-items: center;
             gap: 8px;
             color: #e1e1e1;
+        }
+
+        .btn-home-folder {
+            display: none;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #3b82f6;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s;
+        }
+
+        .btn-home-folder:active {
+            background: rgba(255, 255, 255, 0.2);
         }
 
         .header-controls {
@@ -446,45 +465,65 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            padding: 12px 16px;
+            padding: 10px 14px;
             border-radius: 12px;
             display: none;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            gap: 8px;
             z-index: 90;
             box-shadow: 0 10px 25px rgba(0,0,0,0.8);
         }
 
+        .bulk-bar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
         .selected-count {
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
             color: #e1e1e1;
         }
 
+        .bulk-btn-group {
+            display: flex;
+            gap: 8px;
+            width: 100%;
+        }
+
         .btn-bulk-copy {
+            flex: 1;
             background: #2563eb;
             color: #fff;
             border: none;
-            padding: 8px 16px;
+            padding: 8px 10px;
             border-radius: 6px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 700;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
+            gap: 6px;
             transition: background 0.2s;
             box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
         }
 
+        .btn-bulk-copy.folder-btn {
+            background: #8b5cf6;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+        }
+
         .btn-bulk-copy:active {
             transform: scale(0.96);
-            background: #1d4ed8;
+            opacity: 0.9;
         }
 
         .toast {
             position: fixed;
-            bottom: 85px;
+            bottom: 110px;
             left: 50%;
             transform: translateX(-50%);
             background: rgba(30, 30, 35, 0.95);
@@ -527,7 +566,11 @@
     <div id="katalogSection">
         <div class="katalog-header">
             <div class="katalog-header-title">
-                <i class="fa-solid fa-film" style="color: #aaa;"></i> Katalog Video
+                <button id="btnHomeFolder" class="btn-home-folder" onclick="goHome()">
+                    <i class="fa-solid fa-house"></i> Home
+                </button>
+                <i class="fa-solid fa-film" id="katalogIcon" style="color: #aaa;"></i> 
+                <span id="katalogTitleText">Katalog Video</span>
             </div>
             <div class="header-controls">
                 <button class="btn-icon-head" id="btnToggleSearch" title="Cari Video">
@@ -553,36 +596,43 @@
 </div>
 
 <div id="bulkCopyBar" class="bulk-copy-bar">
-    <div class="selected-count" id="selectedCountText">0 Video Terpilih</div>
-    <button class="btn-bulk-copy" onclick="salinSemuaTerpilih()">
-        <i class="fa-solid fa-copy"></i> Salin Link
-    </button>
+    <div class="bulk-bar-header">
+        <div class="selected-count" id="selectedCountText">0 Video Terpilih</div>
+    </div>
+    <div class="bulk-btn-group">
+        <button class="btn-bulk-copy folder-btn" onclick="salinSebagaiFolder()">
+            <i class="fa-solid fa-folder-closed"></i> 1 Link Folder
+        </button>
+        <button class="btn-bulk-copy" onclick="salinSemuaTerpilih()">
+            <i class="fa-solid fa-copy"></i> Salin Eceran
+        </button>
+    </div>
 </div>
 
-<div id="toast" class="toast">Link berhasil disalin! 🚀</div>
+<div id="toast" class="toast"></div>
 
 <script>
 let selectedSlugs = new Set();
 let allVideoData = {};
 let filteredKeys = [];
+let activeFolderSlugs = []; 
+let isFromFolder = false; 
+let isDirectShare = false;
 
 let currentPage = 1;
 const ITEMS_PER_PAGE = 30;
 let isSelectMode = false;
+let currentPlayingSlug = "";
 
 function getRandomViews(key) {
     const keys = Object.keys(allVideoData).reverse();
     const index = keys.indexOf(key);
     const total = keys.length;
-    
     if (index === -1) return "32.4k";
-    
     const minViews = 32.4;
     const maxViews = 240.0;
-    
     const progress = total > 1 ? index / (total - 1) : 0;
     const views = minViews + (progress * (maxViews - minViews));
-    
     return `${views.toFixed(1)}k`;
 }
 
@@ -591,7 +641,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const LINK_IKLAN = 'https://layinghypothesis.com/t7pgs2uek7?key=b4d0a9ccbdeab1ce09b94e2b66968e28';
     
     const params = new URLSearchParams(window.location.search);
-    const slug = params.get("video");
+    const rawSlugParam = params.get("video");
     const pageFromUrl = parseInt(params.get("page")) || 1;
 
     const mainContainer = document.getElementById("mainContainer");
@@ -608,6 +658,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const searchClearBtn = document.getElementById("searchClearBtn");
     const btnToggleSearch = document.getElementById("btnToggleSearch");
     const searchBoxContainer = document.getElementById("searchBoxContainer");
+    const btnHomeFolder = document.getElementById("btnHomeFolder");
+    const katalogIcon = document.getElementById("katalogIcon");
 
     let currentStage = 'Manual Pause'; 
     let stage2Done = false;
@@ -631,11 +683,11 @@ document.addEventListener("DOMContentLoaded", function () {
         searchBoxContainer.style.display = "none";
         filterKatalog("");
     });
-
+    
     function sendTelegramLog(eventTitle, detailInfo = '') {
         if (!WORKER_URL || WORKER_URL.includes('namakamu')) return;
         const timeNow = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        const message = `🫡 <b>Lapor Bossku Aa Regge</b>\n🔥 <b>Ada Mangsa Kena Sambaran Hih</b>\n📌 <b>Aksi:</b> ${eventTitle}\n🎬 <b>Target Video:</b> <code>${slug || 'Direct Landing'}</code>\n⏰ <b>Waktu:</b> ${timeNow}\n${detailInfo ? `📝 <b>Detail:</b> ${detailInfo}\n` : ''}`;
+        const message = `🫡 <b>Lapor Bossku Aa Regge</b>\n\n🔥 <b>Ada Mangsa Kena Sambaran Hih</b>\n📌 <b>Aksi:</b> ${eventTitle}\n🎬 <b>Target Video:</b> <code>${currentPlayingSlug || rawSlugParam || 'Direct Landing'}</code>\n⏰ <b>Waktu:</b> ${timeNow}\n${detailInfo ? `📝 <b>Detail:</b> ${detailInfo}\n` : ''}`;
 
         fetch(WORKER_URL, {
             method: 'POST',
@@ -649,21 +701,47 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(res => { if (!res.ok) throw new Error("Gagal load video"); return res.json(); })
         .then(data => {
             allVideoData = data;
-            if (!slug) {
+            
+            if (!rawSlugParam) {
                 initKatalogData(data, pageFromUrl);
                 return;
             }
 
-            if (!data[slug]) {
-                tampilkanError();
-                return;
-            }
+            const slugList = rawSlugParam.split(',').map(s => s.trim()).filter(s => s.length > 0);
 
-            putarVideoTarget(slug);
+            if (slugList.length === 1) {
+                const singleSlug = slugList[0];
+                if (!data[singleSlug]) {
+                    tampilkanError();
+                    return;
+                }
+
+                const hasSavedScroll = sessionStorage.getItem("savedKatalogScroll");
+                if (!hasSavedScroll) {
+                    isDirectShare = true; 
+                }
+
+                currentPlayingSlug = singleSlug;
+                putarVideoTarget(singleSlug);
+            } else if (slugList.length > 1) {
+                isFromFolder = true;
+                activeFolderSlugs = slugList.filter(s => data[s]);
+                if (activeFolderSlugs.length === 0) {
+                    tampilkanError();
+                    return;
+                }
+                
+                btnHomeFolder.style.display = "inline-flex";
+                katalogIcon.style.display = "none";
+                document.getElementById("katalogTitleText").innerText = `Folder Video (${activeFolderSlugs.length})`;
+                
+                initKatalogData(data, pageFromUrl, activeFolderSlugs);
+            }
         })
         .catch(() => tampilkanError());
 
     function putarVideoTarget(targetSlug) {
+        currentPlayingSlug = targetSlug;
         mainContainer.classList.remove("mode-katalog");
         mainContainer.classList.add("mode-player");
 
@@ -679,6 +757,7 @@ document.addEventListener("DOMContentLoaded", function () {
         stage3Done = false;
         stage4Done = false;
         isTransitioning = false;
+        sudahResetAwal = false;
         
         const videoData = allVideoData[targetSlug];
         video.pause();
@@ -695,24 +774,30 @@ document.addEventListener("DOMContentLoaded", function () {
         video.load();
     }
 
-    function initKatalogData(data, startPage = 1) {
+    function initKatalogData(data, startPage = 1, folderFilter = null) {
         mainContainer.classList.remove("mode-player");
         mainContainer.classList.add("mode-katalog");
         errorMessage.style.display = "none";
 
         katalogSection.style.display = "block";
-        filteredKeys = Object.keys(data).reverse();
+        
+        if (folderFilter && folderFilter.length > 0) {
+            filteredKeys = folderFilter;
+        } else {
+            filteredKeys = Object.keys(data).reverse();
+        }
+        
         currentPage = startPage;
         renderKatalogPage(true);
     }
 
     function filterKatalog(query) {
-        const allKeys = Object.keys(allVideoData).reverse();
+        const baseKeys = activeFolderSlugs.length > 0 ? activeFolderSlugs : Object.keys(allVideoData).reverse();
         if (!query) {
-            filteredKeys = allKeys;
+            filteredKeys = baseKeys;
         } else {
             const q = query.toLowerCase();
-            filteredKeys = allKeys.filter(key => {
+            filteredKeys = baseKeys.filter(key => {
                 const title = key.replace(/[-_]/g, ' ').toLowerCase();
                 return title.includes(q) || key.toLowerCase().includes(q);
             });
@@ -773,11 +858,14 @@ document.addEventListener("DOMContentLoaded", function () {
         currentStage = 'Selesai';
         isTransitioning = true;
         video.pause();
-        video.removeAttribute('controls');
         
-        btnLanjutkan.innerHTML = `<i class="fa-solid fa-film"></i> <span>Tonton Video Lainnya</span>`;
-        
-        overlay.style.display = 'flex';
+        if (isDirectShare && !isFromFolder) {
+            btnLanjutkan.innerHTML = `<i class="fa-solid fa-film"></i> <span>Tonton Video Lainnya</span>`;
+            overlay.style.display = 'flex';
+        } else {
+            overlay.style.display = 'none';
+            video.setAttribute('controls', 'controls');
+        }
 
         setTimeout(() => {
             isTransitioning = false;
@@ -820,6 +908,10 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+function goHome() {
+    window.location.href = window.location.pathname;
+}
+
 function renderKatalogPage(restoreScroll = false) {
     const katalogList = document.getElementById("katalogList");
     const paginationContainer = document.getElementById("paginationContainer");
@@ -839,15 +931,15 @@ function renderKatalogPage(restoreScroll = false) {
     const pageKeys = filteredKeys.slice(startIndex, endIndex);
 
     pageKeys.forEach((key, index) => {
-    const dataItem = allVideoData[key];
+        const dataItem = allVideoData[key];
+        if(!dataItem) return;
 
-    let formattedTitle = key.replace(/[-_]/g, ' ');
+        let formattedTitle = key.replace(/[-_]/g, ' ');
+        formattedTitle = formattedTitle.replace(/(ID\s+\S+\s+)(.*)/i, (match, prefix, rest) => {
+            return prefix + "= " + rest.replace(/\b\w/g, char => char.toUpperCase());
+        });
 
-    formattedTitle = formattedTitle.replace(/(ID\s+\S+\s+)(.*)/i, (match, prefix, rest) => {
-    return prefix + "= " + rest.replace(/\b\w/g, char => char.toUpperCase());
-    });
-
-    const isChecked = selectedSlugs.has(key) ? 'selected' : '';
+        const isChecked = selectedSlugs.has(key) ? 'selected' : '';
 
         const item = document.createElement("div");
         item.className = `video-item ${isChecked}`;
@@ -993,7 +1085,6 @@ function updateBulkBar() {
 
 function bukaVideoDirect(key) {
     sessionStorage.setItem("savedKatalogScroll", window.scrollY.toString());
-
     if (currentPage > 1) {
         window.location.href = `?video=${key}&page=${currentPage}`;
     } else {
@@ -1001,24 +1092,32 @@ function bukaVideoDirect(key) {
     }
 }
 
+function salinSebagaiFolder() {
+    const baseUrl = window.location.origin + window.location.pathname;
+    const selectedArray = Array.from(selectedSlugs);
+    if (selectedArray.length === 0) return;
+    const folderParam = selectedArray.join(',');
+    const folderUrl = `${baseUrl}?video=${folderParam}`;
+    prosesSalin(folderUrl, '<i class="fa-solid fa-folder-closed"></i> 1 Link Folder berhasil disalin!');
+}
+
 function salinSemuaTerpilih() {
     const baseUrl = window.location.origin + window.location.pathname;
     const keys = Object.keys(allVideoData).reverse(); 
     let listUrl = [];
-    
     keys.forEach(key => {
         if (selectedSlugs.has(key)) {
             listUrl.push(`${baseUrl}?video=${key}`);
         }
     });
-
     const hasillink = listUrl.join("\n\n");
-    prosesSalin(hasillink);
+    prosesSalin(hasillink, '<i class="fa-solid fa-copy"></i> Semua link eceran disalin!');
 }
 
-function prosesSalin(text) {
+function prosesSalin(text, customMessage = '<i class="fa-solid fa-check"></i> Link berhasil disalin!') {
     navigator.clipboard.writeText(text).then(() => {
         const toast = document.getElementById("toast");
+        toast.innerHTML = customMessage;
         toast.style.display = "block";
         setTimeout(() => { toast.style.display = "none"; }, 2000);
     }).catch(err => {
