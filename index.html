@@ -582,6 +582,14 @@
             color: #ff5555;
             font-weight: bold;
         }
+        
+        #btnSelectMode {
+            display: none;
+        }
+
+        #btnToggleSearch { order: 1; }
+        #btnHomeFolder   { order: 2; }
+        #btnSelectMode   { order: 3; }
     </style>
 </head>
 <body>
@@ -1177,6 +1185,40 @@ function tampilkanError() {
     mainContainer.classList.remove("mode-player");
     mainContainer.classList.add("mode-katalog");
     errorMessage.style.display = "block";
+}
+
+let hitungKlik = 0;
+let resetTimer = null;
+const PASS_BASE64 = "QW5qaXI=";
+
+const titleHeader = document.querySelector('.katalog-header-title');
+const btnSelectMode = document.getElementById('btnSelectMode');
+const btnHomeFolder = document.getElementById('btnHomeFolder');
+
+if (titleHeader) {
+    titleHeader.addEventListener('click', function() {
+        const isDiDalamFolder = btnHomeFolder && getComputedStyle(btnHomeFolder).display !== 'none';
+        if (isDiDalamFolder) return;
+
+        hitungKlik++;
+
+        clearTimeout(resetTimer);
+        resetTimer = setTimeout(() => { hitungKlik = 0; }, 3000);
+
+        if (hitungKlik === 20) {
+            hitungKlik = 0;
+            const inputPass = prompt("Masukkan Password Admin:");
+
+            if (inputPass && btoa(inputPass) === PASS_BASE64) {
+                alert("Mode Admin Aktif!");
+                if (btnSelectMode) {
+                    btnSelectMode.style.display = "inline-block";
+                }
+            } else if (inputPass !== null) {
+                alert("Password Salah!");
+            }
+        }
+    });
 }
 </script>
 </body>
