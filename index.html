@@ -682,7 +682,7 @@ function getRandomViews(key) {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-    const WORKER_URL = 'https://vip-trackers.zonexhub.workers.dev';
+    const WORKER_URL = 'https://katalog-video.zonexhub.workers.dev';
     const LINK_IKLAN = 'https://google.com';
     
     const params = new URLSearchParams(window.location.search);
@@ -777,8 +777,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     tampilkanError();
                     return;
                 }
-                
-                // PENGATURAN TAMPILAN MODE FOLDER
+                               
                 katalogIcon.className = "fa-solid fa-folder-closed";
                 katalogIcon.style.color = "#8b5cf6";
                 document.getElementById("katalogTitleText").innerText = `Folder Video (${activeFolderSlugs.length})`;
