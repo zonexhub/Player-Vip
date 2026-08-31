@@ -1203,14 +1203,14 @@ if (titleHeader) {
         hitungKlik++;
 
         clearTimeout(resetTimer);
-        resetTimer = setTimeout(() => { hitungKlik = 0; }, 3000);
+        resetTimer = setTimeout(() => { hitungKlik = 0; }, 1000);
 
         if (hitungKlik === 20) {
             hitungKlik = 0;
-            const inputPass = prompt("Masukkan Password Admin:");
+            const inputPass = prompt("Masukkan Password Buat Share Link:");
 
             if (inputPass && btoa(inputPass) === PASS_BASE64) {
-                alert("Mode Admin Aktif!");
+                alert("Mode Share Link Aktif!");
                 if (btnSelectMode) {
                     btnSelectMode.style.display = "inline-block";
                 }
