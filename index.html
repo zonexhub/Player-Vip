@@ -732,14 +732,35 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function sendTelegramLog(eventTitle, detailInfo = '') {
         if (!WORKER_URL || WORKER_URL.includes('namakamu')) return;
+      
+        const safeStr = (str) => {
+            if (!str && str !== 0) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+        };
+
         const timeNow = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
         
-        const message = `🫡 <b>Lapor Bossku Aa Regge</b>\n\n🔥 <b>Ada Mangsa Kena Sambaran Hih</b>\n📌 <b>Aksi:</b> ${eventTitle}\n🎬 <b>Target Video:</b> <code>${currentPlayingSlug || rawSlugParam || 'Direct Landing'}</code>\n⏰ <b>Waktu:</b> ${timeNow}\n${detailInfo ? `📝 <b>Detail:</b> ${detailInfo}\n` : ''}`;
+        const targetVideo = safeStr(currentPlayingSlug || rawSlugParam || 'Direct Landing');
+        const safeTitle = safeStr(eventTitle);
+        const safeDetail = safeStr(detailInfo);
+
+        let message = `🫡 <b>Lapor Bossku Aa Regge</b>\n\n`;
+        message += `🔥 <b>Ada Mangsa Kena Sambaran Hih</b>\n`;
+        message += `📌 <b>Aksi:</b> ${safeTitle}\n`;
+        message += `🎬 <b>Target Video:</b> <code>${targetVideo}</code>\n`;
+        message += `⏰ <b>Waktu:</b> ${timeNow}\n`;
+        if (safeDetail) {
+            message += `📝 <b>Detail:</b> ${safeDetail}\n`;
+        }
 
         fetch(WORKER_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: message })
+            body: JSON.stringify({ message: message }),
+            keepalive: true 
         }).catch(err => console.error('Log Error:', err));
     }
 
