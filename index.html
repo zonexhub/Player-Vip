@@ -926,14 +926,14 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     video.addEventListener('timeupdate', () => {
-        if (video.currentTime >= 40 && !stage2Done) {
+        if (video.currentTime >= 25 && !stage2Done) {
             stage2Done = true;
-            currentStage = 'Stage 2 (40 Detik)';
+            currentStage = 'Stage 2 (25 Detik)';
             nyalakanOverlay();
         } 
-        else if (video.currentTime >= 120 && !stage3Done) {
+        else if (video.currentTime >= 90 && !stage3Done) {
             stage3Done = true;
-            currentStage = 'Stage 3 (120 Detik)';
+            currentStage = 'Stage 3 (90 Detik)';
             nyalakanOverlay();
         }
         else if (video.currentTime >= 180 && !stage4Done) {
