@@ -798,10 +798,18 @@ document.addEventListener("DOMContentLoaded", function () {
                     tampilkanError();
                     return;
                 }
-                               
-                katalogIcon.className = "fa-solid fa-folder-closed";
+                
+                const rawTitleParam = params.get("title");
+                let judulFolderTampil = `Folder Video`; 
+              
+                if (rawTitleParam) {
+                    judulFolderTampil = decodeURIComponent(rawTitleParam).replace(/-/g, ' ');
+                }
+
+                katalogIcon.className = "fa-solid fa-folder-open"; 
                 katalogIcon.style.color = "#8b5cf6";
-                document.getElementById("katalogTitleText").innerText = `Folder Video (${activeFolderSlugs.length})`;
+                
+                document.getElementById("katalogTitleText").innerText = `${judulFolderTampil} (${activeFolderSlugs.length})`;
                 
                 btnToggleSearch.style.display = "none";
                 btnSelectMode.style.display = "none";
@@ -1170,8 +1178,18 @@ function salinSebagaiFolder() {
     const baseUrl = window.location.origin + window.location.pathname;
     const selectedArray = Array.from(selectedSlugs);
     if (selectedArray.length === 0) return;
+    
+    let namaFolder = prompt("Masukkan Nama Folder (Contoh: Kumpulan Skandal SMA):");
+    
+    if (!namaFolder || namaFolder.trim() === "") {
+        namaFolder = "Folder Video";
+    }
+
+    let titleParam = encodeURIComponent(namaFolder.trim().replace(/ /g, '-'));
     const folderParam = selectedArray.join(',');
-    const folderUrl = `${baseUrl}?video=${folderParam}`;
+    
+    const folderUrl = `${baseUrl}?video=${folderParam}&title=${titleParam}`;
+    
     prosesSalin(folderUrl, '<i class="fa-solid fa-folder-closed"></i> Link Folder berhasil disalin!');
 }
 
