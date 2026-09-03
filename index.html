@@ -665,12 +665,12 @@
     <div id="katalogSection">
         <div class="katalog-header">
              <div class="katalog-header-title">
-                 <img 
+                <img 
                   src="https://raw.githubusercontent.com/zonexhub/Player-Vip/refs/heads/main/Katalog-Video.webp"
                   alt="Katalog Video"
                   onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                 <div class="katalog-text-title">
-                  <i class="fa-solid fa-film" id="katalogIcon" style="color: #aaa;"></i>
+                  <i class="fa-solid fa-photo-film" id="katalogIcon" style="color: #3b82f6;"></i>
                   <span id="katalogTitleText">Katalog Video</span>
              </div>
           </div>
@@ -920,9 +920,15 @@ document.addEventListener("DOMContentLoaded", function () {
                     judulFolderTampil = decodeURIComponent(rawTitleParam).replace(/-/g, ' ');
                 }
 
+                const katalogLogo = document.querySelector('.katalog-header-title img');
+                const katalogTextTitle = document.querySelector('.katalog-text-title');
+
+                if (katalogLogo) katalogLogo.style.display = "none";
+                if (katalogTextTitle) katalogTextTitle.style.display = "flex";
+
                 katalogIcon.className = "fa-solid fa-folder-open"; 
                 katalogIcon.style.color = "#ffd75e";
-                
+
                 document.getElementById("katalogTitleText").innerText = `${judulFolderTampil} (${activeFolderSlugs.length})`;
                 
                 btnToggleSearch.style.display = "none";
