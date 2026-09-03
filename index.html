@@ -180,6 +180,12 @@
             width: auto;
             display: block;
         }
+
+        .katalog-text-title {
+            display: none;
+            align-items: center;
+            gap: 8px;
+        }
                 
         .live-user-badge {
             display: flex;
@@ -659,8 +665,15 @@
     <div id="katalogSection">
         <div class="katalog-header">
              <div class="katalog-header-title">
-                 <img src="https://raw.githubusercontent.com/zonexhub/Player-Vip/refs/heads/main/Katalog-Video.webp" alt="Katalog Video">
-              </div>
+                 <img 
+                  src="https://raw.githubusercontent.com/zonexhub/Player-Vip/refs/heads/main/Katalog-Video.webp"
+                  alt="Katalog Video"
+                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="katalog-text-title">
+                  <i class="fa-solid fa-film" id="katalogIcon" style="color: #aaa;"></i>
+                  <span id="katalogTitleText">Katalog Video</span>
+             </div>
+          </div>
             <div class="header-controls" id="headerControls">
                <div id="liveUserHome" class="live-user-badge" data-nosnippet>
                     <span class="live-dot"></span>
