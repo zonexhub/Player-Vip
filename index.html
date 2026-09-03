@@ -173,14 +173,19 @@
             gap: 8px;
             color: #e1e1e1;
         }
+        
+        .katalog-header-title img {
+            height: 28px;
+            width: auto;
+            display: block;
+        }
                 
         .live-user-badge {
             display: flex;
             align-items: center;
-            gap: 4px;
-            font-size: 10px;
+            gap: 5px;
+            font-size: 11px;
             font-weight: 700;
-            color: #ff5555;
             white-space: nowrap; 
         }
 
@@ -191,7 +196,15 @@
             background-color: #ff0000;
             border-radius: 50%;
             animation: kedipKamera 1.2s infinite ease-in-out;
-       }
+        }
+
+        .live-angka {
+            color: #e1e1e1; 
+        }
+
+        .live-text {
+            color: #4ade80; 
+        }
        
          @keyframes kedipKamera {
             0% { 
@@ -644,14 +657,15 @@
 
     <div id="katalogSection">
         <div class="katalog-header">
-            <div class="katalog-header-title">
-                <i class="fa-solid fa-photo-film" id="katalogIcon" style="color: #3b82f6;"></i> 
-                <span id="katalogTitleText">Katalog Video</span>
+             <div class="katalog-header-title">
+                 <img src="https://raw.githubusercontent.com/zonexhub/Player-Vip/refs/heads/main/Katalog-Video.webp" alt="Katalog Video">
+               </div>
             </div>
             <div class="header-controls" id="headerControls">
                <div id="liveUserHome" class="live-user-badge" data-nosnippet>
                     <span class="live-dot"></span>
-                    <span><span id="angkaLiveHome">0</span> User Online</span>
+                    <span id="angkaLiveHome" class="live-angka">0</span>
+                    <span class="live-text">User Online</span>
                 </div>
                 <button class="btn-icon-head" id="btnToggleSearch" title="Cari Video">
                     <i class="fa-solid fa-magnifying-glass"></i>
