@@ -256,8 +256,8 @@
         .btn-icon-head {
             background: none;
             border: none;
-            color: #888;
-            font-size: 16px;
+            color: #3b82f6;
+            font-size: 18px;
             cursor: pointer;
             padding: 4px;
             display: flex;
@@ -266,10 +266,11 @@
             transition: color 0.2s;
         }
 
-        .btn-icon-head:active, .btn-icon-head.active {
-            color: #3b82f6;
+        .btn-icon-head:hover, .btn-icon-head:active, .btn-icon-head.active {
+            color: #3b82f6; 
             background: none;
             border: none;
+            transform: scale(1.1); 
         }
 
         .btn-select-mode {
@@ -1230,6 +1231,9 @@ function pilihHalaman(page) {
     currentPage = parseInt(page);
     renderKatalogPage();
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    const baseUrl = window.location.pathname;
+    history.pushState({ page: currentPage }, "", `${baseUrl}?page=${currentPage}`);
 }
 
 function handleItemClick(key) {
@@ -1244,6 +1248,9 @@ function gantiHalaman(direction) {
     currentPage += direction;
     renderKatalogPage();
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    const baseUrl = window.location.pathname;
+    history.pushState({ page: currentPage }, "", `${baseUrl}?page=${currentPage}`);
 }
 
 function toggleSelectMode() {
