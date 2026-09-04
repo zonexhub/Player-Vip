@@ -646,6 +646,91 @@
         #btnToggleSearch { order: 1; }
         #btnHomeFolder   { order: 2; }
         #btnSelectMode   { order: 3; }
+               
+        .promo-bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px; 
+            background: rgba(10, 10, 12, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 50; 
+            box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.5);
+            text-decoration: none;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .promo-bottom-bar:active {
+            background: rgba(25, 25, 30, 0.95);
+        }
+
+        .promo-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .promo-icon {
+            width: 36px;
+            height: 36px;
+            background: #24A1DE; 
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 18px;
+            box-shadow: 0 0 10px rgba(36, 161, 222, 0.5);
+            animation: pulseTele 2s infinite; 
+        }
+
+        .promo-text-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .promo-title {
+            color: #fff;
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .promo-subtitle {
+            color: #aaa;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .promo-btn {
+            background: #24A1DE;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(36, 161, 222, 0.4);
+        }
+
+        @keyframes pulseTele {
+            0% { box-shadow: 0 0 0 0 rgba(36, 161, 222, 0.7); }
+            70% { box-shadow: 0 0 0 8px rgba(36, 161, 222, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(36, 161, 222, 0); }
+        }
+
+        .container.mode-katalog {
+            padding-bottom: 80px !important; 
+        }
     </style>
 </head>
 <body>
@@ -704,7 +789,21 @@
         <div class="pagination-container" id="paginationContainer" style="display: none;"></div>
     </div>
 
-    <div id="errorMessage">Video tidak ditemukan di sistem.</div>
+  <div id="errorMessage">Video tidak ditemukan di sistem.</div>
+  
+      <a href="https://t.me/+Wd9QJyO5fq9iOWQ1" target="_blank" class="promo-bottom-bar" id="promoBottomBar" data-nosnippet>
+        <div class="promo-content">
+            <div class="promo-icon">
+                <i class="fa-brands fa-telegram"></i>
+            </div>
+            <div class="promo-text-group">
+                <span class="promo-title">Join Channel Telegram</span>
+                <span class="promo-subtitle">Untuk Mendapatkan Info Update Terbaru Video Kami.</span>
+            </div>
+        </div>
+        <button class="promo-btn">JOIN</button>
+    </a>
+    
 </div>
 
 <div id="bulkCopyBar" class="bulk-copy-bar">
@@ -948,10 +1047,13 @@ document.addEventListener("DOMContentLoaded", function () {
         mainContainer.classList.add("mode-player");
 
         katalogSection.style.display = "none";
-        document.getElementById("bulkCopyBar").style.display = "none";
+        document.getElementById("bulkCopyBar").style.display = "none";                       
         playerSection.style.display = "block";
         
-       if (window.intervalLiveHome) {
+        const promoBar = document.getElementById("promoBottomBar");
+        if(promoBar) promoBar.style.display = "none";
+        
+        if (window.intervalLiveHome) {
             clearInterval(window.intervalLiveHome);
             window.intervalLiveHome = null;
         }
@@ -985,8 +1087,11 @@ document.addEventListener("DOMContentLoaded", function () {
         mainContainer.classList.remove("mode-player");
         mainContainer.classList.add("mode-katalog");
         errorMessage.style.display = "none";
-
+                
         katalogSection.style.display = "block";
+        
+        const promoBar = document.getElementById("promoBottomBar");
+        if(promoBar) promoBar.style.display = "flex";
         
         if (folderFilter && folderFilter.length > 0) {
             filteredKeys = folderFilter;
@@ -1258,15 +1363,19 @@ function toggleSelectMode() {
     isSelectMode = !isSelectMode;
     const katalogSection = document.getElementById("katalogSection");
     const btnSelectMode = document.getElementById("btnSelectMode");
+    const promoBar = document.getElementById("promoBottomBar");
 
     if (isSelectMode) {
         katalogSection.classList.add("select-mode-active");
         btnSelectMode.classList.add("active");
         btnSelectMode.innerText = "Batal";
+        if (promoBar) promoBar.style.display = "none"; 
     } else {
         katalogSection.classList.remove("select-mode-active");
         btnSelectMode.classList.remove("active");
         btnSelectMode.innerText = "Pilih";
+        if (promoBar) promoBar.style.display = "flex"; 
+        
         selectedSlugs.clear();
         updateBulkBar();
         renderKatalogPage();
