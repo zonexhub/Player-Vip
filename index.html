@@ -657,7 +657,7 @@
             background: rgba(10, 10, 12, 0.85);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            border-top: none; 
             padding: 12px 16px;
             display: flex;
             justify-content: space-between;
@@ -666,6 +666,16 @@
             box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.5);
             text-decoration: none;
             transition: background 0.2s, transform 0.2s;
+        }
+
+        .promo-bottom-bar::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 16px; 
+            right: 16px; 
+            height: 1px;
+            background: rgba(255, 255, 255, 0.08); 
         }
 
         .promo-bottom-bar:active {
@@ -730,10 +740,15 @@
         }
 
         .container.mode-katalog {
-            padding-bottom: 65px !important; 
+            padding-bottom: 63px !important; 
         }
+
+        .select-mode-active {
+            padding-bottom: 90px !important;
+        }              
     </style>
 </head>
+
 <body>
 
 <div class="container" id="mainContainer">
