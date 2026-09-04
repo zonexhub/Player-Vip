@@ -564,7 +564,17 @@
             flex-direction: column;
             gap: 8px;
             z-index: 90;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.8);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.8), 0 0 1px rgba(255, 255, 255, 0.1) inset; 
+        }
+        
+        .bulk-copy-bar::before {
+            content: "";
+            position: absolute;
+            top: -17px;
+            left: 16px;
+            right: 16px;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.08);
         }
 
         .bulk-bar-header {
@@ -744,7 +754,7 @@
         }
 
         .select-mode-active {
-            padding-bottom: 65px !important;
+            padding-bottom: 60px !important;
         }              
     </style>
 </head>
