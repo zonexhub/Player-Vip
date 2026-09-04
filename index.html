@@ -502,7 +502,8 @@
             align-items: center;
             margin-top: 16px;
             padding-top: 16px;
-            border-top: 1px solid #1f1f26;
+            border-top: 1px solid #2a2a35;
+            border-bottom: 1px solid #2a2a35;
         }
 
         .pagination-buttons {
@@ -555,7 +556,7 @@
             width: calc(100% - 32px);
             max-width: 448px;
             background: rgba(25, 25, 30, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid #2a2a35;
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             padding: 10px 14px;
@@ -566,17 +567,7 @@
             z-index: 90;
             box-shadow: 0 10px 25px rgba(0,0,0,0.8), 0 0 1px rgba(255, 255, 255, 0.1) inset; 
         }
-        
-        .bulk-copy-bar::before {
-            content: "";
-            position: absolute;
-            top: -17px;
-            left: 14px;
-            right: 14px;
-            height: 1.3px;
-            background: #2a2a35;
-        }
-
+                
         .bulk-bar-header {
             display: flex;
             justify-content: space-between;
