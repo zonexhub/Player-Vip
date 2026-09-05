@@ -1358,8 +1358,9 @@ function pilihHalaman(page) {
     renderKatalogPage();
     window.scrollTo({ top: 0, behavior: 'smooth' });
     
-    const baseUrl = window.location.pathname;
-    history.pushState({ page: currentPage }, "", `${baseUrl}?page=${currentPage}`);
+    const url = new URL(window.location.href);
+    url.searchParams.set('page', currentPage);
+    history.pushState({ page: currentPage }, "", url.toString());
 }
 
 function handleItemClick(key) {
@@ -1375,8 +1376,9 @@ function gantiHalaman(direction) {
     renderKatalogPage();
     window.scrollTo({ top: 0, behavior: 'smooth' });
     
-    const baseUrl = window.location.pathname;
-    history.pushState({ page: currentPage }, "", `${baseUrl}?page=${currentPage}`);
+    const url = new URL(window.location.href);
+    url.searchParams.set('page', currentPage);
+    history.pushState({ page: currentPage }, "", url.toString());
 }
 
 function toggleSelectMode() {
