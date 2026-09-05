@@ -495,6 +495,39 @@
         .views-text i {
             font-size: 10px;
         }
+        
+        #katalogListWrapper {
+            position: relative;
+            overflow: hidden; 
+            width: 100%;
+        }
+
+        .ghost-page {
+            position: absolute !important;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1; 
+            pointer-events: none; 
+        }
+
+        @keyframes slideOutLeft {
+            0% { transform: translateX(0) scale(1); opacity: 1; filter: brightness(1); }
+            100% { transform: translateX(-30%) scale(0.95); opacity: 0; filter: brightness(0.2); }
+        }
+        @keyframes slideInRight {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(0); }
+        }
+
+        @keyframes slideOutRight {
+            0% { transform: translateX(0) scale(1); opacity: 1; filter: brightness(1); }
+            100% { transform: translateX(30%) scale(0.95); opacity: 0; filter: brightness(0.2); }
+        }
+        @keyframes slideInLeft {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(0); }
+        }
 
         .pagination-container {
             display: flex;
@@ -804,7 +837,9 @@
             </div>
         </div>
 
-        <div class="katalog-list" id="katalogList"></div>
+        <div id="katalogListWrapper">
+            <div class="katalog-list" id="katalogList"></div>
+        </div>
 
         <div class="pagination-container" id="paginationContainer" style="display: none;"></div>
     </div>
@@ -1246,10 +1281,17 @@ function goHome() {
     window.location.href = window.location.pathname;
 }
 
-function renderKatalogPage(restoreScroll = false) {
+function renderKatalogPage(restoreScroll = false, swipeDirection = 'none') {
     const katalogList = document.getElementById("katalogList");
+    const listWrapper = document.getElementById("katalogListWrapper");
     const paginationContainer = document.getElementById("paginationContainer");
-    katalogList.innerHTML = "";
+
+    let oldHtml = "";
+    if (swipeDirection !== 'none' && katalogList.innerHTML.trim() !== "") {
+        oldHtml = katalogList.innerHTML;
+    }
+
+    katalogList.innerHTML = ""; 
 
     if (filteredKeys.length === 0) {
         katalogList.innerHTML = "<div style='text-align:center; color:#888; padding:30px 0;'>Video tidak ditemukan.</div>";
@@ -1264,6 +1306,7 @@ function renderKatalogPage(restoreScroll = false) {
     const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, filteredKeys.length);
     const pageKeys = filteredKeys.slice(startIndex, endIndex);
 
+    const fragment = document.createDocumentFragment();
     pageKeys.forEach((key, index) => {
         const dataItem = allVideoData[key];
         if(!dataItem) return;
@@ -1274,7 +1317,6 @@ function renderKatalogPage(restoreScroll = false) {
         });
 
         const isChecked = selectedSlugs.has(key) ? 'selected' : '';
-
         const item = document.createElement("div");
         item.className = `video-item ${isChecked}`;
         item.setAttribute("id", `item-${key}`);
@@ -1304,9 +1346,7 @@ function renderKatalogPage(restoreScroll = false) {
         }
 
         item.innerHTML = `
-            <div class="custom-checkbox">
-                <i class="fa-solid fa-check"></i>
-            </div>
+            <div class="custom-checkbox"><i class="fa-solid fa-check"></i></div>
             ${thumbHtml}
             <div class="video-info">
                 <div class="video-title-katalog">${formattedTitle}</div>
@@ -1314,17 +1354,41 @@ function renderKatalogPage(restoreScroll = false) {
                 ${tagHtml}
             </div>
         `;
-        katalogList.appendChild(item);
+        fragment.appendChild(item);
     });
+
+    katalogList.appendChild(fragment);
+   
+    if (oldHtml !== "") {     
+        const ghostDiv = document.createElement('div');
+        ghostDiv.className = 'katalog-list ghost-page';
+        ghostDiv.innerHTML = oldHtml;
+        
+        katalogList.style.position = 'relative';
+        katalogList.style.zIndex = '2';
+        
+        listWrapper.appendChild(ghostDiv);
+
+        if (swipeDirection === 'next') {
+            ghostDiv.style.animation = 'slideOutLeft 0.35s cubic-bezier(0.25, 1, 0.5, 1) forwards';
+            katalogList.style.animation = 'slideInRight 0.35s cubic-bezier(0.25, 1, 0.5, 1) forwards';
+        } else if (swipeDirection === 'prev') {
+            ghostDiv.style.animation = 'slideOutRight 0.35s cubic-bezier(0.25, 1, 0.5, 1) forwards';
+            katalogList.style.animation = 'slideInLeft 0.35s cubic-bezier(0.25, 1, 0.5, 1) forwards';
+        }
+
+        setTimeout(() => {
+            if (ghostDiv.parentNode) ghostDiv.remove();
+            katalogList.style.animation = ''; 
+        }, 350);
+    }
 
     if (totalPages > 1) {
         paginationContainer.style.display = "flex";
-
         let optionsHtml = '';
         for (let i = 1; i <= totalPages; i++) {
             optionsHtml += `<option value="${i}" ${i === currentPage ? 'selected' : ''}>Page ${i} dari ${totalPages}</option>`;
         }
-
         paginationContainer.innerHTML = `
             <select class="page-select" onchange="pilihHalaman(this.value)">
                 ${optionsHtml}
@@ -1354,8 +1418,13 @@ function renderKatalogPage(restoreScroll = false) {
 }
 
 function pilihHalaman(page) {
+    let oldPage = currentPage;
     currentPage = parseInt(page);
-    renderKatalogPage();
+    if (currentPage === oldPage) return; 
+    
+    let direction = currentPage > oldPage ? 'next' : 'prev';
+    
+    renderKatalogPage(false, direction);
     window.scrollTo({ top: 0, behavior: 'smooth' });
     
     const url = new URL(window.location.href);
@@ -1371,9 +1440,11 @@ function handleItemClick(key) {
     }
 }
 
-function gantiHalaman(direction) {
-    currentPage += direction;
-    renderKatalogPage();
+function gantiHalaman(directionNum) {
+    let directionStr = directionNum > 0 ? 'next' : 'prev';
+    currentPage += directionNum;
+    
+    renderKatalogPage(false, directionStr);
     window.scrollTo({ top: 0, behavior: 'smooth' });
     
     const url = new URL(window.location.href);
