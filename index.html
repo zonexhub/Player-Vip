@@ -499,11 +499,11 @@
 
       
         /* =========================================
-           ANIMASI TUMPUKAN KARTU (MODERN & RINGAN)
+           ANIMASI BUKA BUKU 3D (PAGE FLIP EFFECT)
         ========================================= */
         #katalogListWrapper {
             position: relative;
-            perspective: 1000px; /* Ngasih ilusi ruang 3D tapi ringan */
+            perspective: 1500px; /* Jarak Kamera 3D (Makin kecil makin melengkung) */
             width: 100%;
         }
 
@@ -512,29 +512,31 @@
             top: 0;
             left: 0;
             width: 100%;
-            z-index: 1; 
+            z-index: 5; 
             pointer-events: none; 
-            transform-origin: center top; /* Fokus efek dari tengah atas */
+            background: #0a0a0c; /* Wajib ada background biar halamannya gak tembus pandang pas dilipet */
+            backface-visibility: hidden; /* Nyembunyiin bagian belakang kertas */
+            transform-style: preserve-3d;
         }
 
-        /* EFEK NEXT (Halaman 1 tenggelam ke belakang, Halaman 2 muncul dari depan) */
-        @keyframes sinkBack {
-            0% { transform: scale(1) translateY(0); opacity: 1; filter: brightness(1); }
-            100% { transform: scale(0.85) translateY(-20px); opacity: 0; filter: brightness(0.2); }
+        /* EFEK NEXT (Buka halaman ke Kiri) */
+        @keyframes pageTurnNextOut {
+            0% { transform-origin: left center; transform: rotateY(0deg); opacity: 1; }
+            100% { transform-origin: left center; transform: rotateY(-90deg); opacity: 0; }
         }
-        @keyframes popFront {
-            0% { transform: scale(1.15) translateY(30px); opacity: 0; }
-            100% { transform: scale(1) translateY(0); opacity: 1; }
+        @keyframes pageTurnNextIn {
+            0% { transform-origin: right center; transform: rotateY(90deg); opacity: 0; }
+            100% { transform-origin: right center; transform: rotateY(0deg); opacity: 1; }
         }
 
-        /* EFEK PREV (Halaman 2 tenggelam ke belakang, Halaman 1 muncul dari depan) */
-        @keyframes sinkBackPrev {
-            0% { transform: scale(1) translateY(0); opacity: 1; filter: brightness(1); }
-            100% { transform: scale(0.85) translateY(20px); opacity: 0; filter: brightness(0.2); }
+        /* EFEK PREV (Buka halaman balik ke Kanan) */
+        @keyframes pageTurnPrevOut {
+            0% { transform-origin: right center; transform: rotateY(0deg); opacity: 1; }
+            100% { transform-origin: right center; transform: rotateY(90deg); opacity: 0; }
         }
-        @keyframes popFrontPrev {
-            0% { transform: scale(1.15) translateY(-30px); opacity: 0; }
-            100% { transform: scale(1) translateY(0); opacity: 1; }
+        @keyframes pageTurnPrevIn {
+            0% { transform-origin: left center; transform: rotateY(-90deg); opacity: 0; }
+            100% { transform-origin: left center; transform: rotateY(0deg); opacity: 1; }
         }
 
 
@@ -1380,17 +1382,17 @@ function renderKatalogPage(restoreScroll = false, swipeDirection = 'none') {
         listWrapper.appendChild(ghostDiv);
 
         if (swipeDirection === 'next') {
-            ghostDiv.style.animation = 'sinkBack 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards';
-            katalogList.style.animation = 'popFront 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards';
+            ghostDiv.style.animation = 'pageTurnNextOut 0.5s ease-in forwards';
+            katalogList.style.animation = 'pageTurnNextIn 0.5s ease-out forwards';
         } else if (swipeDirection === 'prev') {
-            ghostDiv.style.animation = 'sinkBackPrev 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards';
-            katalogList.style.animation = 'popFrontPrev 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards';
+            ghostDiv.style.animation = 'pageTurnPrevOut 0.5s ease-in forwards';
+            katalogList.style.animation = 'pageTurnPrevIn 0.5s ease-out forwards';
         }
 
         setTimeout(() => {
             if (ghostDiv.parentNode) ghostDiv.remove();
             katalogList.style.animation = ''; 
-        }, 350);
+        }, 500);
     }
 
     if (totalPages > 1) {
