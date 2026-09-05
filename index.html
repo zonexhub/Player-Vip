@@ -495,10 +495,15 @@
         .views-text i {
             font-size: 10px;
         }
-        
+  
+
+      
+        /* =========================================
+           ANIMASI TUMPUKAN KARTU (MODERN & RINGAN)
+        ========================================= */
         #katalogListWrapper {
             position: relative;
-            overflow: hidden; 
+            perspective: 1000px; /* Ngasih ilusi ruang 3D tapi ringan */
             width: 100%;
         }
 
@@ -509,25 +514,30 @@
             width: 100%;
             z-index: 1; 
             pointer-events: none; 
+            transform-origin: center top; /* Fokus efek dari tengah atas */
         }
 
-        @keyframes slideOutLeft {
-            0% { transform: translateX(0) scale(1); opacity: 1; filter: brightness(1); }
-            100% { transform: translateX(-30%) scale(0.95); opacity: 0; filter: brightness(0.2); }
+        /* EFEK NEXT (Halaman 1 tenggelam ke belakang, Halaman 2 muncul dari depan) */
+        @keyframes sinkBack {
+            0% { transform: scale(1) translateY(0); opacity: 1; filter: brightness(1); }
+            100% { transform: scale(0.85) translateY(-20px); opacity: 0; filter: brightness(0.2); }
         }
-        @keyframes slideInRight {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(0); }
+        @keyframes popFront {
+            0% { transform: scale(1.15) translateY(30px); opacity: 0; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
         }
 
-        @keyframes slideOutRight {
-            0% { transform: translateX(0) scale(1); opacity: 1; filter: brightness(1); }
-            100% { transform: translateX(30%) scale(0.95); opacity: 0; filter: brightness(0.2); }
+        /* EFEK PREV (Halaman 2 tenggelam ke belakang, Halaman 1 muncul dari depan) */
+        @keyframes sinkBackPrev {
+            0% { transform: scale(1) translateY(0); opacity: 1; filter: brightness(1); }
+            100% { transform: scale(0.85) translateY(20px); opacity: 0; filter: brightness(0.2); }
         }
-        @keyframes slideInLeft {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(0); }
+        @keyframes popFrontPrev {
+            0% { transform: scale(1.15) translateY(-30px); opacity: 0; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
         }
+
+
 
         .pagination-container {
             display: flex;
@@ -1370,11 +1380,11 @@ function renderKatalogPage(restoreScroll = false, swipeDirection = 'none') {
         listWrapper.appendChild(ghostDiv);
 
         if (swipeDirection === 'next') {
-            ghostDiv.style.animation = 'slideOutLeft 0.35s cubic-bezier(0.25, 1, 0.5, 1) forwards';
-            katalogList.style.animation = 'slideInRight 0.35s cubic-bezier(0.25, 1, 0.5, 1) forwards';
+            ghostDiv.style.animation = 'sinkBack 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards';
+            katalogList.style.animation = 'popFront 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards';
         } else if (swipeDirection === 'prev') {
-            ghostDiv.style.animation = 'slideOutRight 0.35s cubic-bezier(0.25, 1, 0.5, 1) forwards';
-            katalogList.style.animation = 'slideInLeft 0.35s cubic-bezier(0.25, 1, 0.5, 1) forwards';
+            ghostDiv.style.animation = 'sinkBackPrev 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards';
+            katalogList.style.animation = 'popFrontPrev 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards';
         }
 
         setTimeout(() => {
