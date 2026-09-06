@@ -525,11 +525,11 @@
             100% { background: #0a0a0c; filter: brightness(1); }
         }
 
-        /* EFEK PREV (Balikin Halaman, Angkat dari Kiri Atas, Jatuhin ke Kanan Bawah) */
+        
         @keyframes pageCurlPrevOut {
-            /* Titik tumpu di Kiri Bawah, sisi Kiri Bawah bergerak ke Kanan Atas */
-            0% { transform-origin: bottom left; transform: rotate3d(1, 1, 0, 0deg); box-shadow: none; }
-            100% { transform-origin: bottom left; transform: rotate3d(1, 1, 0, 110deg); box-shadow: -20px -20px 50px rgba(0,0,0,0.9); }
+            /* Titik tumpu di Kanan Bawah, jadi ujung Kiri Bawah yang keangkat */
+            0% { transform-origin: bottom right; transform: rotate3d(1, 1, 0, 0deg); box-shadow: none; }
+            100% { transform-origin: bottom right; transform: rotate3d(1, 1, 0, -110deg); box-shadow: -20px 20px 50px rgba(0,0,0,0.9); }
         }
         @keyframes pageCurlPrevIn {
             0% { background: #000; filter: brightness(0.2); }
