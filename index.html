@@ -496,9 +496,12 @@
             font-size: 10px;
         }
   
+        /* =========================================
+           ANIMASI BUKA/TUTUP KERTAS KETIUP ANGIN 🍃
+        ========================================= */
         #katalogListWrapper {
             position: relative;
-            perspective: 2000px; 
+            perspective: 2000px; /* Jarak kamera disesuaikan biar efek lengkungnya kerasa */
             width: 100%;
         }
 
@@ -507,32 +510,70 @@
             top: 0;
             left: 0;
             width: 100%;
-            z-index: 5; 
-            pointer-events: none; 
-            background: #0a0a0c; /* Wajib, biar halamannya padat gelap, gak tembus pandang */
+            background: #0a0a0c; 
             backface-visibility: hidden; 
             transform-style: preserve-3d;
+            pointer-events: none; 
+            /* Tambahin shadow dasar biar kertasnya keliatan punya ketebalan */
+            box-shadow: 0 0 10px rgba(0,0,0,0.5); 
         }
 
-        /* EFEK NEXT (Angkat dari Kanan Bawah, Lipat ke Kiri Atas) */
-        @keyframes pageCurlNextOut {
-            /* Titik tumpu di Kiri Atas, jadi ujung Kanan Bawah yang keangkat */
-            0% { transform-origin: top left; transform: rotate3d(1, -1, 0, 0deg); box-shadow: none; }
-            100% { transform-origin: top left; transform: rotate3d(1, -1, 0, -110deg); box-shadow: 20px 20px 50px rgba(0,0,0,0.9); }
-        }
-        @keyframes pageCurlNextIn {
-            0% { background: #000; filter: brightness(0.2); }
-            100% { background: #0a0a0c; filter: brightness(1); }
+        /* ---------------------------------
+           EFEK NEXT (Angin nip kertas dari Kanan Bawah ke Kiri Atas)
+        --------------------------------- */
+        @keyframes curlWindOpen {
+            0% { 
+                transform-origin: top left; 
+                transform: rotate3d(1, -1, 0, 0deg) skew(0deg) scale(1); 
+                box-shadow: 0 0 10px rgba(0,0,0,0.5); 
+            }
+            50% {
+                /* Di tengah jalan, kertasnya paling melengkung dan ngambang paling tinggi */
+                transform-origin: top left; 
+                transform: rotate3d(1, -1, 0, -60deg) skew(5deg) scale(1.05); 
+                box-shadow: 40px 40px 80px rgba(0,0,0,0.8); 
+                opacity: 1;
+            }
+            100% { 
+                transform-origin: top left; 
+                transform: rotate3d(1, -1, 0, -130deg) skew(0deg) scale(0.9); 
+                box-shadow: none; 
+                opacity: 0; /* Menghilang ke udara */
+            }
         }
 
-        /* EFEK PREV (Balikin Halaman, Angkat dari Kiri Atas, Jatuhin ke Kanan Bawah) */
-        @keyframes pageCurlPrevOut {
-            0% { transform-origin: bottom right; transform: rotate3d(1, -1, 0, 0deg); box-shadow: none; }
-            100% { transform-origin: bottom right; transform: rotate3d(1, -1, 0, 110deg); box-shadow: -20px -20px 50px rgba(0,0,0,0.9); }
+        @keyframes fadeBright {
+            0% { filter: brightness(0.2) blur(2px); } /* Pas ketutup kertas, agak ngeblur dikit */
+            100% { filter: brightness(1) blur(0px); }
         }
-        @keyframes pageCurlPrevIn {
-            0% { background: #000; filter: brightness(0.2); }
-            100% { background: #0a0a0c; filter: brightness(1); }
+
+        /* ---------------------------------
+           EFEK PREV (Angin nip kertas dari Kiri Atas jatuh ke Kanan Bawah)
+        --------------------------------- */
+        @keyframes curlWindClose {
+            0% { 
+                transform-origin: top left; 
+                transform: rotate3d(1, -1, 0, -130deg) skew(0deg) scale(0.9); 
+                box-shadow: none; 
+                opacity: 0; /* Muncul dari udara */
+            }
+            50% {
+                /* Di tengah jalan, kertasnya melengkung dan ngambang */
+                transform-origin: top left; 
+                transform: rotate3d(1, -1, 0, -60deg) skew(5deg) scale(1.05); 
+                box-shadow: 40px 40px 80px rgba(0,0,0,0.8); 
+                opacity: 1;
+            }
+            100% { 
+                transform-origin: top left; 
+                transform: rotate3d(1, -1, 0, 0deg) skew(0deg) scale(1); 
+                box-shadow: 0 0 10px rgba(0,0,0,0.5); 
+            }
+        }
+
+        @keyframes fadeDark {
+            0% { filter: brightness(1) blur(0px); }
+            100% { filter: brightness(0.2) blur(2px); }
         }
 
 
@@ -1375,20 +1416,33 @@ function renderKatalogPage(restoreScroll = false, swipeDirection = 'none') {
         katalogList.style.position = 'relative';
         katalogList.style.zIndex = '2';
         
+        // 🔥 MAININ EFEK KERTAS KETIUP ANGIN 🔥
+        
         listWrapper.appendChild(ghostDiv);
 
-        if (swipeDirection === 'next') {           
-            ghostDiv.style.animation = 'pageCurlNextOut 0.8s ease-in forwards';          
-            katalogList.style.animation = 'pageCurlNextIn 0.8s ease-out forwards';
-        } else if (swipeDirection === 'prev') {           
-            ghostDiv.style.animation = 'pageCurlPrevOut 0.8s ease-in forwards';
-            katalogList.style.animation = 'pageCurlPrevIn 0.8s ease-out forwards';
+        if (swipeDirection === 'next') {
+            // EFEK NEXT: Hantu (Halaman 1) terbang ke kiri atas
+            ghostDiv.style.zIndex = '5';
+            katalogList.style.zIndex = '1';
+            
+            ghostDiv.style.animation = 'curlWindOpen 0.6s cubic-bezier(0.4, 0.0, 0.2, 1) forwards';
+            katalogList.style.animation = 'fadeBright 0.6s ease-out forwards';
+            
+        } else if (swipeDirection === 'prev') {
+            // EFEK PREV: Halaman Baru jatuh nutupin layar dari kiri atas
+            ghostDiv.style.zIndex = '1';
+            katalogList.style.zIndex = '5';
+            
+            ghostDiv.style.animation = 'fadeDark 0.6s ease-out forwards';
+            katalogList.style.animation = 'curlWindClose 0.6s cubic-bezier(0.4, 0.0, 0.2, 1) forwards';
         }
 
+        // Hancurkan halaman hantu setelah 600 milidetik 
         setTimeout(() => {
             if (ghostDiv.parentNode) ghostDiv.remove();
             katalogList.style.animation = ''; 
-        }, 800);
+            katalogList.style.zIndex = ''; 
+        }, 600);
     }
 
     if (totalPages > 1) {
