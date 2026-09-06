@@ -496,278 +496,44 @@
             font-size: 10px;
         }
   
-        /* =========================================
-   REALISTIC DIAGONAL PAGE CURL
-   - GPU friendly
-   - No heavy filter animation
-   - Ada efek gulungan halaman
-========================================= */
+        #katalogListWrapper {
+            position: relative;
+            perspective: 1500px; 
+            width: 100%;
+        }
 
-#katalogListWrapper {
-    position: relative;
-    width: 100%;
-    perspective: 1400px;
-    overflow: hidden;
-    isolation: isolate;
-}
+        .ghost-page {
+            position: absolute !important;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 5; 
+            pointer-events: none; 
+            background: #0a0a0c; /* Wajib, biar halamannya padat gelap, gak tembus pandang */
+            backface-visibility: hidden; 
+            transform-style: preserve-3d;
+        }
 
-/* Halaman lama / ghost */
-.ghost-page {
-    position: absolute !important;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 5;
+        /* EFEK NEXT (Angkat dari Kanan Bawah, Lipat ke Kiri Atas) */
+        @keyframes pageCurlNextOut {
+            /* Titik tumpu di Kiri Atas, jadi ujung Kanan Bawah yang keangkat */
+            0% { transform-origin: top left; transform: rotate3d(1, -1, 0, 0deg); box-shadow: none; }
+            100% { transform-origin: top left; transform: rotate3d(1, -1, 0, -110deg); box-shadow: 20px 20px 50px rgba(0,0,0,0.9); }
+        }
+        @keyframes pageCurlNextIn {
+            0% { background: #000; filter: brightness(0.2); }
+            100% { background: #0a0a0c; filter: brightness(1); }
+        }
 
-    pointer-events: none;
-
-    background: #0a0a0c;
-
-    transform-origin: top left;
-    transform-style: preserve-3d;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-
-    will-change: transform;
-    contain: paint;
-}
-
-/* =========================================
-   LAPISAN GULUNGAN
-========================================= */
-
-.ghost-page::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: 0;
-
-    width: 42%;
-    height: 100%;
-
-    pointer-events: none;
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(255,255,255,0) 0%,
-            rgba(255,255,255,0.015) 35%,
-            rgba(255,255,255,0.08) 48%,
-            rgba(0,0,0,0.22) 58%,
-            rgba(0,0,0,0.55) 72%,
-            rgba(0,0,0,0) 100%
-        );
-
-    transform-origin: top left;
-    transform: skewY(-8deg);
-
-    opacity: 0.9;
-}
-
-/* Garis tajam di lipatan */
-.ghost-page::after {
-    content: "";
-    position: absolute;
-
-    top: 0;
-    right: 2%;
-
-    width: 3px;
-    height: 100%;
-
-    pointer-events: none;
-
-    background: linear-gradient(
-        to bottom,
-        transparent,
-        rgba(255,255,255,0.16) 30%,
-        rgba(255,255,255,0.07) 60%,
-        transparent
-    );
-
-    opacity: 0.8;
-
-    transform: skewY(-8deg);
-}
-
-
-/* =========================================
-   NEXT
-   Pojok kiri atas sebagai titik tumpu
-========================================= */
-
-@keyframes pageCurlNextOut {
-
-    0% {
-        transform:
-            translateZ(0)
-            rotate3d(1, -1, 0, 0deg)
-            scale(1);
-
-        box-shadow:
-            0 0 0 rgba(0,0,0,0);
-    }
-
-    20% {
-        transform:
-            translateZ(20px)
-            rotate3d(1, -1, 0, -18deg)
-            scale(0.998);
-
-        box-shadow:
-            8px 8px 18px rgba(0,0,0,0.20);
-    }
-
-    50% {
-        transform:
-            translateZ(35px)
-            rotate3d(1, -1, 0, -55deg)
-            scale(0.995);
-
-        box-shadow:
-            15px 15px 30px rgba(0,0,0,0.45);
-    }
-
-    75% {
-        transform:
-            translateZ(25px)
-            rotate3d(1, -1, 0, -82deg)
-            scale(0.99);
-
-        box-shadow:
-            18px 18px 38px rgba(0,0,0,0.65);
-    }
-
-    100% {
-        transform:
-            translateZ(0)
-            rotate3d(1, -1, 0, -110deg)
-            scale(0.985);
-
-        box-shadow:
-            20px 20px 45px rgba(0,0,0,0.8);
-    }
-}
-
-
-/* =========================================
-   NEXT - HALAMAN BARU
-========================================= */
-
-@keyframes pageCurlNextIn {
-
-    0% {
-        opacity: 0.45;
-        transform: translateZ(-8px) scale(0.995);
-    }
-
-    55% {
-        opacity: 0.82;
-        transform: translateZ(0) scale(0.998);
-    }
-
-    100% {
-        opacity: 1;
-        transform: translateZ(0) scale(1);
-    }
-}
-
-
-/* =========================================
-   PREV
-========================================= */
-
-@keyframes pageCurlPrevOut {
-
-    0% {
-        transform:
-            translateZ(0)
-            rotate3d(1, -1, 0, 0deg)
-            scale(1);
-
-        box-shadow:
-            0 0 0 rgba(0,0,0,0);
-    }
-
-    20% {
-        transform:
-            translateZ(20px)
-            rotate3d(1, -1, 0, 18deg)
-            scale(0.998);
-
-        box-shadow:
-            -8px 8px 18px rgba(0,0,0,0.20);
-    }
-
-    50% {
-        transform:
-            translateZ(35px)
-            rotate3d(1, -1, 0, 55deg)
-            scale(0.995);
-
-        box-shadow:
-            -15px 15px 30px rgba(0,0,0,0.45);
-    }
-
-    75% {
-        transform:
-            translateZ(25px)
-            rotate3d(1, -1, 0, 82deg)
-            scale(0.99);
-
-        box-shadow:
-            -18px 18px 38px rgba(0,0,0,0.65);
-    }
-
-    100% {
-        transform:
-            translateZ(0)
-            rotate3d(1, -1, 0, 110deg)
-            scale(0.985);
-
-        box-shadow:
-            -20px 20px 45px rgba(0,0,0,0.8);
-    }
-}
-
-
-/* =========================================
-   PREV - HALAMAN BARU
-========================================= */
-
-@keyframes pageCurlPrevIn {
-
-    0% {
-        opacity: 0.45;
-        transform: translateZ(-8px) scale(0.995);
-    }
-
-    55% {
-        opacity: 0.82;
-        transform: translateZ(0) scale(0.998);
-    }
-
-    100% {
-        opacity: 1;
-        transform: translateZ(0) scale(1);
-    }
-}
-
-
-/* =========================================
-   REDUCE MOTION
-========================================= */
-
-@media (prefers-reduced-motion: reduce) {
-
-    .ghost-page {
-        animation-duration: 0.01ms !important;
-    }
-
-    .katalog-list {
-        animation-duration: 0.01ms !important;
-    }
-}
+        /* EFEK PREV (Balikin Halaman, Angkat dari Kiri Atas, Jatuhin ke Kanan Bawah) */
+        @keyframes pageCurlPrevOut {
+            0% { transform-origin: bottom right; transform: rotate3d(1, -1, 0, 0deg); box-shadow: none; }
+            100% { transform-origin: bottom right; transform: rotate3d(1, -1, 0, 110deg); box-shadow: -20px -20px 50px rgba(0,0,0,0.9); }
+        }
+        @keyframes pageCurlPrevIn {
+            0% { background: #000; filter: brightness(0.2); }
+            100% { background: #0a0a0c; filter: brightness(1); }
+        }
 
 
 
@@ -1611,52 +1377,18 @@ function renderKatalogPage(restoreScroll = false, swipeDirection = 'none') {
         
         listWrapper.appendChild(ghostDiv);
 
-        /* =========================================
-   REALISTIC PAGE CURL CONTROLLER
-========================================= */
+        if (swipeDirection === 'next') {           
+            ghostDiv.style.animation = 'pageCurlNextOut 0.8s ease-in forwards';          
+            katalogList.style.animation = 'pageCurlNextIn 0.8s ease-out forwards';
+        } else if (swipeDirection === 'prev') {           
+            ghostDiv.style.animation = 'pageCurlPrevOut 0.8s ease-in forwards';
+            katalogList.style.animation = 'pageCurlPrevIn 0.8s ease-out forwards';
+        }
 
-const curlDuration = 780;
-
-if (swipeDirection === 'next') {
-
-    /* Halaman lama */
-    ghostDiv.style.willChange = 'transform';
-    ghostDiv.style.animation =
-        'pageCurlNextOut 780ms cubic-bezier(0.22, 0.61, 0.36, 1) forwards';
-
-    /* Halaman baru */
-    katalogList.style.willChange = 'transform, opacity';
-    katalogList.style.animation =
-        'pageCurlNextIn 780ms cubic-bezier(0.22, 0.61, 0.36, 1) forwards';
-
-} else if (swipeDirection === 'prev') {
-
-    /* Halaman lama */
-    ghostDiv.style.willChange = 'transform';
-    ghostDiv.style.animation =
-        'pageCurlPrevOut 780ms cubic-bezier(0.22, 0.61, 0.36, 1) forwards';
-
-    /* Halaman baru */
-    katalogList.style.willChange = 'transform, opacity';
-    katalogList.style.animation =
-        'pageCurlPrevIn 780ms cubic-bezier(0.22, 0.61, 0.36, 1) forwards';
-}
-
-
-/* =========================================
-   CLEANUP
-========================================= */
-
-setTimeout(() => {
-
-    if (ghostDiv && ghostDiv.parentNode) {
-        ghostDiv.remove();
-    }
-
-    katalogList.style.animation = '';
-    katalogList.style.willChange = 'auto';
-
-}, curlDuration);
+        setTimeout(() => {
+            if (ghostDiv.parentNode) ghostDiv.remove();
+            katalogList.style.animation = ''; 
+        }, 800);
     }
 
     if (totalPages > 1) {
