@@ -500,81 +500,99 @@
            ANIMASI BUKA/TUTUP KERTAS KETIUP ANGIN 🍃
         ========================================= */
         #katalogListWrapper {
-            position: relative;
-            perspective: 2000px; /* Jarak kamera disesuaikan biar efek lengkungnya kerasa */
-            width: 100%;
-        }
+    position: relative;
+    perspective: 1200px; /* Bikin depth lebih terasa tajam */
+    perspective-origin: 100% 100%; /* Sumbu pandang dari sudut kanan bawah */
+    width: 100%;
+}
 
-        .ghost-page {
-            position: absolute !important;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background: #0a0a0c; 
-            backface-visibility: hidden; 
-            transform-style: preserve-3d;
-            pointer-events: none; 
-            /* Tambahin shadow dasar biar kertasnya keliatan punya ketebalan */
-            box-shadow: 0 0 10px rgba(0,0,0,0.5); 
-        }
+.ghost-page {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: #0a0a0c; 
+    backface-visibility: hidden; 
+    transform-style: preserve-3d;
+    pointer-events: none; 
+    /* Tambahkan overlay gradient biar ada ilusi lekukan cahaya di tengah kertas */
+    overflow: hidden;
+}
 
-        /* ---------------------------------
-           EFEK NEXT (Angin nip kertas dari Kanan Bawah ke Kiri Atas)
-        --------------------------------- */
-        @keyframes curlWindOpen {
-            0% { 
-                transform-origin: top left; 
-                transform: rotate3d(1, -1, 0, 0deg) skew(0deg) scale(1); 
-                box-shadow: 0 0 10px rgba(0,0,0,0.5); 
-            }
-            50% {
-                /* Di tengah jalan, kertasnya paling melengkung dan ngambang paling tinggi */
-                transform-origin: top left; 
-                transform: rotate3d(1, -1, 0, -60deg) skew(5deg) scale(1.05); 
-                box-shadow: 40px 40px 80px rgba(0,0,0,0.8); 
-                opacity: 1;
-            }
-            100% { 
-                transform-origin: top left; 
-                transform: rotate3d(1, -1, 0, -130deg) skew(0deg) scale(0.9); 
-                box-shadow: none; 
-                opacity: 0; /* Menghilang ke udara */
-            }
-        }
+/* Pseudo-element pseudo bayangan lipatan kertas */
+.ghost-page::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.9) 100%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+}
 
-        @keyframes fadeBright {
-            0% { filter: brightness(0.2) blur(2px); } /* Pas ketutup kertas, agak ngeblur dikit */
-            100% { filter: brightness(1) blur(0px); }
-        }
+/* ---------------------------------
+   EFEK NEXT (Kertas Melengkung dari Kanan Bawah)
+--------------------------------- */
+@keyframes curlWindOpen {
+    0% { 
+        transform-origin: top left; 
+        transform: rotate3d(1, -1, 0, 0deg) skew(0deg) scale(1); 
+        box-shadow: 0 0 10px rgba(0,0,0,0.5); 
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    }
+    35% {
+        /* Puncak lengkungan: Kertas tertekuk melengkung tajam di pojok */
+        transform-origin: top left; 
+        transform: rotate3d(1, -0.8, 0.2, -45deg) skew(-12deg, 6deg) scale(1.02); 
+        box-shadow: -30px 40px 60px rgba(0,0,0,0.9); 
+        clip-path: polygon(0 0, 100% 0, 85% 100%, 0 100%); /* Efek melengkung memotong */
+    }
+    70% {
+        transform-origin: top left; 
+        transform: rotate3d(1, -0.5, 0.4, -90deg) skew(-6deg, 3deg) scale(0.95); 
+        box-shadow: -15px 20px 40px rgba(0,0,0,0.6); 
+    }
+    100% { 
+        transform-origin: top left; 
+        transform: rotate3d(1, -1, 0, -140deg) skew(0deg) scale(0.85); 
+        box-shadow: none; 
+        opacity: 0; 
+    }
+}
 
-        /* ---------------------------------
-           EFEK PREV (Angin nip kertas dari Kiri Atas jatuh ke Kanan Bawah)
-        --------------------------------- */
-        @keyframes curlWindClose {
-            0% { 
-                transform-origin: top left; 
-                transform: rotate3d(1, -1, 0, -130deg) skew(0deg) scale(0.9); 
-                box-shadow: none; 
-                opacity: 0; /* Muncul dari udara */
-            }
-            50% {
-                /* Di tengah jalan, kertasnya melengkung dan ngambang */
-                transform-origin: top left; 
-                transform: rotate3d(1, -1, 0, -60deg) skew(5deg) scale(1.05); 
-                box-shadow: 40px 40px 80px rgba(0,0,0,0.8); 
-                opacity: 1;
-            }
-            100% { 
-                transform-origin: top left; 
-                transform: rotate3d(1, -1, 0, 0deg) skew(0deg) scale(1); 
-                box-shadow: 0 0 10px rgba(0,0,0,0.5); 
-            }
-        }
+@keyframes fadeBright {
+    0% { filter: brightness(0.3) blur(2px); }
+    100% { filter: brightness(1) blur(0px); }
+}
 
-        @keyframes fadeDark {
-            0% { filter: brightness(1) blur(0px); }
-            100% { filter: brightness(0.2) blur(2px); }
-        }
+/* ---------------------------------
+   EFEK PREV (Kertas Jatuh Melengkung)
+--------------------------------- */
+@keyframes curlWindClose {
+    0% { 
+        transform-origin: top left; 
+        transform: rotate3d(1, -1, 0, -140deg) skew(0deg) scale(0.85); 
+        box-shadow: none; 
+        opacity: 0; 
+    }
+    50% {
+        transform-origin: top left; 
+        transform: rotate3d(1, -0.8, 0.2, -45deg) skew(-12deg, 6deg) scale(1.02); 
+        box-shadow: -30px 40px 60px rgba(0,0,0,0.9); 
+        opacity: 1;
+    }
+    100% { 
+        transform-origin: top left; 
+        transform: rotate3d(1, -1, 0, 0deg) skew(0deg) scale(1); 
+        box-shadow: 0 0 10px rgba(0,0,0,0.5); 
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    }
+}
+
+@keyframes fadeDark {
+    0% { filter: brightness(1) blur(0px); }
+    100% { filter: brightness(0.3) blur(2px); }
+}
 
 
 
@@ -1420,29 +1438,27 @@ function renderKatalogPage(restoreScroll = false, swipeDirection = 'none') {
         
         listWrapper.appendChild(ghostDiv);
 
-        if (swipeDirection === 'next') {
-            // EFEK NEXT: Hantu (Halaman 1) terbang ke kiri atas
-            ghostDiv.style.zIndex = '5';
-            katalogList.style.zIndex = '1';
-            
-            ghostDiv.style.animation = 'curlWindOpen 0.6s cubic-bezier(0.4, 0.0, 0.2, 1) forwards';
-            katalogList.style.animation = 'fadeBright 0.6s ease-out forwards';
-            
-        } else if (swipeDirection === 'prev') {
-            // EFEK PREV: Halaman Baru jatuh nutupin layar dari kiri atas
-            ghostDiv.style.zIndex = '1';
-            katalogList.style.zIndex = '5';
-            
-            ghostDiv.style.animation = 'fadeDark 0.6s ease-out forwards';
-            katalogList.style.animation = 'curlWindClose 0.6s cubic-bezier(0.4, 0.0, 0.2, 1) forwards';
-        }
+if (swipeDirection === 'next') {
+    ghostDiv.style.zIndex = '5';
+    katalogList.style.zIndex = '1';
+    
+    // Aktifkan transisi cubic-bezier khusus membalik kertas (seperti kain/kertas ditarik)
+    ghostDiv.style.animation = 'curlWindOpen 0.85s cubic-bezier(0.25, 1, 0.5, 1) forwards';
+    katalogList.style.animation = 'fadeBright 0.85s ease-out forwards';
+    
+} else if (swipeDirection === 'prev') {
+    ghostDiv.style.zIndex = '1';
+    katalogList.style.zIndex = '5';
+    
+    ghostDiv.style.animation = 'fadeDark 0.85s ease-out forwards';
+    katalogList.style.animation = 'curlWindClose 0.85s cubic-bezier(0.25, 1, 0.5, 1) forwards';
+}
 
-        // Hancurkan halaman hantu setelah 600 milidetik 
-        setTimeout(() => {
-            if (ghostDiv.parentNode) ghostDiv.remove();
-            katalogList.style.animation = ''; 
-            katalogList.style.zIndex = ''; 
-        }, 600);
+setTimeout(() => {
+    if (ghostDiv.parentNode) ghostDiv.remove();
+    katalogList.style.animation = ''; 
+    katalogList.style.zIndex = ''; 
+}, 850);
     }
 
     if (totalPages > 1) {
