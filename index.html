@@ -1385,20 +1385,20 @@ function renderKatalogPage(restoreScroll = false, swipeDirection = 'none') {
         // 🔥 MAININ EFEK BUKU DIAGONAL 🔥
         if (swipeDirection === 'next') {
             // Halaman lama keangkat nge-roll ke kiri atas
-            ghostDiv.style.animation = 'pageCurlNextOut 0.4s ease-in forwards';
+            ghostDiv.style.animation = 'pageCurlNextOut 0.8s ease-in forwards';
             // Halaman baru di bawahnya cuma butuh nyesuain cahaya (terang perlahan)
-            katalogList.style.animation = 'pageCurlNextIn 0.4s ease-out forwards';
+            katalogList.style.animation = 'pageCurlNextIn 0.8s ease-out forwards';
         } else if (swipeDirection === 'prev') {
             // Halaman lama nge-roll ngebuang ke kanan bawah
-            ghostDiv.style.animation = 'pageCurlPrevOut 0.4s ease-in forwards';
-            katalogList.style.animation = 'pageCurlPrevIn 0.4s ease-out forwards';
+            ghostDiv.style.animation = 'pageCurlPrevOut 0.8s ease-in forwards';
+            katalogList.style.animation = 'pageCurlPrevIn 0.8s ease-out forwards';
         }
 
         // Hancurkan halaman hantu setelah 400 milidetik 
         setTimeout(() => {
             if (ghostDiv.parentNode) ghostDiv.remove();
             katalogList.style.animation = ''; 
-        }, 400);
+        }, 800);
     }
 
     if (totalPages > 1) {
