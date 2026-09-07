@@ -495,88 +495,6 @@
         .views-text i {
             font-size: 10px;
         }
-  
-        /* =========================================
-           ANIMASI BUKA/TUTUP KERTAS KETIUP ANGIN 🍃
-        ========================================= */
-        #katalogListWrapper {
-            position: relative;
-            perspective: 1200px; /* Jarak kamera disesuaikan biar efek lengkungnya kerasa */
-            width: 100%;
-        }
-
-        .ghost-page {
-            position: absolute !important;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background: #0a0a0c; 
-            backface-visibility: hidden; 
-            transform-style: preserve-3d;
-            pointer-events: none; 
-            /* Tambahin shadow dasar biar kertasnya keliatan punya ketebalan */
-            box-shadow: 0 0 10px rgba(0,0,0,0.5); 
-        }
-
-        /* ---------------------------------
-           EFEK NEXT (Angin nip kertas dari Kanan Bawah ke Kiri Atas)
-        --------------------------------- */
-        @keyframes curlWindOpen {
-            0% { 
-                transform-origin: top left; 
-                transform: rotate3d(1, -1, 0, 0deg) skew(0deg) scale(1); 
-                box-shadow: 0 0 10px rgba(0,0,0,0.5); 
-            }
-            50% {
-                /* Di tengah jalan, kertasnya paling melengkung dan ngambang paling tinggi */
-                transform-origin: top left; 
-                transform: rotate3d(1, -1, 0, -60deg) skew(5deg) scale(1.05); 
-                box-shadow: 40px 40px 80px rgba(0,0,0,0.8); 
-                opacity: 1;
-            }
-            100% { 
-                transform-origin: top left; 
-                transform: rotate3d(1, -1, 0, -130deg) skew(0deg) scale(0.9); 
-                box-shadow: none; 
-                opacity: 0; /* Menghilang ke udara */
-            }
-        }
-
-        @keyframes fadeBright {
-            0% { filter: brightness(0.2) blur(2px); } /* Pas ketutup kertas, agak ngeblur dikit */
-            100% { filter: brightness(1) blur(0px); }
-        }
-
-        /* ---------------------------------
-           EFEK PREV (Angin nip kertas dari Kiri Atas jatuh ke Kanan Bawah)
-        --------------------------------- */
-        @keyframes curlWindClose {
-            0% { 
-                transform-origin: top left; 
-                transform: rotate3d(1, -1, 0, -130deg) skew(0deg) scale(0.9); 
-                box-shadow: none; 
-                opacity: 0; /* Muncul dari udara */
-            }
-            50% {
-                /* Di tengah jalan, kertasnya melengkung dan ngambang */
-                transform-origin: top left; 
-                transform: rotate3d(1, -1, 0, -60deg) skew(5deg) scale(1.05); 
-                box-shadow: 40px 40px 80px rgba(0,0,0,0.8); 
-                opacity: 1;
-            }
-            100% { 
-                transform-origin: top left; 
-                transform: rotate3d(1, -1, 0, 0deg) skew(0deg) scale(1); 
-                box-shadow: 0 0 10px rgba(0,0,0,0.5); 
-            }
-        }
-
-        @keyframes fadeDark {
-            0% { filter: brightness(1) blur(0px); }
-            100% { filter: brightness(0.2) blur(2px); }
-        }
-
-
 
         .pagination-container {
             display: flex;
@@ -886,9 +804,7 @@
             </div>
         </div>
 
-        <div id="katalogListWrapper">
-            <div class="katalog-list" id="katalogList"></div>
-        </div>
+        <div class="katalog-list" id="katalogList"></div>
 
         <div class="pagination-container" id="paginationContainer" style="display: none;"></div>
     </div>
@@ -935,7 +851,7 @@ let isFromFolder = false;
 let isDirectShare = false;
 
 let currentPage = 1;
-const ITEMS_PER_PAGE = 5;
+const ITEMS_PER_PAGE = 10;
 let isSelectMode = false;
 let currentPlayingSlug = "";
 
@@ -1330,17 +1246,10 @@ function goHome() {
     window.location.href = window.location.pathname;
 }
 
-function renderKatalogPage(restoreScroll = false, swipeDirection = 'none') {
+function renderKatalogPage(restoreScroll = false) {
     const katalogList = document.getElementById("katalogList");
-    const listWrapper = document.getElementById("katalogListWrapper");
     const paginationContainer = document.getElementById("paginationContainer");
-
-    let oldHtml = "";
-    if (swipeDirection !== 'none' && katalogList.innerHTML.trim() !== "") {
-        oldHtml = katalogList.innerHTML;
-    }
-
-    katalogList.innerHTML = ""; 
+    katalogList.innerHTML = "";
 
     if (filteredKeys.length === 0) {
         katalogList.innerHTML = "<div style='text-align:center; color:#888; padding:30px 0;'>Video tidak ditemukan.</div>";
@@ -1355,7 +1264,6 @@ function renderKatalogPage(restoreScroll = false, swipeDirection = 'none') {
     const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, filteredKeys.length);
     const pageKeys = filteredKeys.slice(startIndex, endIndex);
 
-    const fragment = document.createDocumentFragment();
     pageKeys.forEach((key, index) => {
         const dataItem = allVideoData[key];
         if(!dataItem) return;
@@ -1366,6 +1274,7 @@ function renderKatalogPage(restoreScroll = false, swipeDirection = 'none') {
         });
 
         const isChecked = selectedSlugs.has(key) ? 'selected' : '';
+
         const item = document.createElement("div");
         item.className = `video-item ${isChecked}`;
         item.setAttribute("id", `item-${key}`);
@@ -1395,7 +1304,9 @@ function renderKatalogPage(restoreScroll = false, swipeDirection = 'none') {
         }
 
         item.innerHTML = `
-            <div class="custom-checkbox"><i class="fa-solid fa-check"></i></div>
+            <div class="custom-checkbox">
+                <i class="fa-solid fa-check"></i>
+            </div>
             ${thumbHtml}
             <div class="video-info">
                 <div class="video-title-katalog">${formattedTitle}</div>
@@ -1403,54 +1314,17 @@ function renderKatalogPage(restoreScroll = false, swipeDirection = 'none') {
                 ${tagHtml}
             </div>
         `;
-        fragment.appendChild(item);
+        katalogList.appendChild(item);
     });
-
-    katalogList.appendChild(fragment);
-   
-    if (oldHtml !== "") {     
-        const ghostDiv = document.createElement('div');
-        ghostDiv.className = 'katalog-list ghost-page';
-        ghostDiv.innerHTML = oldHtml;
-        
-        katalogList.style.position = 'relative';
-        katalogList.style.zIndex = '2';
-        
-        // 🔥 MAININ EFEK KERTAS KETIUP ANGIN 🔥
-        
-        listWrapper.appendChild(ghostDiv);
-
-        if (swipeDirection === 'next') {
-            // EFEK NEXT: Hantu (Halaman 1) terbang ke kiri atas
-            ghostDiv.style.zIndex = '5';
-            katalogList.style.zIndex = '1';
-            
-            ghostDiv.style.animation = 'curlWindOpen 0.8s cubic-bezier(0.4, 0.0, 0.2, 1) forwards';
-            katalogList.style.animation = 'fadeBright 0.8s ease-out forwards';
-            
-        } else if (swipeDirection === 'prev') {
-            // EFEK PREV: Halaman Baru jatuh nutupin layar dari kiri atas
-            ghostDiv.style.zIndex = '1';
-            katalogList.style.zIndex = '5';
-            
-            ghostDiv.style.animation = 'fadeDark 0.8s ease-out forwards';
-            katalogList.style.animation = 'curlWindClose 0.8s cubic-bezier(0.4, 0.0, 0.2, 1) forwards';
-        }
-
-        // Hancurkan halaman hantu setelah 600 milidetik 
-        setTimeout(() => {
-            if (ghostDiv.parentNode) ghostDiv.remove();
-            katalogList.style.animation = ''; 
-            katalogList.style.zIndex = ''; 
-        }, 800);
-    }
 
     if (totalPages > 1) {
         paginationContainer.style.display = "flex";
+
         let optionsHtml = '';
         for (let i = 1; i <= totalPages; i++) {
             optionsHtml += `<option value="${i}" ${i === currentPage ? 'selected' : ''}>Page ${i} dari ${totalPages}</option>`;
         }
+
         paginationContainer.innerHTML = `
             <select class="page-select" onchange="pilihHalaman(this.value)">
                 ${optionsHtml}
@@ -1480,13 +1354,8 @@ function renderKatalogPage(restoreScroll = false, swipeDirection = 'none') {
 }
 
 function pilihHalaman(page) {
-    let oldPage = currentPage;
     currentPage = parseInt(page);
-    if (currentPage === oldPage) return; 
-    
-    let direction = currentPage > oldPage ? 'next' : 'prev';
-    
-    renderKatalogPage(false, direction);
+    renderKatalogPage();
     window.scrollTo({ top: 0, behavior: 'smooth' });
     
     const url = new URL(window.location.href);
@@ -1502,11 +1371,9 @@ function handleItemClick(key) {
     }
 }
 
-function gantiHalaman(directionNum) {
-    let directionStr = directionNum > 0 ? 'next' : 'prev';
-    currentPage += directionNum;
-    
-    renderKatalogPage(false, directionStr);
+function gantiHalaman(direction) {
+    currentPage += direction;
+    renderKatalogPage();
     window.scrollTo({ top: 0, behavior: 'smooth' });
     
     const url = new URL(window.location.href);
