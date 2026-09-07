@@ -24,717 +24,285 @@
     
     document.onkeydown = function(e) {              
         if (typeof isEditMode !== 'undefined' && !isEditMode) {
-            if(e.keyCode == 123) { 
-                return false;
-            }       
+            if(e.keyCode == 123) return false;
             if((e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67)) || 
-               (e.metaKey && e.altKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67))) {
-                return false;
-            }          
-            if((e.ctrlKey && e.keyCode == 85) || (e.metaKey && e.altKey && e.keyCode == 85)) { 
-                return false;
-            }         
-            if((e.ctrlKey && e.keyCode == 83) || (e.metaKey && e.keyCode == 83)) { 
-                return false;
-            }
+               (e.metaKey && e.altKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67))) return false;
+            if((e.ctrlKey && e.keyCode == 85) || (e.metaKey && e.altKey && e.keyCode == 85)) return false;
+            if((e.ctrlKey && e.keyCode == 83) || (e.metaKey && e.keyCode == 83)) return false;
         }
     };
-</script>
+    </script>
 
     <style>
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
         
         html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            min-height: 100vh;
-            background: #000000;
-            color: #fff;
+            margin: 0; padding: 0; width: 100%; min-height: 100vh;
+            background: #000000; color: #fff;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
+            display: flex; justify-content: center; align-items: flex-start;
         }
 
         .container {
-            width: 100%;
-            max-width: 480px;
-            background: #0a0a0c;
-            position: relative;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            width: 100%; max-width: 480px; background: #0a0a0c;
+            position: relative; min-height: 100vh; display: flex; flex-direction: column;
         }
         
         .container.mode-player {
-            height: 100vh;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
+            height: 100vh; justify-content: center; align-items: center; overflow: hidden;
         }
     
         .container.mode-katalog {
-            height: auto;
-            justify-content: flex-start;
-            padding-bottom: 110px;
+            height: auto; justify-content: flex-start; padding-bottom: 65px !important;
         }
+        .select-mode-active { padding-bottom: 80px !important; }       
 
-        #playerSection {
-            width: 100%;
-            height: 100%;
-        }
+        #playerSection { width: 100%; height: 100%; }
 
         .video-wrapper {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            background: #000;
-            overflow: hidden;
+            position: relative; width: 100%; height: 100%; background: #000; overflow: hidden;
         }
 
         #videoPolos {
-            width: 100%;
-            height: 100%;
-            object-fit: contain; 
-            background-color: #000;
-            display: block;
+            width: 100%; height: 100%; object-fit: contain; background-color: #000; display: block;
         }
 
         .overlay {
-            display: none;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: transparent;
-            z-index: 10;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
+            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: transparent; z-index: 10; justify-content: center; align-items: center; cursor: pointer;
         }
 
         .btn-play-elegan {
-            padding: 10px 16px;
-            background: rgba(255, 255, 255, 0.95); 
-            border: none; 
-            outline: none; 
-            border-radius: 6px;
-            color: #000000; 
-            font-size: 16px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.6);
-            cursor: pointer;
-            transition: background 0.2s, transform 0.1s;
+            padding: 10px 16px; background: rgba(255, 255, 255, 0.95); border: none; outline: none; border-radius: 6px;
+            color: #000000; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 6px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.6); cursor: pointer; transition: background 0.2s, transform 0.1s;
         }
 
-        .btn-play-elegan i {
-            font-size: 14px;
-            color: #000000; 
-        }
+        .btn-play-elegan i { font-size: 14px; color: #000000; }
+        .btn-play-elegan:active { transform: scale(0.96); background: rgba(230, 230, 230, 0.95); }
 
-        .btn-play-elegan:active {
-            transform: scale(0.96);
-            background: rgba(230, 230, 230, 0.95); 
-        }
-
-        #katalogSection {
-            display: none;
-            padding: 0 16px 16px 16px;
-            width: 100%;
-        }
+        #katalogSection { display: none; padding: 0 16px 16px 16px; width: 100%; }
 
         .katalog-header {
-            position: sticky;
-            top: 0;
-            background: rgba(10, 10, 12, 0.85);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            z-index: 50;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: nowrap;
-            padding: 16px 0 14px 0;
-            margin-bottom: 16px;
-            border-bottom: 1px solid #2a2a35;
+            position: sticky; top: 0; background: rgba(10, 10, 12, 0.85);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            z-index: 50; display: flex; align-items: center; justify-content: space-between; flex-wrap: nowrap;
+            padding: 16px 0 14px 0; margin-bottom: 16px; border-bottom: 1px solid #2a2a35;
         }
 
         .katalog-header-title {
-            font-size: 16px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #e1e1e1;
+            font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; color: #e1e1e1;
         }
         
-        .katalog-header-title img {
-            height: 28px;
-            width: auto;
-            display: block;
-        }
-
-        .katalog-text-title {
-            display: none;
-            align-items: center;
-            gap: 8px;
-        }
+        .katalog-header-title img { height: 28px; width: auto; display: block; }
+        .katalog-text-title { display: none; align-items: center; gap: 8px; }
                 
         .live-user-badge {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 10px;
-            font-weight: 700;
-            white-space: nowrap; 
+            display: flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 700; white-space: nowrap; 
         }
 
         .live-dot {
-            display: inline-block;
-            width: 5px;
-            height: 5px;
-            background-color: #ff0000;
-            border-radius: 50%;
+            display: inline-block; width: 5px; height: 5px; background-color: #ff0000; border-radius: 50%;
             animation: kedipKamera 1.2s infinite ease-in-out;
         }
 
-        .live-angka {
-            color: #e1e1e1; 
-        }
-
-        .live-text {
-            color: #4ade80; 
-        }
+        .live-angka { color: #e1e1e1; }
+        .live-text { color: #4ade80; }
        
          @keyframes kedipKamera {
-            0% { 
-                opacity: 1; 
-                box-shadow: 0 0 4px 1px rgba(255, 0, 0, 0.8); 
-            }
-            50% { 
-                opacity: 0.2; 
-                box-shadow: 0 0 0px rgba(255, 0, 0, 0); 
-            }
-            100% { 
-                opacity: 1; 
-                box-shadow: 0 0 4px 1px rgba(255, 0, 0, 0.8); 
-            }
+            0% { opacity: 1; box-shadow: 0 0 4px 1px rgba(255, 0, 0, 0.8); }
+            50% { opacity: 0.2; box-shadow: 0 0 0px rgba(255, 0, 0, 0); }
+            100% { opacity: 1; box-shadow: 0 0 4px 1px rgba(255, 0, 0, 0.8); }
         }
 
         .btn-home-folder {
-            display: none;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: #3b82f6;
-            padding: 5px 10px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            align-items: center;
-            gap: 6px;
-            transition: background 0.2s;
+            display: none; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #3b82f6; padding: 5px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;
+            align-items: center; gap: 6px; transition: background 0.2s;
         }
 
-        .btn-home-folder:active {
-            background: rgba(255, 255, 255, 0.2);
-        }
+        .btn-home-folder:active { background: rgba(255, 255, 255, 0.2); }
 
-        .header-controls {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+        .header-controls { display: flex; align-items: center; gap: 12px; }
 
         .btn-icon-head {
-            background: none;
-            border: none;
-            color: #3b82f6;
-            font-size: 18px;
-            cursor: pointer;
-            padding: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: color 0.2s;
+            background: none; border: none; color: #3b82f6; font-size: 18px; cursor: pointer; padding: 4px;
+            display: flex; align-items: center; justify-content: center; transition: all 0.2s ease;
         }
 
         .btn-icon-head:hover, .btn-icon-head:active, .btn-icon-head.active {
-            color: #3b82f6; 
-            background: none;
-            border: none;
-            transform: scale(1.1); 
+            color: #60a5fa; transform: scale(1.1); 
         }
 
         .btn-select-mode {
-            font-size: 13px;
-            background: none;
-            border: none;
-            color: #3b82f6;
-            padding: 4px 0;
-            cursor: pointer;
-            font-weight: 600;
-            transition: color 0.2s;
+            font-size: 13px; background: none; border: none; color: #3b82f6; padding: 4px 0; cursor: pointer;
+            font-weight: 600; transition: color 0.2s;
         }
 
-        .btn-select-mode.active {
-            background: none;
-            border: none;
-            color: #ef4444;
-        }
+        .btn-select-mode.active { color: #ef4444; }
 
         .search-box-container {
-            display: none;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            padding: 10px 0;
-            background: #0a0a0c;
-            z-index: 60;
-            align-items: center;
+            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; padding: 10px 0;
+            background: #0a0a0c; z-index: 60; align-items: center;
         }
 
-        .search-box-inner {
-            position: relative;
-            width: 100%;
-            display: flex;
-            align-items: center;
-        }
+        .search-box-inner { position: relative; width: 100%; display: flex; align-items: center; }
 
         .search-input {
-            width: 100%;
-            background: #121216;
-            border: 1px solid #2a2a35;
-            border-radius: 6px;
-            padding: 9px 36px 9px 12px;
-            color: #fff;
-            font-size: 13px;
-            outline: none;
+            width: 100%; background: #121216; border: 1px solid #2a2a35; border-radius: 6px;
+            padding: 9px 36px 9px 12px; color: #fff; font-size: 13px; outline: none;
         }
 
-        .search-input:focus {
-            border-color: #3b82f6;
-        }
+        .search-input:focus { border-color: #3b82f6; }
 
         .search-clear-btn {
-            position: absolute;
-            right: 12px;
-            color: #888;
-            cursor: pointer;
-            font-size: 14px;
-            padding: 4px;
+            position: absolute; right: 12px; color: #888; cursor: pointer; font-size: 14px; padding: 4px;
         }
 
-        .katalog-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
+        .katalog-list { display: flex; flex-direction: column; gap: 10px; }
 
         .video-item {
-            background: #121216;
-            border: 1px solid #1f1f26;
-            border-radius: 8px;
-            padding: 10px 12px;
-            display: flex;
-            align-items: flex-start;
-            gap: 14px;
-            cursor: pointer;
-            transition: border-color 0.2s, background 0.2s;
+            background: #121216; border: 1px solid #1f1f26; border-radius: 8px; padding: 10px 12px;
+            display: flex; align-items: flex-start; gap: 14px; cursor: pointer; transition: border-color 0.2s, background 0.2s;
         }
 
-        .video-item:active {
-            background: #181820;
-        }
+        .video-item:active { background: #181820; }
 
-        .video-item.selected {
-            border-color: rgba(59, 130, 246, 0.5);
-            background: #141722;
-        }
+        .video-item.selected { border-color: rgba(59, 130, 246, 0.5); background: #141722; }
 
         .custom-checkbox {
-            display: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 4px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            background: rgba(255, 255, 255, 0.05);
-            justify-content: center;
-            align-items: center;
-            flex-shrink: 0;
-            align-self: center;
-            transition: all 0.2s;
+            display: none; width: 20px; height: 20px; border-radius: 4px; border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.05); justify-content: center; align-items: center; flex-shrink: 0;
+            align-self: center; transition: all 0.2s;
         }
 
-        .custom-checkbox i {
-            display: none;
-            font-size: 11px;
-            color: #fff;
-        }
-
-        .select-mode-active .custom-checkbox {
-            display: flex;
-        }
-
-        .video-item.selected .custom-checkbox {
-            background: #2563eb;
-            border-color: #3b82f6;
-        }
-
-        .video-item.selected .custom-checkbox i {
-            display: block;
-        }
+        .custom-checkbox i { display: none; font-size: 11px; color: #fff; }
+        .select-mode-active .custom-checkbox { display: flex; }
+        .video-item.selected .custom-checkbox { background: #2563eb; border-color: #3b82f6; }
+        .video-item.selected .custom-checkbox i { display: block; }
 
         .thumb-box {
-            width: 40px;
-            height: 60px;
-            background: #18181f;
-            border-radius: 4px;
-            overflow: hidden;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            width: 40px; height: 60px; background: #18181f; border-radius: 4px; overflow: hidden; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .thumb-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .thumb-box i {
-            color: #444;
-            font-size: 16px;
-        }
+        .thumb-box img { width: 100%; height: 100%; object-fit: cover; }
+        .thumb-box i { color: #444; font-size: 16px; }
 
         .video-info {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between; 
-            height: 60px; 
-            overflow: hidden;
-            flex: 1;
+            display: flex; flex-direction: column; justify-content: space-between; height: 60px; overflow: hidden; flex: 1;
         }
 
         .video-title-katalog {
-            font-size: 14px;
-            font-weight: 600;
-            color: #f1f5f9;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            line-height: 1.2;
+            font-size: 14px; font-weight: 600; color: #f1f5f9; white-space: nowrap; overflow: hidden;
+            text-overflow: ellipsis; line-height: 1.2;
         }
 
-        .video-slug-sub {
-            font-size: 11px;
-            color: #818cf8;
-            opacity: 0.8;
-        }
-
-        .video-tag-container {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-top: 0;
-        }
+        .video-slug-sub { font-size: 11px; color: #818cf8; opacity: 0.8; }
+        .video-tag-container { display: flex; align-items: center; gap: 6px; margin-top: 0; }
 
         .badge-tag {
-            font-size: 10px;
-            font-weight: 700;
-            padding: 2px 6px;
-            border-radius: 4px;
-            letter-spacing: 0.3px;
-            line-height: 1;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
+            font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; letter-spacing: 0.3px;
+            line-height: 1; display: inline-flex; align-items: center; gap: 4px;
         }
+        .badge-tag i { font-size: 9px; }
 
-        .badge-tag i {
-            font-size: 9px;
-        }
+        .badge-tag.new { color: #4ade80; background: rgba(74, 222, 128, 0.12); border: 1px solid rgba(74, 222, 128, 0.25); }
+        .badge-tag.hot { color: #f87171; background: rgba(248, 113, 113, 0.15); border: 1px solid rgba(248, 113, 113, 0.3); }
+        .badge-tag.hd { color: #60a5fa; background: rgba(96, 165, 250, 0.12); border: 1px solid rgba(96, 165, 250, 0.25); }
 
-        .badge-tag.new {
-            color: #4ade80;
-            background: rgba(74, 222, 128, 0.12);
-            border: 1px solid rgba(74, 222, 128, 0.25);
-        }
-
-        .badge-tag.hot {
-            color: #f87171;
-            background: rgba(248, 113, 113, 0.15);
-            border: 1px solid rgba(248, 113, 113, 0.3);
-        }
-
-        .badge-tag.hd {
-            color: #60a5fa;
-            background: rgba(96, 165, 250, 0.12);
-            border: 1px solid rgba(96, 165, 250, 0.25);
-        }
-
-        .views-text {
-            font-size: 11px;
-            color: #64748b;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .views-text i {
-            font-size: 10px;
-        }
+        .views-text { font-size: 11px; color: #64748b; display: inline-flex; align-items: center; gap: 4px; }
+        .views-text i { font-size: 10px; }
 
         .pagination-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 1px solid #2a2a35;
+            display: flex; justify-content: space-between; align-items: center; margin-top: 16px;
+            padding-top: 16px; border-top: 1px solid #2a2a35;
         }            
             
-        .select-mode-active .pagination-container {
-            border-bottom: 1px solid #2a2a35;
-            padding-bottom: 16px; 
-        }
+        .select-mode-active .pagination-container { border-bottom: 1px solid #2a2a35; padding-bottom: 16px; }
 
-        .pagination-buttons {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        .pagination-buttons { display: flex; align-items: center; gap: 8px; }
 
         .btn-page {
-            background: #18181f;
-            border: 1px solid #2a2a35;
-            color: #3b82f6;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            background: #18181f; border: 1px solid #2a2a35; color: #3b82f6; padding: 6px 12px; border-radius: 6px;
+            font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px;
             box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.35);
         }
-
-        .btn-page:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
+        .btn-page:disabled { opacity: 0.4; cursor: not-allowed; }
 
         .page-select {
-            background: transparent;
-            border: none;
-            color: #3b82f6;
-            padding: 0 4px;
-            font-size: 12px;
-            font-weight: 600;
-            outline: none;
-            cursor: pointer;            
+            background: transparent; border: none; color: #3b82f6; padding: 0 4px; font-size: 12px; font-weight: 600;
+            outline: none; cursor: pointer;            
         }
-
-        .page-select option {
-            background: #121216;
-            color: #fff;
-        }
+        .page-select option { background: #121216; color: #fff; }
 
         .bulk-copy-bar {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: calc(100% - 32px);
-            max-width: 448px;
-            background: rgba(25, 25, 30, 0.95);
-            border: 1px solid #2a2a35;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            padding: 10px 14px;
-            border-radius: 12px;
-            display: none;
-            flex-direction: column;
-            gap: 8px;
-            z-index: 90;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.8), 0 0 1px rgba(255, 255, 255, 0.1) inset; 
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: calc(100% - 32px);
+            max-width: 448px; background: rgba(25, 25, 30, 0.95); border: 1px solid rgba(255, 255, 255, 0.08); 
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); padding: 10px 14px; border-radius: 12px;
+            display: none; flex-direction: column; gap: 8px; z-index: 90; box-shadow: 0 10px 25px rgba(0,0,0,0.8);
         }
                 
         .bulk-bar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
+            display: flex; justify-content: space-between; align-items: center; width: 100%;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 8px; margin-bottom: 2px;
         }
 
-        .selected-count {
-            font-size: 12px;
-            font-weight: 600;
-            color: #e1e1e1;
-        }
-
-        .bulk-btn-group {
-            display: flex;
-            gap: 8px;
-            width: 100%;
-        }
+        .selected-count { font-size: 12px; font-weight: 600; color: #e1e1e1; }
+        .bulk-btn-group { display: flex; gap: 8px; width: 100%; }
 
         .btn-bulk-copy {
-            flex: 1;
-            background: #2563eb;
-            color: #fff;
-            border: none;
-            padding: 8px 10px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            transition: background 0.2s;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+            flex: 1; background: #2563eb; color: #fff; border: none; padding: 8px 10px; border-radius: 6px;
+            font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center;
+            gap: 6px; transition: background 0.2s; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
         }
-
-        .btn-bulk-copy.folder-btn {
-            background: #8b5cf6;
-            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
-        }
-
-        .btn-bulk-copy:active {
-            transform: scale(0.96);
-            opacity: 0.9;
-        }
+        .btn-bulk-copy.folder-btn { background: #8b5cf6; box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4); }
+        .btn-bulk-copy:active { transform: scale(0.96); opacity: 0.9; }
 
         .toast {
-            position: fixed;
-            bottom: 110px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(30, 30, 35, 0.95);
-            border: 1px solid rgba(255,255,255,0.2);
-            color: #fff;
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.6);
-            display: none;
-            z-index: 100;
+            position: fixed; bottom: 110px; left: 50%; transform: translateX(-50%); background: rgba(30, 30, 35, 0.95);
+            border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 10px 20px; border-radius: 20px;
+            font-size: 12px; font-weight: 600; box-shadow: 0 4px 15px rgba(0,0,0,0.6); display: none; z-index: 100;
         }
 
         #errorMessage {
-            display: none;
-            padding: 40px 20px;
-            text-align: center;
-            color: #ff5555;
-            font-weight: bold;
+            display: none; padding: 40px 20px; text-align: center; color: #ff5555; font-weight: bold;
         }
         
-        #btnSelectMode {
-            display: none;
-        }
-
+        #btnSelectMode { display: none; }
         #btnToggleSearch { order: 1; }
         #btnHomeFolder   { order: 2; }
         #btnSelectMode   { order: 3; }
                
         .promo-bottom-bar {
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 480px; 
-            background: rgba(10, 10, 12, 0.85);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-top: none; 
-            padding: 16px 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 50;            
-            text-decoration: none;
-            transition: background 0.2s, transform 0.2s;
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; 
+            background: rgba(10, 10, 12, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border-top: none; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;
+            z-index: 50; text-decoration: none; transition: background 0.2s, transform 0.2s;
         }
 
         .promo-bottom-bar::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 16px; 
-            right: 16px; 
-            height: 1px;
-            background: #2a2a35;
+            content: ""; position: absolute; top: 0; left: 16px; right: 16px; height: 1px; background: rgba(255, 255, 255, 0.08);
         }
 
-        .promo-bottom-bar:active {
-            background: rgba(25, 25, 30, 0.95);
-        }
+        .promo-bottom-bar:active { background: rgba(25, 25, 30, 0.95); }
+        .select-mode-active ~ .promo-bottom-bar { display: none !important; }
 
-        .promo-content {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        .promo-content { display: flex; align-items: center; gap: 12px; }
 
         .promo-icon {
-            width: 35px;
-            height: 35px;
-            background: #24A1DE; 
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            font-size: 20px;
-            box-shadow: 0 0 10px rgba(36, 161, 222, 0.5);
+            width: 36px; height: 36px; background: #24A1DE; border-radius: 50%; display: flex; justify-content: center;
+            align-items: center; color: white; font-size: 18px; box-shadow: 0 0 10px rgba(36, 161, 222, 0.5);
             animation: pulseTele 2s infinite; 
         }
 
-        .promo-text-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .promo-title {
-            color: #fff;
-            font-size: 15px;
-            font-weight: 800;
-            line-height: 1.3;
-        }
-
-        .promo-subtitle {
-            color: #aaa;
-            font-size: 11px;
-            font-weight: 500;
-        }
+        .promo-text-group { display: flex; flex-direction: column; }
+        .promo-title { color: #fff; font-size: 14px; font-weight: 700; line-height: 1.2; }
+        .promo-subtitle { color: #aaa; font-size: 11px; font-weight: 500; }
 
         .promo-btn {
-            background: #24A1DE;
-            color: white;
-            border: none;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            cursor: pointer;
-            box-shadow: 0 2px 8px rgba(36, 161, 222, 0.4);
+            background: #24A1DE; color: white; border: none; padding: 6px 14px; border-radius: 20px; font-size: 12px;
+            font-weight: 700; letter-spacing: 0.5px; cursor: pointer; box-shadow: 0 2px 8px rgba(36, 161, 222, 0.4);
         }
 
         @keyframes pulseTele {
@@ -743,56 +311,38 @@
             100% { box-shadow: 0 0 0 0 rgba(36, 161, 222, 0); }
         }
 
-        .container.mode-katalog {
-            padding-bottom: 67px !important; 
-        }
-
-        .select-mode-active {
-            padding-bottom: 43px !important;
-        }       
-
-            /* =========================================
+        /* =========================================
            EFEK REELS "NGINTIP" NEXT VIDEO
         ========================================= */
         @keyframes peekingUp {
             0% { transform: translateY(0); }
-            30% { transform: translateY(-40px); } /* Keangkat ke atas dikit */
-            70% { transform: translateY(-40px); } /* Nahan di atas */
-            100% { transform: translateY(0); } /* Balik lagi ke bawah */
+            30% { transform: translateY(-60px); } 
+            70% { transform: translateY(-60px); } 
+            100% { transform: translateY(0); } 
         }
 
-        /* Wadah buat nampung thumbnail yang mau ngintip di bawah player */
+        @keyframes bounceUpHint {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
         #peekingThumbnail {
-            position: absolute;
-            bottom: -40px; /* Sembunyi di bawah layar */
-            left: 0;
-            width: 100%;
-            height: 40px;
-            background: #121216;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            font-size: 11px;
-            color: #888;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            z-index: 1;
+            position: absolute; bottom: -60px; left: 0; width: 100%; height: 60px; background: #000;
+            display: none; justify-content: center; align-items: center; font-size: 12px; color: #fff;
+            border-top: 1px solid rgba(255,255,255,0.1); z-index: 1; overflow: hidden;
         }
 
         #peekingThumbnail img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 0.5; /* Agak gelap biar fokus tetep di player */
+            position: absolute; width: 100%; height: 100%; object-fit: cover; opacity: 0.3; 
         }  
     </style>
 </head>
-
 <body>
 
 <div class="container" id="mainContainer">
-    <div id="playerSection" style="display: none;">
-        <!-- TAMBAHIN GAYA INI BIAR BISA GERAK NAIK TURUN -->
-        <div id="playerMovable" style="width: 100%; height: 100%; position: relative; transition: transform 0.3s ease;">
+    <!-- 🔥 PLAYER SECTION DIRUBAH BIAR BISA NGINTIP 🔥 -->
+    <div id="playerSection" style="display: none; position: relative; width: 100%; height: 100vh; overflow: hidden;">
+        <div id="playerMovable" style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; transition: transform 0.3s ease;">
             
             <div class="video-wrapper">
                 <video id="videoPolos" controls playsinline preload="metadata" muted controlslist="nodownload" disablePictureInPicture>
@@ -805,33 +355,26 @@
                 </div>
             </div>
 
-            <!-- 🔥 INI KOTAK YANG BAKAL NGINTIP DARI BAWAH 🔥 -->
+            <!-- KOTAK YANG NGINTIP DARI BAWAH PAS VIDEO TAMAT -->
             <div id="peekingThumbnail">
                 <img id="imgPeeking" src="" alt="Next Video">
-                <div style="position:absolute; font-weight:bold; color:white; text-shadow:0 1px 2px black; display:flex; flex-direction:column; align-items:center;">
-                    <i class="fa-solid fa-chevron-up" style="animation: bounceUp 1s infinite;"></i>
-                    <span>Swipe untuk Video Selanjutnya</span>
+                <div style="position:relative; z-index:2; font-weight:700; color:white; text-shadow:0 2px 4px black; display:flex; flex-direction:column; align-items:center;">
+                    <i class="fa-solid fa-angles-up" style="font-size:18px; margin-bottom:2px; animation: bounceUpHint 1s infinite;"></i>
+                    <span>Swipe Atas Ke Video Selanjutnya</span>
                 </div>
             </div>
-
         </div>
     </div>
-
-
-
 
     <div id="katalogSection">
         <div class="katalog-header">
              <div class="katalog-header-title">
-                <img 
-                  src="https://raw.githubusercontent.com/zonexhub/Player-Vip/refs/heads/main/Katalog-Video.webp"
-                  alt="Katalog Video"
-                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                <div class="katalog-text-title">
+                <img id="logoKatalogGambar" src="https://raw.githubusercontent.com/zonexhub/Player-Vip/refs/heads/main/Katalog-Video.webp" alt="Katalog Video">
+                <div class="katalog-text-title" style="display: none;" id="katalogTextTitleWrapper">
                   <i class="fa-solid fa-photo-film" id="katalogIcon" style="color: #3b82f6;"></i>
                   <span id="katalogTitleText">Katalog Video</span>
+                </div>
              </div>
-          </div>
             <div class="header-controls" id="headerControls">
                <div id="liveUserHome" class="live-user-badge" data-nosnippet>
                     <span class="live-dot"></span>
@@ -855,26 +398,28 @@
             </div>
         </div>
 
-        <div class="katalog-list" id="katalogList"></div>
+        <!-- BUNGKUSAN BARU (Kalo mau dipake animasi geser nanti, sekarang polos) -->
+        <div id="katalogListWrapper">
+            <div class="katalog-list" id="katalogList"></div>
+        </div>
 
         <div class="pagination-container" id="paginationContainer" style="display: none;"></div>
     </div>
 
-  <div id="errorMessage">Video tidak ditemukan di sistem.</div>
+    <div id="errorMessage">Video tidak ditemukan di sistem.</div>
   
-      <a href="https://t.me/+Wd9QJyO5fq9iOWQ1" target="_blank" class="promo-bottom-bar" id="promoBottomBar" data-nosnippet>
+    <a href="https://t.me/+9yfRTEBsNSNjNWVl" target="_blank" class="promo-bottom-bar" id="promoBottomBar" data-nosnippet>
         <div class="promo-content">
             <div class="promo-icon">
                 <i class="fa-brands fa-telegram"></i>
             </div>
             <div class="promo-text-group">
                 <span class="promo-title">Join Channel Telegram</span>
-                <span class="promo-subtitle">Untuk Mendapatkan Info Update Terbaru.</span>
+                <span class="promo-subtitle">Update Video Tanpa Sensor!</span>
             </div>
         </div>
         <button class="promo-btn">JOIN</button>
     </a>
-    
 </div>
 
 <div id="bulkCopyBar" class="bulk-copy-bar">
@@ -957,9 +502,7 @@ document.addEventListener("DOMContentLoaded", function () {
         searchInput.focus();
     });
 
-    searchInput.addEventListener("input", function () {
-        filterKatalog(this.value.trim());
-    });
+    searchInput.addEventListener("input", function () { filterKatalog(this.value.trim()); });
 
     searchClearBtn.addEventListener("click", function () {
         searchInput.value = "";
@@ -967,6 +510,9 @@ document.addEventListener("DOMContentLoaded", function () {
         filterKatalog("");
     });
     
+    // ===============================================
+    // 🔥 LIVE VIEWERS HOMEPAGE (DENGAN OPTIMASI MEMORI)
+    // ===============================================
     const elLiveHome = document.getElementById("angkaLiveHome");
     const boxLiveHome = document.getElementById("liveUserHome");
     
@@ -976,7 +522,6 @@ document.addEventListener("DOMContentLoaded", function () {
         if (boxLiveHome) boxLiveHome.style.display = "none";
     } 
     else if (elLiveHome && !rawSlugParam) {        
-        
         let angkaAwal;
         let memoriLive = sessionStorage.getItem("ingatanLiveZoneX");
 
@@ -997,7 +542,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 else { minViewers = 2; maxViewers = 25; }
             }  
             angkaAwal = Math.floor(Math.random() * (maxViewers - minViewers + 1)) + minViewers;
-            
             sessionStorage.setItem("ingatanLiveZoneX", angkaAwal);
         }
      
@@ -1006,29 +550,20 @@ document.addEventListener("DOMContentLoaded", function () {
         window.intervalLiveHome = setInterval(() => {
             let batasNaikTurun = Math.floor(angkaAwal * 0.05) + 3; 
             let perubahan = Math.floor(Math.random() * (batasNaikTurun * 2)) - batasNaikTurun; 
-            
             angkaAwal += perubahan;
             if(angkaAwal < 2) angkaAwal = Math.floor(Math.random() * 5) + 2; 
-            
             elLiveHome.textContent = angkaAwal.toLocaleString('id-ID');
-            
             sessionStorage.setItem("ingatanLiveZoneX", angkaAwal);
         }, 10000); 
     }
     
     function sendTelegramLog(eventTitle, detailInfo = '') {
         if (!WORKER_URL || WORKER_URL.includes('namakamu')) return;
-      
         const safeStr = (str) => {
             if (!str && str !== 0) return '';
-            return String(str)
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;');
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         };
-
         const timeNow = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        
         const targetVideo = safeStr(currentPlayingSlug || rawSlugParam || 'Direct Landing');
         const safeTitle = safeStr(eventTitle);
         const safeDetail = safeStr(detailInfo);
@@ -1038,9 +573,7 @@ document.addEventListener("DOMContentLoaded", function () {
         message += `📌 <b>Aksi:</b> ${safeTitle}\n`;
         message += `🎬 <b>Target Video:</b> <code>${targetVideo}</code>\n`;
         message += `⏰ <b>Waktu:</b> ${timeNow}\n`;
-        if (safeDetail) {
-            message += `📝 <b>Detail:</b> ${safeDetail}\n`;
-        }
+        if (safeDetail) message += `📝 <b>Detail:</b> ${safeDetail}\n`;
 
         fetch(WORKER_URL, {
             method: 'POST',
@@ -1065,38 +598,30 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (slugList.length === 1) {
                 const singleSlug = slugList[0];
-                if (!data[singleSlug]) {
-                    tampilkanError();
-                    return;
-                }
+                if (!data[singleSlug]) { tampilkanError(); return; }
 
                 const hasSavedScroll = sessionStorage.getItem("savedKatalogScroll");
-                if (!hasSavedScroll) {
-                    isDirectShare = true; 
-                }
+                if (!hasSavedScroll) isDirectShare = true; 
 
                 currentPlayingSlug = singleSlug;
                 putarVideoTarget(singleSlug);
             } else if (slugList.length > 1) {
                 isFromFolder = true;
                 activeFolderSlugs = slugList.filter(s => data[s]);
-                if (activeFolderSlugs.length === 0) {
-                    tampilkanError();
-                    return;
-                }
+                if (activeFolderSlugs.length === 0) { tampilkanError(); return; }
                 
                 const rawTitleParam = params.get("title");
                 let judulFolderTampil = `Folder Video`; 
-              
                 if (rawTitleParam) {
                     judulFolderTampil = decodeURIComponent(rawTitleParam).replace(/-/g, ' ');
                 }
 
-                const katalogLogo = document.querySelector('.katalog-header-title img');
-                const katalogTextTitle = document.querySelector('.katalog-text-title');
+                // Ganti Logo jadi Teks Folder
+                const katalogLogo = document.getElementById('logoKatalogGambar');
+                const katalogTextTitleWrapper = document.getElementById('katalogTextTitleWrapper');
 
                 if (katalogLogo) katalogLogo.style.display = "none";
-                if (katalogTextTitle) katalogTextTitle.style.display = "flex";
+                if (katalogTextTitleWrapper) katalogTextTitleWrapper.style.display = "flex";
 
                 katalogIcon.className = "fa-solid fa-folder-open"; 
                 katalogIcon.style.color = "#ffd75e";
@@ -1111,6 +636,41 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         })
         .catch(() => tampilkanError());
+
+    // ==========================================
+    // 🔥 SENSOR SWIPE REELS (DITARUH DI LUAR BIAR AMAN)
+    // ==========================================
+    const playerMovable = document.getElementById("playerMovable");
+    let autoNextSlug = null; 
+    let startY = 0;
+
+    if (playerMovable) {
+        playerMovable.addEventListener('touchstart', function(e) {
+            if (currentStage === 'Selesai' && autoNextSlug) {
+                startY = e.touches[0].clientY;
+            }
+        }, {passive: true});
+
+        playerMovable.addEventListener('touchmove', function(e) {
+            if (currentStage === 'Selesai' && autoNextSlug) {
+                let currentY = e.touches[0].clientY;
+                
+                if (startY - currentY > 40) {
+                    let target = autoNextSlug;
+                    autoNextSlug = null; 
+                    
+                    playerMovable.style.animation = "";
+                    document.getElementById("peekingThumbnail").style.display = "none";
+                    
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('video', target);
+                    history.pushState({ view: 'player', video: allVideoData[target] }, "", url.toString());
+
+                    putarVideoTarget(target);
+                }
+            }
+        }, {passive: true});
+    }
 
     function putarVideoTarget(targetSlug) {
         currentPlayingSlug = targetSlug;
@@ -1132,6 +692,7 @@ document.addEventListener("DOMContentLoaded", function () {
         btnLanjutkan.querySelector('span').innerText = "Lanjutkan Menonton";
         btnLanjutkan.querySelector('i').className = "fa-solid fa-play";
         btnLanjutkan.querySelector('i').style.display = "inline-block";
+        btnLanjutkan.style.display = "flex"; 
         
         stage2Done = false;
         stage3Done = false;
@@ -1237,76 +798,39 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    // ==========================================
+    // 🔥 AKSI PAS VIDEO TAMAT (Reels Effect)
+    // ==========================================
     video.addEventListener('ended', () => {
         currentStage = 'Selesai';
         isTransitioning = true;
         video.pause();
         video.controls = false;
         
-        // 1. KALO DARI LINK SHARE (1 VIDEO DOANG) -> Balik ke Homepage
         if (isDirectShare && !isFromFolder) {
             btnLanjutkan.innerHTML = `<i class="fa-solid fa-photo-film"></i> <span>Tonton Video Lainnya</span>`;
+            btnLanjutkan.style.display = "flex";
             overlay.style.display = 'flex';
         } 
-        
-        // 2. KALO DARI DALEM FOLDER / HOMEPAGE -> Fitur Reels Aktif!
         else {
             let indexSekarang = filteredKeys.indexOf(currentPlayingSlug);
             
-            // Cek apakah masih ada video selanjutnya di daftar
             if (indexSekarang !== -1 && indexSekarang < filteredKeys.length - 1) {
-                let nextSlug = filteredKeys[indexSekarang + 1]; 
-                let nextVideoData = allVideoData[nextSlug];
+                autoNextSlug = filteredKeys[indexSekarang + 1]; 
+                let nextVideoData = allVideoData[autoNextSlug];
 
                 const peekingDiv = document.getElementById("peekingThumbnail");
                 const imgPeeking = document.getElementById("imgPeeking");
-                const playerMovable = document.getElementById("playerMovable");
 
                 if (peekingDiv && imgPeeking && playerMovable) {
-                    // Set gambar thumbnail video selanjutnya
                     imgPeeking.src = nextVideoData.poster || "https://res.cloudinary.com/drtbkd5lr/image/upload/v1784345713/file_00000000482481fa8b0724d40fd3c4f0_djentq.png";
                     peekingDiv.style.display = "flex";
-
-                    // Hentakan animasi layar narik ke atas 2 kali ngasih kode
+                    btnLanjutkan.style.display = "none"; 
+                    overlay.style.display = "flex";
                     playerMovable.style.animation = "peekingUp 1.8s ease-in-out 2"; 
-                    
-                    // ==========================================
-                    // SENSOR GESER (SWIPE) LAYAR HP KORBAN
-                    // ==========================================
-                    let startY = 0;
-                    
-                    // Nangkep jari pertama kali nempel layar
-                    const touchStartHandler = function(e) {
-                        startY = e.touches[0].clientY;
-                    };
-
-                    // Nangkep gerakan jari ngegeser ke atas
-                    const touchMoveHandler = function(e) {
-                        if (currentStage === 'Selesai') {
-                            let currentY = e.touches[0].clientY;
-                            
-                            // Kalau geserannya ke ATAS lebih dari 40px (Biar gak gampang kepencet)
-                            if (startY - currentY > 40) {
-                                // 1. Matikan event listener biar gak double klik
-                                document.removeEventListener('touchstart', touchStartHandler);
-                                document.removeEventListener('touchmove', touchMoveHandler);
-                                
-                                // 2. Bersihkan efek ngintip
-                                playerMovable.style.animation = "";
-                                peekingDiv.style.display = "none";
-                                
-                                // 3. PLAY VIDEO SELANJUTNYA!
-                                putarVideoTarget(nextSlug);
-                            }
-                        }
-                    };
-
-                    // Nyalain sensornya
-                    document.addEventListener('touchstart', touchStartHandler, {passive: true});
-                    document.addEventListener('touchmove', touchMoveHandler, {passive: true});
                 }
             } else {
-                // Kalo videonya udah mentok/abis di daftar, biarin mereka klik back manual
+                autoNextSlug = null;
                 overlay.style.display = 'none';
                 video.setAttribute('controls', 'controls');
             }
@@ -1428,6 +952,9 @@ function renderKatalogPage(restoreScroll = false) {
         katalogList.appendChild(item);
     });
 
+    // ==========================================
+    // 🔥 PERBAIKAN PAGINATION ANTI RESET 
+    // ==========================================
     if (totalPages > 1) {
         paginationContainer.style.display = "flex";
 
@@ -1464,8 +991,19 @@ function renderKatalogPage(restoreScroll = false) {
     }
 }
 
+// LOGIKA URL ANTI-RESET PAS GANTI HALAMAN
 function pilihHalaman(page) {
     currentPage = parseInt(page);
+    renderKatalogPage();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    const url = new URL(window.location.href);
+    url.searchParams.set('page', currentPage);
+    history.pushState({ page: currentPage }, "", url.toString());
+}
+
+function gantiHalaman(direction) {
+    currentPage += direction;
     renderKatalogPage();
     window.scrollTo({ top: 0, behavior: 'smooth' });
     
@@ -1480,16 +1018,6 @@ function handleItemClick(key) {
     } else {
         bukaVideoDirect(key);
     }
-}
-
-function gantiHalaman(direction) {
-    currentPage += direction;
-    renderKatalogPage();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    
-    const url = new URL(window.location.href);
-    url.searchParams.set('page', currentPage);
-    history.pushState({ page: currentPage }, "", url.toString());
 }
 
 function toggleSelectMode() {
