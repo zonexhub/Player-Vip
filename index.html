@@ -1055,17 +1055,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 btnToggleSearch.style.display = "none";
                 btnSelectMode.style.display = "none";
                 btnHomeFolder.style.display = "inline-flex";
-                
-                const promoBar = document.getElementById("promoBottomBar");
-                if (promoBar) {
-                    promoBar.style.display = "none";
-                }
-                
-                const mainContainer = document.getElementById("mainContainer");
-                if (mainContainer) {                  
-                    mainContainer.classList.remove("mode-katalog"); 
-                }
-                
+                            
                 initKatalogData(data, pageFromUrl, activeFolderSlugs);
             }
         })
