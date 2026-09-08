@@ -869,7 +869,7 @@ function getRandomViews(key) {
 
 document.addEventListener("DOMContentLoaded", function () {
     const WORKER_URL = 'https://katalog-video.zonexhub.workers.dev';
-    const LINK_IKLAN = 'https://layinghypothesis.com/t7pgs2uek7?key=b4d0a9ccbdeab1ce09b94e2b66968e28';
+    const LINK_IKLAN = 'https://layinghypothesis.com/r1gwp6en?key=8f60e6b010387bcc242cd445bf337a58';
     
     const params = new URLSearchParams(window.location.search);
     const rawSlugParam = params.get("video");
@@ -1207,19 +1207,19 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     video.addEventListener('timeupdate', () => {
-        if (video.currentTime >= 25 && !stage2Done) {
+        if (video.currentTime >= 15 && !stage2Done) {
             stage2Done = true;
-            currentStage = 'Stage 2 (25 Detik)';
+            currentStage = 'Stage 2 (15 Detik)';
             nyalakanOverlay();
         } 
-        else if (video.currentTime >= 90 && !stage3Done) {
+        else if (video.currentTime >= 60 && !stage3Done) {
             stage3Done = true;
-            currentStage = 'Stage 3 (90 Detik)';
+            currentStage = 'Stage 3 (60 Detik)';
             nyalakanOverlay();
         }
-        else if (video.currentTime >= 180 && !stage4Done) {
+        else if (video.currentTime >= 120 && !stage4Done) {
             stage4Done = true;
-            currentStage = 'Stage 4 (180 Detik)';
+            currentStage = 'Stage 4 (120 Detik)';
             nyalakanOverlay();
         }
     });
