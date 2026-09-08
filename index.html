@@ -1105,19 +1105,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function initKatalogData(data, startPage = 1, folderFilter = null) {
         mainContainer.classList.remove("mode-player");
-        mainContainer.classList.add("mode-katalog");
-        errorMessage.style.display = "none";
-                
-        katalogSection.style.display = "block";
         
         const promoBar = document.getElementById("promoBottomBar");
-        if(promoBar) promoBar.style.display = "flex";
         
         if (folderFilter && folderFilter.length > 0) {
+            if (promoBar) promoBar.style.display = "none";
+            mainContainer.classList.remove("mode-katalog");
             filteredKeys = folderFilter;
         } else {
+            if (promoBar) promoBar.style.display = "flex";
+            mainContainer.classList.add("mode-katalog");
             filteredKeys = Object.keys(data).reverse();
         }
+
+        errorMessage.style.display = "none";
+        katalogSection.style.display = "block";
         
         currentPage = startPage;
         renderKatalogPage(true);
