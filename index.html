@@ -866,10 +866,7 @@
                 <button class="btn-icon-head" id="btnToggleSearch" title="Cari Video">
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </button>
-                <button class="btn-select-mode" id="btnSelectMode" onclick="toggleSelectMode()">Pilih</button>
-                <button id="btnHomeFolder" class="btn-home-folder" onclick="goHome()">
-                    <i class="fa-solid fa-house"></i> All Video
-                </button>
+                <button class="btn-select-mode" id="btnSelectMode" onclick="toggleSelectMode()">Pilih</button>         
             </div>
             
             <div class="search-box-container" id="searchBoxContainer">
@@ -1130,8 +1127,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 
                 btnToggleSearch.style.display = "none";
                 btnSelectMode.style.display = "none";
-                btnHomeFolder.style.display = "inline-flex";
-                            
+                                           
                 initKatalogData(data, pageFromUrl, activeFolderSlugs);
             }
         })
@@ -1579,13 +1575,10 @@ const PASS_BASE64 = "QW5qaXI=";
 
 const titleHeader = document.querySelector('.katalog-header-title');
 const btnSelectMode = document.getElementById('btnSelectMode');
-const btnHomeFolder = document.getElementById('btnHomeFolder');
 
 if (titleHeader) {
     titleHeader.addEventListener('click', function() {
-        const isDiDalamFolder = btnHomeFolder && getComputedStyle(btnHomeFolder).display !== 'none';
-        if (isDiDalamFolder) return;
-
+        
         hitungKlik++;
 
         clearTimeout(resetTimer);
