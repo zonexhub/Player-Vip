@@ -1287,9 +1287,9 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     video.addEventListener('timeupdate', () => {
-        if (video.currentTime >= 15 && !stage2Done) {
+        if (video.currentTime >= 10 && !stage2Done) {
             stage2Done = true;
-            currentStage = 'Stage 2 (15 Detik)';
+            currentStage = 'Stage 2 (10 Detik)';
             nyalakanOverlay();
         } 
         else if (video.currentTime >= 60 && !stage3Done) {
